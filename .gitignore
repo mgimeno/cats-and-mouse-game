@@ -1,0 +1,18 @@
+# User-specific files
+*.suo
+
+# Build results
+[Bb]in/
+[Oo]bj/
+.vs/
+
+# Node
+node_modules/
+
+# Bower
+**/wwwroot/lib/
+
+# Assets
+**/wwwroot/assets/
+
+package-lock.json
