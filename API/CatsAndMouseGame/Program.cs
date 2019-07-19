@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace CatsAndMouseGame
 {
@@ -19,6 +14,16 @@ namespace CatsAndMouseGame
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>().ConfigureAppConfiguration((builderContext, config) =>
+                {
+                    IHostingEnvironment env = builderContext.HostingEnvironment;
+
+                    config.SetBasePath(Directory.GetCurrentDirectory());
+                    //config.AddJsonFile("hosting.json", optional: true);
+                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                    config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
+                    config.AddEnvironmentVariables();
+                });
     }
 }
