@@ -9,17 +9,15 @@ namespace CatsAndMouseGame.Models
     public class GameModel
     {
         public string Id { get; set; }
-        public string Name { get; set; }
         public string Password { get; set; }
         public List<PlayerModel> Players { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateStarted { get; set; } = null;
         public DateTime? DateFinished { get; set; } = null;
 
-        public GameModel(string gameName, string gamePassword = null)
+        public GameModel(string gamePassword = null)
         {
             this.Id = Guid.NewGuid().ToString();
-            this.Name = gameName;
             this.Password = gamePassword;
 
             this.Players = new List<PlayerModel>();
@@ -27,31 +25,31 @@ namespace CatsAndMouseGame.Models
             this.DateCreated = DateTime.UtcNow;
         }
 
-        public void SetFirstPlayer(PlayerTypeEnum playerType, string userName, string connectionId)
+        public void SetFirstPlayer(TeamEnum playerType, string userName, string connectionId)
         {
             SetPlayer(playerType, userName, connectionId);
         }
 
         public void SetSecondPlayer(string userName, string connectionId)
         {
-            if (!IsPlayerTypeAlreadyConnected(PlayerTypeEnum.Cats))
+            if (!IsPlayerTypeAlreadyConnected(TeamEnum.Cats))
             {
-                SetPlayer(PlayerTypeEnum.Cats, userName, connectionId);
+                SetPlayer(TeamEnum.Cats, userName, connectionId);
             }
             else
             {
-                SetPlayer(PlayerTypeEnum.Mouse, userName, connectionId);
+                SetPlayer(TeamEnum.Mouse, userName, connectionId);
             }
         }
 
-        public bool IsPlayerTypeAlreadyConnected(PlayerTypeEnum playerType)
+        public bool IsPlayerTypeAlreadyConnected(TeamEnum playerType)
         {
-            return this.Players.Any(p => p.PlayerType == playerType);
+            return this.Players.Any(p => p.TeamId == playerType);
         }
 
         public void Start()
         {
-            var mousePlayer = GetPlayerByType(PlayerTypeEnum.Mouse);
+            var mousePlayer = GetPlayerByType(TeamEnum.Mouse);
 
             mousePlayer.IsTheirTurn = true;
             this.DateStarted = DateTime.UtcNow;
@@ -131,11 +129,19 @@ namespace CatsAndMouseGame.Models
             return this.Players.Where(p => p.IsTheirTurn).FirstOrDefault();
         }
 
+        public bool IsWaitingForSecondPlayerToStart() {
+            return this.DateStarted == null && this.Players.Count == 1;
+        }
+
+        public bool IsPasswordProtected() {
+            return !string.IsNullOrWhiteSpace(this.Password);
+        }
+
         private void SetWinnerIfAny()
         {
 
-            var mousePlayer = GetPlayerByType(PlayerTypeEnum.Mouse) as MousePlayerModel;
-            var catsPlayer = GetPlayerByType(PlayerTypeEnum.Cats) as CatsPlayerModel;
+            var mousePlayer = GetPlayerByType(TeamEnum.Mouse) as MousePlayerModel;
+            var catsPlayer = GetPlayerByType(TeamEnum.Cats) as CatsPlayerModel;
             //todo, I don't link figures[0] maybe create a method getMouse() ?
             if (mousePlayer.Figures[0].Position.RowIndex == 0)
             {
@@ -161,15 +167,15 @@ namespace CatsAndMouseGame.Models
             }
         }
 
-        private PlayerModel GetPlayerByType(PlayerTypeEnum playerType)
+        private PlayerModel GetPlayerByType(TeamEnum playerType)
         {
-            return this.Players.Where(p => p.PlayerType == playerType).FirstOrDefault();
+            return this.Players.Where(p => p.TeamId == playerType).FirstOrDefault();
         }
 
-        private void SetPlayer(PlayerTypeEnum playerType, string userName, string connectionId)
+        private void SetPlayer(TeamEnum playerType, string userName, string connectionId)
         {
             PlayerModel player;
-            if (playerType == PlayerTypeEnum.Cats)
+            if (playerType == TeamEnum.Cats)
             {
                 player = new CatsPlayerModel();
             }

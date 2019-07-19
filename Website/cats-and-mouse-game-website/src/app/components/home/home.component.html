@@ -1,0 +1,52 @@
+<h1>Cats & Mouse Game</h1>
+
+<p>Little explanation, see <a [routerLink]="['/how-to-play']">how to play</a>
+
+
+    <div class="header-container">
+        <h2 class="flex-auto">Games</h2>
+        <button type="button" mat-raised-button color="primary" (click)="openCreateGameDialog()">Create Game</button>
+    </div>
+
+
+    <div *ngIf="!games.length" class="text-center">
+
+        <b>No games currently available</b>
+
+    </div>
+
+    <table *ngIf="games.length" mat-table [dataSource]="games" class="full-width mat-elevation-z1">
+
+        <ng-container matColumnDef="userName">
+            <th mat-header-cell *matHeaderCellDef> Player </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.userName}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="teamId">
+            <th mat-header-cell *matHeaderCellDef> Team </th>
+            <td mat-cell *matCellDef="let element">
+                {{teamEnum[element.teamId]}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="isPasswordProtected">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon *ngIf="element.isPasswordProtected" matTooltip="This game is password protected">lock
+                </mat-icon>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="gameId">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element" class="text-right">
+                <button type="button" mat-raised-button color="primary"
+                    (click)="openJoinGameDialog(element.gameId)">Join</button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: tableColumns;"></tr>
+    </table>

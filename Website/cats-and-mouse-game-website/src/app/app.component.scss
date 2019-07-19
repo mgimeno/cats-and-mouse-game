@@ -1,0 +1,45 @@
+//@import 'variables';
+
+
+mat-toolbar {
+  //height: $headerHeight;
+  height: 56px;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  .mat-toolbar {
+    padding: 0 10px;
+    position: fixed;
+    z-index: 2;
+  }
+
+  a.title {
+    margin-left: 8px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 18px;
+    position: relative;
+    top: 1px;
+  }
+
+  .sidenav-container {
+    margin-top: 56px;
+    flex: 1 0 auto;
+
+    mat-sidenav {
+      width: 200px;
+    }
+
+    mat-sidenav-content {
+      padding: 25px 34px 30px 34px;
+    }
+  }
+}

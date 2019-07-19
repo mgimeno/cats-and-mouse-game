@@ -19,9 +19,23 @@ namespace CatsAndMouseGame
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                   builder =>
+                   {
+                       builder.AllowAnyMethod()
+                                .AllowAnyHeader()
+                              .WithOrigins("http://localhost:4200") //TODO FROM APP SETTINGS
+                              .AllowCredentials();
+                   });
+
+            }
+               );
 
             services.AddSignalR();
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -32,12 +46,17 @@ namespace CatsAndMouseGame
                 app.UseDeveloperExceptionPage();
             }
 
+            //app.UseWebSockets();
+
+            app.UseCors("CorsPolicy");
+
             app.UseSignalR(routes =>
             {
                 routes.MapHub<GameHub>("/gameHub");
             });
 
             app.UseMvc();
+
         }
     }
 }

@@ -6,7 +6,7 @@ namespace CatsAndMouseGame.Models
     {
         public CatsPlayerModel()
         {
-            this.PlayerType = PlayerTypeEnum.Cats;
+            this.TeamId = TeamEnum.Cats;
 
             var cat1 = new CatModel
             {

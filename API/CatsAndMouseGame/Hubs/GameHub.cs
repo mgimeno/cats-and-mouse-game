@@ -1,5 +1,6 @@
 ﻿using CatsAndMouseGame.Enums;
 using CatsAndMouseGame.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace CatsAndMouseGame.Hubs
 {
+    [EnableCors("CorsPolicy")]
     public class GameHub : Hub
     {
 
@@ -15,17 +17,18 @@ namespace CatsAndMouseGame.Hubs
         private static readonly List<string> _connections = new List<string>();
 
 
-        public void CreateGame(string gameName, string userName, PlayerTypeEnum playerType, string gamePassword = null)
+        public void CreateGame(CreateGameModel model)
         {
-            var newGame = new GameModel(gameName, gamePassword);
-            newGame.SetFirstPlayer(playerType, userName, Context.ConnectionId);
+            var newGame = new GameModel(model.GamePassword);
+            newGame.SetFirstPlayer(model.TeamId, model.UserName, Context.ConnectionId);
 
             _games.Add(newGame);
 
-            //Send the new game added command to all clients (not whole gameModel, just needed data)
+            //todo this method has to return (not send with signalR, jus treturn) the newly created game.(Game List item)
+            SendGameListToClientsAsync(_connections);
         }
 
-        public void JoinGame(string gameId, string userName, PlayerTypeEnum playerType, string gamePassword = null)
+        public void JoinGame(string gameId, string userName, TeamEnum playerType, string gamePassword = null)
         {
             var game = _games.Where(g => g.Id == gameId).FirstOrDefault();
 
@@ -112,19 +115,19 @@ namespace CatsAndMouseGame.Hubs
             //send message so new player can move, send their available moves for each figure.
         }
 
-        public override Task OnConnectedAsync()
+        public async override Task OnConnectedAsync()
         {
             if (!_connections.Any(c => c == Context.ConnectionId))
             {
                 _connections.Add(Context.ConnectionId);
             }
 
-            //todo send the caller all the games. (not the whole game Model, just a list with the needed data)
+            await SendGameListToClientsAsync(new List<string>() { Context.ConnectionId });
 
-            return base.OnConnectedAsync();
+            await base.OnConnectedAsync();
         }
 
-        public override Task OnDisconnectedAsync(Exception exception)
+        public async override Task OnDisconnectedAsync(Exception exception)
         {
             if (_connections.Any(c => c == Context.ConnectionId))
             {
@@ -135,14 +138,36 @@ namespace CatsAndMouseGame.Hubs
                 _connections.Remove(Context.ConnectionId);
             }
 
-            return base.OnDisconnectedAsync(exception);
+            await base.OnDisconnectedAsync(exception);
         }
 
-        private async Task SendToClientsAsync(List<string> connectionsIds, string action, string parameters)
+        private async Task SendMessageToClientsAsync(List<string> connectionsIds, IMessageToClient message)
         {
-            //todo message is an enum with the possible actions?
-            await Clients.Clients(connectionsIds).SendAsync(action, parameters);
+            await Clients.Clients(connectionsIds).SendAsync("messageToClient", message);
         }
+
+        private async Task SendGameListToClientsAsync(List<string> connectionsIds)
+        {
+
+            var message = new UpdateGameList();
+
+            _games
+                .Where(g => g.IsWaitingForSecondPlayerToStart())
+                .ToList()
+                .ForEach(g =>
+                {
+                    message.GameList.Add(new GameListItem
+                    {
+                        GameId = g.Id,
+                        UserName = g.Players[0].Name,
+                        TeamId = g.Players[0].TeamId,
+                        IsPasswordProtected = g.IsPasswordProtected()
+                    });
+                });
+
+            await SendMessageToClientsAsync(connectionsIds, message);
+        }
+
 
     }
 }

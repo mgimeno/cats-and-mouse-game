@@ -7,7 +7,7 @@ namespace CatsAndMouseGame.Models
 
         public MousePlayerModel()
         {
-            this.PlayerType = PlayerTypeEnum.Mouse;
+            this.TeamId = TeamEnum.Mouse;
 
             var mouse = new MouseModel
             {

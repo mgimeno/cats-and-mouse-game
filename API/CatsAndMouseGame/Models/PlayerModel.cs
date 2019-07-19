@@ -8,7 +8,7 @@ namespace CatsAndMouseGame.Models
         public string ConnectionId { get; set; } = null;
         public string Name { get; set; } = null;
         public bool IsTheirTurn { get; set; } = false;
-        public PlayerTypeEnum PlayerType { get; set; }
+        public TeamEnum TeamId { get; set; }
         public bool IsWinner { get; set; } = false;
 
         public List<FigureModel> Figures { get; set; }

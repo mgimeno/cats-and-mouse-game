@@ -1,0 +1,117 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+$primaryColor: #3a5bb2;
+$successColor: #43A047;
+$errorColor: #f55f5f;
+$warnColor: #ecb13b;
+$infoColor: #39befe;
+
+body {
+  margin: 0;
+}
+
+* {
+  font-family: Roboto, sans-serif;
+}
+
+h1 {
+  margin: 25px 0 40px;
+  font-size: 1.5em;
+}
+
+h2 {
+  font-size: 1.25em;
+}
+
+a {
+  color: #468df1;
+  text-decoration: none;
+
+  &:hover {
+    color: $primaryColor !important;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.header-container {
+  display: flex;
+  align-items: baseline;
+
+  .flex-auto {
+    flex: auto;
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.small {
+  font-size: small;
+}
+
+.green {
+  color: $successColor;
+}
+
+.red {
+  color: $errorColor;
+}
+
+.bg-green {
+  background-color: $successColor;
+}
+
+
+.clickable {
+  cursor: pointer;
+}
+
+//Notification Service
+
+.mat-snack-bar-container {
+  color: white;
+  min-width: 270px !important;
+
+  .mat-simple-snackbar {
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  &.success {
+    background-color: $successColor;
+  }
+
+  &.error {
+    background-color: $errorColor;
+  }
+
+  &.warning {
+    background-color: $warnColor;
+  }
+
+  &.info {
+    background-color: $infoColor;
+  }
+}
