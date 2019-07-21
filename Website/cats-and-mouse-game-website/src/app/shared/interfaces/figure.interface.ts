@@ -6,4 +6,6 @@ export interface IFigure {
   typeId: FigureTypeEnum;
   position: IFigurePosition;
   canMoveToPositions: IFigurePosition[];
+
+  
 }

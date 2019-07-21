@@ -12,9 +12,11 @@ import { IChessBox } from '../../../shared/interfaces/chess-box.interface';
 export class ChessBoxComponent {
 
   @Input() chessBox: IChessBox;
+  @Input() chessBoxCurrentlySelected?: IChessBox = null;
 
   figureTypeEnum = FigureTypeEnum;
   chessBoxColorEnum = ChessBoxColorEnum;
+
 
   constructor() {
     
@@ -22,6 +24,16 @@ export class ChessBoxComponent {
 
 
   ngOnInit() {
-    console.log(this.chessBox)
   }
+
+  hasFigure = (): boolean => {
+    return this.chessBox.figure != null;
+  }
+
+  isThereAFigureSelected = (): boolean => {
+    return this.chessBoxCurrentlySelected != null;
+  }
+
+
+  
 }

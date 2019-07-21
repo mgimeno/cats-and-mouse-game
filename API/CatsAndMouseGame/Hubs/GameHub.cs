@@ -24,7 +24,7 @@ namespace CatsAndMouseGame.Hubs
             _games.Add(newGame);
 
             //todo this method has to return (not send with signalR, jus treturn) the newly created game.(Game List item)
-            SendGameListToClientsAsync(_connections);
+            SendGamesAwaitingForSecondPlayerToClientsAsync(_connections);
 
             return BuildGameListItem(newGame);
         }
@@ -47,14 +47,14 @@ namespace CatsAndMouseGame.Hubs
 
             game.Start();
 
-            SendGameListToClientsAsync(_connections);
+            SendGamesAwaitingForSecondPlayerToClientsAsync(_connections);
 
             SendMessageToClientsAsync(game.GetPlayersConnections(), new GameStartMessage());
         }
 
         public void Move(MoveFigureModel model)
         {
-            var game = GetGameByCurrentConnectionId();
+            var game = GetInProgressGameByCurrentConnectionId();
 
             var player = game.GetPlayerByConnectionId(Context.ConnectionId);
 
@@ -80,8 +80,6 @@ namespace CatsAndMouseGame.Hubs
             if (game.IsGameOver())
             {
                 SendGameStatusToPlayers(game);
-
-                _games.Remove(game);
             }
             else
             {
@@ -95,23 +93,23 @@ namespace CatsAndMouseGame.Hubs
         {
             var game = _games
                 .Where(g => g.Id == model.GameId)
-                .Where(g => g.IsWaitingForSecondPlayerToStart())
+                .Where(g => g.IsWaitingForSecondPlayer())
                 .Where(g => g.GetPlayerByConnectionId(Context.ConnectionId) != null)
                 .FirstOrDefault();
 
             if (game != null)
             {
                 _games.Remove(game);
-                SendGameListToClientsAsync(_connections);
+                SendGamesAwaitingForSecondPlayerToClientsAsync(_connections);
             }
         }
 
-        public List<GameListItem> GetGameList()
+        public List<GameListItem> GetGamesAwaitingForSecondPlayer()
         {
             var result = new List<GameListItem>();
 
             _games
-                .Where(g => g.IsWaitingForSecondPlayerToStart())
+                .Where(g => g.IsWaitingForSecondPlayer())
                 .ToList()
                 .ForEach(g => result.Add(BuildGameListItem(g)));
 
@@ -120,7 +118,7 @@ namespace CatsAndMouseGame.Hubs
 
         public void GetGameStatusByConnectionId()
         {
-            var game = GetGameByCurrentConnectionId();
+            var game = GetInProgressGameByCurrentConnectionId();
 
             var player = game.GetPlayerByConnectionId(Context.ConnectionId);
 
@@ -152,7 +150,7 @@ namespace CatsAndMouseGame.Hubs
                 _connections.Add(Context.ConnectionId);
             }
 
-            await SendGameListToClientsAsync(new List<string>() { Context.ConnectionId });
+            await SendGamesAwaitingForSecondPlayerToClientsAsync(new List<string>() { Context.ConnectionId });
 
             await base.OnConnectedAsync();
         }
@@ -164,6 +162,7 @@ namespace CatsAndMouseGame.Hubs
                 //todo if he was part of an active game, they have lost.
                 //set to lost and send message to opponent
                 //also send message to all saying game is over.
+                //also delete the game from _games.
 
                 _connections.Remove(Context.ConnectionId);
             }
@@ -171,10 +170,23 @@ namespace CatsAndMouseGame.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        private GameModel GetGameByCurrentConnectionId()
+        private GameModel GetInProgressGameByCurrentConnectionId()
         {
             var game = _games
                 .Where(g => g.IsGameInProgress())
+                .Where(g => g.Players.Any(p => p.ConnectionId == Context.ConnectionId))
+                .FirstOrDefault();
+
+            if (game == null)
+            {
+                throw new Exception("Game does not exist");
+            }
+
+            return game;
+        }
+
+        private GameModel GetGameByCurrentConnectionId() {
+            var game = _games
                 .Where(g => g.Players.Any(p => p.ConnectionId == Context.ConnectionId))
                 .FirstOrDefault();
 
@@ -216,11 +228,11 @@ namespace CatsAndMouseGame.Hubs
             await Clients.Clients(connectionsIds).SendAsync("messageToClient", message);
         }
 
-        private async Task SendGameListToClientsAsync(List<string> connectionsIds)
+        private async Task SendGamesAwaitingForSecondPlayerToClientsAsync(List<string> connectionsIds)
         {
 
             var message = new GameListMessage();
-            message.GameList = GetGameList();
+            message.GameList = GetGamesAwaitingForSecondPlayer();
 
             await SendMessageToClientsAsync(connectionsIds, message);
         }

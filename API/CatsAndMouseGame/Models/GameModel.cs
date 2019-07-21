@@ -165,13 +165,13 @@ namespace CatsAndMouseGame.Models
             return this.Players.Where(p => p.IsTheirTurn).FirstOrDefault();
         }
 
-        public bool IsWaitingForSecondPlayerToStart() {
+        public bool IsWaitingForSecondPlayer() {
             return this.DateStarted == null && this.Players.Count == 1;
         }
 
         public bool IsGameInProgress()
         {
-            return !IsWaitingForSecondPlayerToStart() && !IsGameOver();
+            return !IsWaitingForSecondPlayer() && !IsGameOver();
         }
 
         public bool IsPasswordProtected() {

@@ -17,6 +17,8 @@ import { COMMON_CONSTANTS } from '../../../shared/constants/common';
 export class PlayGameComponent implements OnInit {
 
   private chessBoard: [IChessBox[], [], [], [], [], [], [], []] = null;
+  private chessBoxCurrentlySelected: IChessBox = null;
+
   private gameStatus: IGameStatus = null;
 
 
@@ -38,6 +40,8 @@ export class PlayGameComponent implements OnInit {
         const gameStatusMessage: IGameStatusMessage = message as IGameStatusMessage;
 
         this.gameStatus = gameStatusMessage.gameStatus;
+
+        this.chessBoxCurrentlySelected = null;
 
         this.updateChessBoard();
 
@@ -78,8 +82,76 @@ export class PlayGameComponent implements OnInit {
   }
 
   onChessBoxClicked = (rowIndex: number, columnIndex: number): void => {
-    console.log("box clicked: " + rowIndex + "," + columnIndex);
+    console.log("app-chess-box clicked: " + rowIndex + "," + columnIndex);
+
+    if (!this.isMyTurn()) {
+      return;
+    }
+
+    let chessBox = this.chessBoard[rowIndex][columnIndex];
+
+
+    const canMoveCurrentlySelectedToNewPosition = this.chessBoxCurrentlySelected && this.chessBoxCurrentlySelected.figure.canMoveToPositions.some(p => p.rowIndex === rowIndex && p.columnIndex === columnIndex);
+
+
+    if (canMoveCurrentlySelectedToNewPosition) {
+
+      //move figure.
+      const message = {
+        figureId: this.chessBoxCurrentlySelected.figure.id,
+        rowIndex: rowIndex,
+        columnIndex: columnIndex
+      };
+
+      this.signalrService.sendMessage("Move", message)
+        .catch((reason: any) => {
+          console.error(reason);
+        });
+
+    }
+    else {
+
+      if (chessBox.canFigureBeSelected) {
+
+
+        //remove ALL highlight possible moves
+        for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.CHESS_BOARD_ROWS; rowIndex++) {
+
+          for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.CHESS_BOARD_COLUMNS; columnIndex++) {
+
+            this.chessBoard[rowIndex][columnIndex].canBeNewPositionForSelectedFigure = false;
+
+          }
+
+        }
+
+        if (this.chessBoxCurrentlySelected) {
+          this.chessBoard[this.chessBoxCurrentlySelected.figure.position.rowIndex][this.chessBoxCurrentlySelected.figure.position.columnIndex].isFigureSelected = false;
+
+          this.chessBoxCurrentlySelected = null;
+        }
+
+
+        chessBox.isFigureSelected = !chessBox.isFigureSelected;
+
+        if (chessBox.isFigureSelected) {
+          this.chessBoxCurrentlySelected = chessBox;
+
+          //highlight possible moves
+          this.chessBoxCurrentlySelected.figure.canMoveToPositions.forEach(p => {
+
+            this.chessBoard[p.rowIndex][p.columnIndex].canBeNewPositionForSelectedFigure = true;
+
+          });
+
+        }
+
+      }
+
+    }
+
   };
+
 
   isGameOver = (): boolean => {
     return this.gameStatus.players.some(p => p.isWinner);
@@ -109,7 +181,11 @@ export class PlayGameComponent implements OnInit {
 
         let chessBox = <IChessBox>{
           colorId: currentChessBoxColorId,
-          figure: null
+          figure: null,
+          //Todo these should be in the figure property
+          isFigureSelected: false,
+          canFigureBeSelected: false,
+          canBeNewPositionForSelectedFigure: false
         };
 
         this.chessBoard[rowIndex][columnIndex] = chessBox;
@@ -126,12 +202,21 @@ export class PlayGameComponent implements OnInit {
 
       for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.CHESS_BOARD_COLUMNS; columnIndex++) {
 
-        this.chessBoard[rowIndex][columnIndex].figure = this.getFigureInPosition(rowIndex, columnIndex);
+        const figure = this.getFigureInPosition(rowIndex, columnIndex);
+        this.chessBoard[rowIndex][columnIndex].figure = figure;
+        //Todo these should be in the figure property
+        this.chessBoard[rowIndex][columnIndex].isFigureSelected = false;
+        this.chessBoard[rowIndex][columnIndex].canFigureBeSelected = this.isMyTurn() && figure && this.isMyFigure(figure.id) && (figure.canMoveToPositions.length > 0);
+        this.chessBoard[rowIndex][columnIndex].canBeNewPositionForSelectedFigure = false;
 
       }
 
     }
 
   };
+
+  private isMyFigure = (figureId: number): boolean => {
+    return this.gameStatus.players[this.gameStatus.myPlayerIndex].figures.some(f => f.id === figureId);
+  }
 
 }

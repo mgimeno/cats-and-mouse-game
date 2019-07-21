@@ -126,8 +126,9 @@ a {
 
 .box {
   /*padding: 20px;*/
-  height:100%;
+  height: 100%;
   text-align: center;
+  cursor: default;
 
   &.white {
     background-color: #b5915f;
@@ -135,6 +136,21 @@ a {
 
   &.black {
     background-color: #441a03;
+  }
+
+  &.box-with-figure-can-be-selected {
+    background-color: blue;
+    cursor: pointer;
+  }
+
+  &.box-with-figure-is-selected {
+    background-color: green;
+    cursor: pointer;
+  }
+
+  &.box-can-be-new-figure-position {
+    background-color: orange;
+    cursor: pointer;
   }
 }
 
