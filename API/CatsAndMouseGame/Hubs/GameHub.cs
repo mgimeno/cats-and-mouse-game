@@ -47,13 +47,12 @@ namespace CatsAndMouseGame.Hubs
 
             game.Start();
 
-
             SendGameListToClientsAsync(_connections);
 
             SendMessageToClientsAsync(game.GetPlayersConnections(), new GameStartMessage());
         }
 
-        public void MoveFigure(MoveFigureModel model)
+        public void Move(MoveFigureModel model)
         {
             var game = GetGameByCurrentConnectionId();
 
@@ -71,7 +70,7 @@ namespace CatsAndMouseGame.Hubs
                 throw new Exception("Figure does not exist");
             }
 
-            if (!game.CanMove(player, figure, model.RowIndex, model.ColumnIndex))
+            if (!game.CanMove(figure, model.RowIndex, model.ColumnIndex))
             {
                 throw new Exception("This figure cannot be moved to that position");
             }
@@ -246,8 +245,7 @@ namespace CatsAndMouseGame.Hubs
             return new GameStatusForPlayerModel
             {
                 Players = game.Players,
-                MyPlayerIndex = game.Players.IndexOf(player),
-                MyValidMoves = game.GetPlayerValidMoves(player)
+                MyPlayerIndex = game.Players.IndexOf(player)
             };
 
         }

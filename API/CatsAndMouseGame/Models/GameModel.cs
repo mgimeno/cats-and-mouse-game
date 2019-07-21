@@ -53,6 +53,8 @@ namespace CatsAndMouseGame.Models
 
             mousePlayer.IsTheirTurn = true;
             this.DateStarted = DateTime.UtcNow;
+
+            RecalculateFiguresCanMoveToPositions();
         }
 
         public PlayerModel GetPlayerByConnectionId(string connectionId)
@@ -74,32 +76,60 @@ namespace CatsAndMouseGame.Models
             return this.Players.Select(p => p.ConnectionId).ToList();
         }
 
-        public List<PlayerValidMove> GetPlayerValidMoves(PlayerModel player)
+        
+
+        public void RecalculateFiguresCanMoveToPositions()
         {
-            var result = new List<PlayerValidMove>();
 
-            //todo use IsPositionCurrentlyTaken()
-            //todo check newPosition is not out of the array
-            //todo can only move diagonally.
+            foreach (var player in this.Players) {
 
-            if (player is CatsPlayerModel)
-            {
-                //Can only move to a greater rowIndex
+                foreach (var figure in player.Figures)
+                {
+
+                    figure.CanMoveToPositions = new List<FigurePositionModel>();
+
+                    var moveUpwardsRowIndex = figure.Position.RowIndex - 1;
+                    var moveDownwardsRowIndex = figure.Position.RowIndex + 1;
+
+                    var moveLeftwards = figure.Position.ColumnIndex - 1;
+                    var moveRightwards = figure.Position.ColumnIndex + 1;
+
+                    if (figure.TypeId == FigureTypeEnum.Mouse) {
+
+                        //up-left
+                        if (this.IsNewPositionValid(moveUpwardsRowIndex, moveLeftwards)) {
+                            figure.AddCanMoveToPosition(moveUpwardsRowIndex, moveLeftwards);
+                        }
+
+                        //up-right
+                        if (this.IsNewPositionValid(moveUpwardsRowIndex, moveRightwards))
+                        {
+                            figure.AddCanMoveToPosition(moveUpwardsRowIndex, moveRightwards);
+                        }
+
+                    }
+
+                    //down-left
+                    if (this.IsNewPositionValid(moveDownwardsRowIndex, moveLeftwards))
+                    {
+                        figure.AddCanMoveToPosition(moveDownwardsRowIndex, moveLeftwards);
+                    }
+
+                    //down-right
+                    if (this.IsNewPositionValid(moveDownwardsRowIndex, moveRightwards))
+                    {
+                        figure.AddCanMoveToPosition(moveDownwardsRowIndex, moveRightwards);
+                    }
+
+
+                }
             }
-            else if (player is MousePlayerModel)
-            {
-                //Can only move to a lower rowIndex
-            }
-
-            return result;
 
         }
 
-        public bool CanMove(PlayerModel player, FigureModel figure, int rowIndex, int columnIndex)
+        public bool CanMove(FigureModel figure, int rowIndex, int columnIndex)
         {
-            var playerValidMoves = GetPlayerValidMoves(player);
-
-            if (playerValidMoves.Any(pvm => pvm.FigureId == figure.Id && pvm.Positions.Any(p => p.RowIndex == rowIndex && p.ColumnIndex == columnIndex))) {
+            if (figure.CanMoveToPositions.Any(p => p.RowIndex == rowIndex && p.ColumnIndex == columnIndex)) {
                 return true;
             }
 
@@ -109,6 +139,8 @@ namespace CatsAndMouseGame.Models
         public void Move(FigureModel figure, int rowIndex, int columnIndex)
         {
             figure.ChangePosition(rowIndex, columnIndex);
+
+            RecalculateFiguresCanMoveToPositions();
 
             CheckForGameOver();
         }
@@ -148,10 +180,9 @@ namespace CatsAndMouseGame.Models
 
         private void CheckForGameOver()
         {
-
             var mousePlayer = GetPlayerByTeam(TeamEnum.Mouse) as MousePlayerModel;
             var catsPlayer = GetPlayerByTeam(TeamEnum.Cats) as CatsPlayerModel;
-            //todo, I don't link figures[0] maybe create a method getMouse() ?
+
             if (mousePlayer.Figures[0].Position.RowIndex == 0)
             {
                 mousePlayer.IsWinner = true;
@@ -160,7 +191,7 @@ namespace CatsAndMouseGame.Models
             {
                 var nextTurnPlayer = (mousePlayer.IsTheirTurn ? catsPlayer as PlayerModel : mousePlayer as PlayerModel);
 
-                var canNextTurnPlayerMoveAnyFigure = GetPlayerValidMoves(nextTurnPlayer).Any();
+                var canNextTurnPlayerMoveAnyFigure = nextTurnPlayer.Figures.Any(f => f.CanMoveToPositions.Any());
 
                 if (!canNextTurnPlayerMoveAnyFigure)
                 {
@@ -199,9 +230,30 @@ namespace CatsAndMouseGame.Models
             this.Players.Add(player);
         }
 
-        private bool IsPositionCurrentlyTaken(int rowIndex, int columnIndex) {
+        private bool IsNewPositionValid(int rowIndex, int columnIndex)
+        {
+
+            if (rowIndex < 0 || rowIndex > 7 || columnIndex < 0 || columnIndex > 7)
+            {
+                //Position is out of the chess board
+                return false;
+            }
+
+            if (this.IsPositionCurrentlyTaken(rowIndex, columnIndex))
+            {
+                return false;
+            }
+
+            return true;
+
+        }
+
+        private bool IsPositionCurrentlyTaken(int rowIndex, int columnIndex)
+        {
             return this.Players.Any(p => p.Figures.Any(f => f.Position.RowIndex == rowIndex && f.Position.ColumnIndex == columnIndex));
         }
+
+
 
     }
 }

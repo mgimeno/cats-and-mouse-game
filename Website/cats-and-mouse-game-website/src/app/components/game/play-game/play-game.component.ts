@@ -4,9 +4,10 @@ import { IMessageToClient } from '../../../shared/interfaces/message-to-client.i
 import { MessageToClientTypeEnum } from '../../../shared/enums/message-to-client-type.enum';
 import { IGameStatus } from '../../../shared/interfaces/game-status.interface';
 import { IGameStatusMessage } from '../../../shared/interfaces/game-status-message.interface';
-import { FigureTypeEnum } from '../../../shared/enums/figure-type.enum';
 import { ChessBoxColorEnum } from '../../../shared/enums/chess-box-color.enum';
 import { IFigure } from '../../../shared/interfaces/figure.interface';
+import { IChessBox } from '../../../shared/interfaces/chess-box.interface';
+import { COMMON_CONSTANTS } from '../../../shared/constants/common';
 
 
 @Component({
@@ -15,11 +16,12 @@ import { IFigure } from '../../../shared/interfaces/figure.interface';
 })
 export class PlayGameComponent implements OnInit {
 
+  private chessBoard: [IChessBox[], [], [], [], [], [], [], []] = null;
   private gameStatus: IGameStatus = null;
 
-  private chessBoxColor: ChessBoxColorEnum = ChessBoxColorEnum.White;
 
   constructor(private signalrService: SignalrService) {
+    this.buildChessBoard();
   }
 
   ngOnInit() {
@@ -36,6 +38,10 @@ export class PlayGameComponent implements OnInit {
         const gameStatusMessage: IGameStatusMessage = message as IGameStatusMessage;
 
         this.gameStatus = gameStatusMessage.gameStatus;
+
+        this.updateChessBoard();
+
+
       }
     });
   }
@@ -43,6 +49,10 @@ export class PlayGameComponent implements OnInit {
   getFigureInPosition = (rowIndex: number, columnIndex: number): IFigure => {
 
     //todo very bad solution see if there is a way to find an item in a nested array (lodash?)
+
+    if (!this.gameStatus) {
+      return null;
+    }
 
     let figureInPosition: IFigure = null;
 
@@ -67,20 +77,6 @@ export class PlayGameComponent implements OnInit {
 
   }
 
-  getNextChessBoxColor = (columnIndex: number): ChessBoxColorEnum => {
-
-    if (columnIndex === 0) {
-      return this.chessBoxColor;
-    }
-    else {
-
-      this.chessBoxColor = (this.chessBoxColor === ChessBoxColorEnum.White ? ChessBoxColorEnum.Black : ChessBoxColorEnum.White);
-
-      return this.chessBoxColor;
-    }
-
-  };
-
   onChessBoxClicked = (rowIndex: number, columnIndex: number): void => {
     console.log("box clicked: " + rowIndex + "," + columnIndex);
   };
@@ -96,4 +92,46 @@ export class PlayGameComponent implements OnInit {
   amITheWinner = (): boolean => {
     return this.gameStatus.players[this.gameStatus.myPlayerIndex].isWinner;
   }
+
+  private buildChessBoard = (): void => {
+
+    this.chessBoard = [[], [], [], [], [], [], [], []];
+
+    let currentChessBoxColorId: ChessBoxColorEnum = ChessBoxColorEnum.White;
+
+    for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.CHESS_BOARD_ROWS; rowIndex++) {
+
+      for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.CHESS_BOARD_COLUMNS; columnIndex++) {
+
+        if (columnIndex !== 0) {
+          currentChessBoxColorId = (currentChessBoxColorId === ChessBoxColorEnum.White ? ChessBoxColorEnum.Black : ChessBoxColorEnum.White)
+        }
+
+        let chessBox = <IChessBox>{
+          colorId: currentChessBoxColorId,
+          figure: null
+        };
+
+        this.chessBoard[rowIndex][columnIndex] = chessBox;
+
+      }
+
+    }
+
+  };
+
+  private updateChessBoard = (): void => {
+
+    for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.CHESS_BOARD_ROWS; rowIndex++) {
+
+      for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.CHESS_BOARD_COLUMNS; columnIndex++) {
+
+        this.chessBoard[rowIndex][columnIndex].figure = this.getFigureInPosition(rowIndex, columnIndex);
+
+      }
+
+    }
+
+  };
+
 }

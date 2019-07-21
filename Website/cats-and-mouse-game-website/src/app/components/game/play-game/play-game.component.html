@@ -39,8 +39,7 @@
       <ng-container *ngFor="let rowIndex of [0,1,2,3,4,5,6,7]">
         <app-chess-box
                        *ngFor="let columnIndex of [0,1,2,3,4,5,6,7]"
-                       [figureTypeId]="getFigureInPosition(rowIndex,columnIndex)?.typeId" 
-                       [color]="getNextChessBoxColor(columnIndex)"
+                       [chessBox]="chessBoard[rowIndex][columnIndex]" 
                        (click)="onChessBoxClicked(rowIndex,columnIndex)">
         </app-chess-box>
       </ng-container>

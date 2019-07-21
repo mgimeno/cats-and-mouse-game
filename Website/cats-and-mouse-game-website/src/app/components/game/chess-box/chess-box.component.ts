@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FigureTypeEnum } from '../../../shared/enums/figure-type.enum';
 import { ChessBoxColorEnum } from '../../../shared/enums/chess-box-color.enum';
+import { IChessBox } from '../../../shared/interfaces/chess-box.interface';
 
 
 @Component({
@@ -10,13 +11,17 @@ import { ChessBoxColorEnum } from '../../../shared/enums/chess-box-color.enum';
 })
 export class ChessBoxComponent {
 
-  @Input() figureTypeId?: FigureTypeEnum = null;
-  @Input() color: ChessBoxColorEnum;
+  @Input() chessBox: IChessBox;
 
   figureTypeEnum = FigureTypeEnum;
   chessBoxColorEnum = ChessBoxColorEnum;
 
   constructor() {
     
+  }
+
+
+  ngOnInit() {
+    console.log(this.chessBox)
   }
 }

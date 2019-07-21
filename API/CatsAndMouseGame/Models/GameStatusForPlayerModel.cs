@@ -6,6 +6,5 @@ namespace CatsAndMouseGame.Models
     {
         public List<PlayerModel> Players { get; set; }
         public int MyPlayerIndex { get; set; }
-        public List<PlayerValidMove> MyValidMoves { get; set; }
     }
 }

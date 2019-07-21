@@ -1,8 +1,8 @@
-<div class="box" [ngClass]="{'white': color == chessBoxColorEnum.White, 'black': color == chessBoxColorEnum.Black }">
+<div class="box" [ngClass]="{'white': chessBox.colorId == chessBoxColorEnum.White, 'black': chessBox.colorId == chessBoxColorEnum.Black }">
 
-  <mat-icon *ngIf="figureTypeId === figureTypeEnum.Mouse" class="green">sentiment_very_satisfied</mat-icon>
-  <mat-icon *ngIf="figureTypeId === figureTypeEnum.Cat" class="red">sentiment_very_dissatisfied</mat-icon>
+  <mat-icon *ngIf="chessBox.figure?.typeId === figureTypeEnum.Mouse" class="green">sentiment_very_satisfied</mat-icon>
+  <mat-icon *ngIf="chessBox.figure?.typeId === figureTypeEnum.Cat" class="red">sentiment_very_dissatisfied</mat-icon>
   <!--todo fix this, if there is no item, it's blank-->
-  <span *ngIf="!figureTypeId">&nbsp;</span>
+  <span *ngIf="!chessBox.figure">&nbsp;</span>
 
 </div>
