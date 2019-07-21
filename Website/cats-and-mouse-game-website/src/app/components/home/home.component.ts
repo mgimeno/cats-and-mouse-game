@@ -29,9 +29,19 @@ export class HomeComponent implements OnInit {
     private signalrService: SignalrService,
     private notificationService: NotificationService) {
 
+    console.log("home constructor")
+
   }
 
   ngOnInit() {
+
+    console.log("home on init")
+
+    this.signalrService.sendMessage("SendGamesAwaitingForSecondPlayerToCallerAsync")
+      .catch((reason: any) => {
+        console.error(reason);
+      });
+
     this.signalrService.subscribeToMethod("messageToClient", (message: IMessageToClient) => {
 
       console.log("HomeComponent message", message);

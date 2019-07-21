@@ -23,8 +23,7 @@ namespace CatsAndMouseGame.Hubs
 
             _games.Add(newGame);
 
-            //todo this method has to return (not send with signalR, jus treturn) the newly created game.(Game List item)
-            SendGamesAwaitingForSecondPlayerToClientsAsync(_connections);
+            SendGamesAwaitingForSecondPlayerToAllClientsAsync();
 
             return BuildGameListItem(newGame);
         }
@@ -43,11 +42,16 @@ namespace CatsAndMouseGame.Hubs
                 throw new Exception("Game password is invalid");
             }
 
+            if (!game.IsWaitingForSecondPlayer())
+            {
+                throw new Exception("Game is in progress or over");
+            }
+
             game.SetSecondPlayer(model.UserName, Context.ConnectionId);
 
             game.Start();
 
-            SendGamesAwaitingForSecondPlayerToClientsAsync(_connections);
+            SendGamesAwaitingForSecondPlayerToAllClientsAsync();
 
             SendMessageToClientsAsync(game.GetPlayersConnections(), new GameStartMessage());
         }
@@ -56,11 +60,20 @@ namespace CatsAndMouseGame.Hubs
         {
             var game = GetInProgressGameByCurrentConnectionId();
 
+            if (game.IsGameOver()) {
+                throw new Exception("Game is over");
+            }
+
             var player = game.GetPlayerByConnectionId(Context.ConnectionId);
 
             if (player == null)
             {
                 throw new Exception("Player does not exist");
+            }
+
+            if (!player.IsTheirTurn)
+            {
+                throw new Exception("It's not your turn");
             }
 
             var figure = game.GetPlayerFigure(player, model.FigureId);
@@ -100,20 +113,8 @@ namespace CatsAndMouseGame.Hubs
             if (game != null)
             {
                 _games.Remove(game);
-                SendGamesAwaitingForSecondPlayerToClientsAsync(_connections);
+                SendGamesAwaitingForSecondPlayerToAllClientsAsync();
             }
-        }
-
-        public List<GameListItem> GetGamesAwaitingForSecondPlayer()
-        {
-            var result = new List<GameListItem>();
-
-            _games
-                .Where(g => g.IsWaitingForSecondPlayer())
-                .ToList()
-                .ForEach(g => result.Add(BuildGameListItem(g)));
-
-            return result;
         }
 
         public void GetGameStatusByConnectionId()
@@ -150,7 +151,7 @@ namespace CatsAndMouseGame.Hubs
                 _connections.Add(Context.ConnectionId);
             }
 
-            await SendGamesAwaitingForSecondPlayerToClientsAsync(new List<string>() { Context.ConnectionId });
+            SendGamesAwaitingForSecondPlayerToCallerAsync();
 
             await base.OnConnectedAsync();
         }
@@ -228,13 +229,36 @@ namespace CatsAndMouseGame.Hubs
             await Clients.Clients(connectionsIds).SendAsync("messageToClient", message);
         }
 
-        private async Task SendGamesAwaitingForSecondPlayerToClientsAsync(List<string> connectionsIds)
-        {
-
+        public void SendGamesAwaitingForSecondPlayerToCallerAsync() {
             var message = new GameListMessage();
             message.GameList = GetGamesAwaitingForSecondPlayer();
 
-            await SendMessageToClientsAsync(connectionsIds, message);
+            SendMessageToClientsAsync(new List<string> { Context.ConnectionId }, message);
+        }
+
+
+        private async Task SendGamesAwaitingForSecondPlayerToAllClientsAsync()
+        {
+            
+            var message = new GameListMessage();
+            message.GameList = GetGamesAwaitingForSecondPlayer();
+
+            await SendMessageToClientsAsync(_connections, message);
+        }
+
+        private List<GameListItem> GetGamesAwaitingForSecondPlayer()
+        {
+            var gamesAwaitingForSecondPlayer = new List<GameListItem>();
+
+            _games
+                .Where(g => g.IsWaitingForSecondPlayer())
+                .OrderByDescending( g=> g.DateCreated)
+                .ToList()
+                .ForEach(g => gamesAwaitingForSecondPlayer.Add(BuildGameListItem(g)));
+
+            return gamesAwaitingForSecondPlayer;
+
+
         }
 
         //todo rename GameListItem

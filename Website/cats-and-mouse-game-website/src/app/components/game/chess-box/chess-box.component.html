@@ -2,7 +2,7 @@
      [ngClass]="{
       'white': chessBox.colorId == chessBoxColorEnum.White,
       'black': chessBox.colorId == chessBoxColorEnum.Black,
-      'box-with-figure-can-be-selected' : !isThereAFigureSelected() && chessBox.canFigureBeSelected,
+      'box-with-figure-can-be-selected' : chessBox.canFigureBeSelected,
       'box-with-figure-is-selected' : chessBox.isFigureSelected,
       'box-can-be-new-figure-position': chessBox.canBeNewPositionForSelectedFigure
      }">

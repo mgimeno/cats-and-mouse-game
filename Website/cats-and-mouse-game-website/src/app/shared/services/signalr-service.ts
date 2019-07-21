@@ -9,7 +9,7 @@ export class SignalrService {
 
   private hubConnection: signalR.HubConnection;
 
-  private restartIntervalId: number = null;
+  private restartIntervalsIds: number[] = [];
 
   constructor() {
   }
@@ -37,45 +37,41 @@ export class SignalrService {
     });
   };
 
-  private start = () => {
+  private start = (): void => {
 
     if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
-      //Already connected.
-      if (this.restartIntervalId) {
-        clearInterval(this.restartIntervalId);
-        this.restartIntervalId = null;
-      }
+      this.restartIntervalsIds.forEach(i => clearInterval(i));
       return;
     }
-
-    this.hubConnection.start()
-      .then(() => {
-        this.restartIntervalId = null;
-      })
-      .catch(err => {
-        this.restart();
-      });
+    else {
+      this.hubConnection.start()
+        .then(() => {
+          this.restartIntervalsIds.forEach(i => clearInterval(i));
+        })
+        .catch(err => {
+          this.restart();
+        });
+    }
   };
 
-  private restart = () => {
-    this.restartIntervalId = window.setInterval(() => {
+  private restart = (): void => {
 
-      console.log(this.hubConnection.state);
+    const restartIntervalId = window.setInterval(() => {
+
+      console.log("interval run");
+
       if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
-        //Already connected.
-        if (this.restartIntervalId) {
-          clearInterval(this.restartIntervalId);
-          this.restartIntervalId = null;
-          
-        }
+        this.restartIntervalsIds.forEach(i => clearInterval(i));
       }
       else {
         console.log("Reconnecting...");
         this.start();
       }
 
+    }, 5000);
 
-    }, 5000)
+    this.restartIntervalsIds.push(restartIntervalId);
+
   };
 
   get connectionStatus(): signalR.HubConnectionState {
