@@ -5,6 +5,11 @@ import { MatDialogRef } from '@angular/material';
 import { TeamEnum } from 'src/app/shared/enums/team.enum';
 import { environment } from 'src/environments/environment';
 import { SignalrService } from '../../../shared/services/signalr-service';
+import { IGameListItem } from '../../../shared/interfaces/game-list-item.interface';
+import { IMessageToClient } from '../../../shared/interfaces/message-to-client.interface';
+import { MessageToClientTypeEnum } from '../../../shared/enums/message-to-client-type.enum';
+import { Router } from '@angular/router';
+import { IGameStartMessage } from '../../../shared/interfaces/game-start-message.interface';
 
 
 @Component({
@@ -17,12 +22,15 @@ export class CreateGameDialogComponent implements OnInit {
   isGameCreated: boolean = false;
   joinGameUrl: string = null;
   isJoinGameLinkCopiedToClipboard: boolean = false;
+  createdGame: IGameListItem = null;
 
   //todo refactor (come from constants)
   teams: ILabelValue[] = [{ label: TeamEnum[TeamEnum.Cats], value: TeamEnum.Cats }, { label: TeamEnum[TeamEnum.Mouse], value: TeamEnum.Mouse }];
 
-  constructor(public dialogRef: MatDialogRef<CreateGameDialogComponent>,
-    private signalrService: SignalrService) { }
+  constructor(
+    public dialogRef: MatDialogRef<CreateGameDialogComponent>,
+    private signalrService: SignalrService,
+    private router: Router) { }
 
   ngOnInit() {
     this.formGroup = new FormGroup({
@@ -37,28 +45,41 @@ export class CreateGameDialogComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.formGroup.value);
 
     const message = {
-      userName:  this.formGroup.controls.userName.value,
-      teamId:  this.formGroup.controls.teamId.value,
-      gamePassword:  this.formGroup.controls.gamePassword.value
+      userName: this.formGroup.controls.userName.value,
+      teamId: this.formGroup.controls.teamId.value,
+      gamePassword: this.formGroup.controls.gamePassword.value
     };
 
     this.signalrService.sendMessage("CreateGame", message)
-      .then(() => {
+      .then((game: IGameListItem) => {
+
         this.isGameCreated = true;
 
-        //todo get gameId
-        const gameId = "TestGameId";
+        this.createdGame = game;
 
-        this.joinGameUrl = `${environment.websiteUrl}?joinGame=${gameId}`;
+        this.joinGameUrl = `${environment.websiteUrl}?joinGame=${game.gameId}`;
 
-        console.log(this.joinGameUrl);
       })
       .catch((reason: any) => {
+        console.error(reason);
       });
 
+    this.signalrService.subscribeToMethod("messageToClient", (message: IMessageToClient) => {
+
+      console.log("AppComponent message", message);
+
+      if (message.typeId === MessageToClientTypeEnum.GameStart) {
+
+        console.log("game start");
+
+        this.router.navigate(['/play']);
+
+        this.dialogRef.close();
+
+      }
+    });
 
   }
 
@@ -71,7 +92,12 @@ export class CreateGameDialogComponent implements OnInit {
   }
 
   onCancelGame(): void {
-    //todo remove game 
+
+    this.signalrService.sendMessage("CancelGame", { gameId: this.createdGame.gameId })
+      .catch((reason: any) => {
+        console.error(reason);
+      });
+
     this.dialogRef.close();
   }
 }

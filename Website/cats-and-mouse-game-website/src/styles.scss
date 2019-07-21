@@ -26,12 +26,7 @@ h2 {
 }
 
 a {
-  color: #468df1;
   text-decoration: none;
-
-  &:hover {
-    color: $primaryColor !important;
-  }
 }
 
 .full-width {
@@ -67,10 +62,6 @@ a {
   cursor: pointer;
 }
 
-.small {
-  font-size: small;
-}
-
 .green {
   color: $successColor;
 }
@@ -83,10 +74,6 @@ a {
   background-color: $successColor;
 }
 
-
-.clickable {
-  cursor: pointer;
-}
 
 //Notification Service
 
@@ -114,4 +101,66 @@ a {
   &.info {
     background-color: $infoColor;
   }
+}
+
+
+//Chess board (needs to be global) //todo! I think I can move this back to the components.
+.wrapper {
+  border: 25px solid #462921;
+  margin: 0 auto;
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: 0.5fr repeat(8, 1fr) 0.5fr;
+  grid-auto-flow: row;
+}
+
+.wrapper-inner {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: repeat(8, auto);
+  grid-template-rows: auto;
+  grid-auto-flow: row;
+  align-items: strech;
+}
+
+.box {
+  /*padding: 20px;*/
+  height:100%;
+  text-align: center;
+
+  &.white {
+    background-color: #b5915f;
+  }
+
+  &.black {
+    background-color: #441a03;
+  }
+}
+
+.box-inner {
+  text-align: center;
+  align-self: center;
+  font-size: small;
+}
+
+.top,
+.bottom {
+  display: grid;
+  align-items: stretch;
+  background-color: #7d694c;
+}
+
+.top {
+  grid-column-start: 1;
+  grid-column-end: 9;
+  grid-row-start: 1;
+  grid-row-end: 1;
+}
+
+.bottom {
+  grid-column-start: 1;
+  grid-column-end: 9;
+  grid-row-start: 10;
+  grid-row-end: 10;
 }

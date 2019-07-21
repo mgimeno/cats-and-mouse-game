@@ -11,8 +11,8 @@ namespace CatsAndMouseGame.Models
 
             var mouse = new MouseModel
             {
-                Id = 1,
-                Position = new PositionModel
+                Id = 0,
+                Position = new FigurePositionModel
                 {
                     RowIndex = 7,
                     ColumnIndex = 4

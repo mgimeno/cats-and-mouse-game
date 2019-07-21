@@ -32,8 +32,10 @@ import { PlayGameComponent } from './components/game/play-game/play-game.compone
 import { CreateGameDialogComponent } from './components/game/create-game-dialog/create-game-dialog.component';
 import { JoinGameDialogComponent } from './components/game/join-game-dialog/join-game-dialog.component';
 import { HomeComponent } from './components/home/home.component';
-import { MatTableModule } from '@angular/material';
+import { MatTableModule, MatSnackBarModule, MatTooltipModule } from '@angular/material';
 import { SignalrService } from './shared/services/signalr-service';
+import { ChessBoxComponent } from './components/game/chess-box/chess-box.component';
+import { ChatComponent } from './components/game/chat/chat.component';
 
 
 @NgModule({
@@ -48,7 +50,10 @@ import { SignalrService } from './shared/services/signalr-service';
     JoinGameDialogComponent,
     PlayGameComponent,
 
-    HomeComponent
+    HomeComponent,
+
+    ChessBoxComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -71,6 +76,8 @@ import { SignalrService } from './shared/services/signalr-service';
     MatBottomSheetModule,
     MatDialogModule,
     MatTableModule,
+    MatSnackBarModule,
+    MatTooltipModule,
     ClipboardModule
   ],
   entryComponents: [

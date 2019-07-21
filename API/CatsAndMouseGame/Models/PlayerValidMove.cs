@@ -2,9 +2,9 @@
 
 namespace CatsAndMouseGame.Models
 {
-    public class PlayerValidMoves
+    public class PlayerValidMove
     {
         public int FigureId { get; set; }
-        public List<PositionModel> Positions { get; set; }
+        public List<FigurePositionModel> Positions { get; set; }
     }
 }

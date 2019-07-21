@@ -16,8 +16,7 @@ namespace CatsAndMouseGame.Hubs
         private static readonly List<GameModel> _games = new List<GameModel>();
         private static readonly List<string> _connections = new List<string>();
 
-
-        public void CreateGame(CreateGameModel model)
+        public GameListItem CreateGame(CreateGameModel model)
         {
             var newGame = new GameModel(model.GamePassword);
             newGame.SetFirstPlayer(model.TeamId, model.UserName, Context.ConnectionId);
@@ -26,43 +25,37 @@ namespace CatsAndMouseGame.Hubs
 
             //todo this method has to return (not send with signalR, jus treturn) the newly created game.(Game List item)
             SendGameListToClientsAsync(_connections);
+
+            return BuildGameListItem(newGame);
         }
 
-        public void JoinGame(string gameId, string userName, TeamEnum playerType, string gamePassword = null)
+        public void JoinGame(JoinGameModel model)
         {
-            var game = _games.Where(g => g.Id == gameId).FirstOrDefault();
+            var game = _games.Where(g => g.Id == model.GameId).FirstOrDefault();
 
             if (game == null)
             {
                 throw new Exception("Game does not exist");
             }
 
-            if (!string.IsNullOrWhiteSpace(game.Password) && (game.Password != gamePassword))
+            if (game.IsPasswordProtected() && (game.Password != model.GamePassword))
             {
                 throw new Exception("Game password is invalid");
             }
 
-            if (game.IsPlayerTypeAlreadyConnected(playerType))
-            {
-                throw new Exception("The other player has already chosen this player type");
-            }
-
-            game.SetSecondPlayer(userName, Context.ConnectionId);
+            game.SetSecondPlayer(model.UserName, Context.ConnectionId);
 
             game.Start();
 
-            //todo Send the start command to mouse and cats players (not all clients)
-            //todo send a command to all clients that this game is on.
+
+            SendGameListToClientsAsync(_connections);
+
+            SendMessageToClientsAsync(game.GetPlayersConnections(), new GameStartMessage());
         }
 
-        public void Move(string gameId, int figureId, int rowIndex, int columnIndex)
+        public void MoveFigure(MoveFigureModel model)
         {
-            var game = _games.Where(g => g.Id == gameId).FirstOrDefault();
-
-            if (game == null)
-            {
-                throw new Exception("Game does not exist");
-            }
+            var game = GetGameByCurrentConnectionId();
 
             var player = game.GetPlayerByConnectionId(Context.ConnectionId);
 
@@ -71,48 +64,86 @@ namespace CatsAndMouseGame.Hubs
                 throw new Exception("Player does not exist");
             }
 
-            var figure = game.GetPlayerFigure(player, figureId);
+            var figure = game.GetPlayerFigure(player, model.FigureId);
 
             if (figure == null)
             {
                 throw new Exception("Figure does not exist");
             }
 
-            if (!game.CanMove(player, figure, rowIndex, columnIndex))
+            if (!game.CanMove(player, figure, model.RowIndex, model.ColumnIndex))
             {
                 throw new Exception("This figure cannot be moved to that position");
             }
 
-            game.Move(figure, rowIndex, columnIndex);
-
-            //Send to mouse and cat (not all clients) that figure has moved.
+            game.Move(figure, model.RowIndex, model.ColumnIndex);
 
             if (game.IsGameOver())
             {
-                var winner = game.GetWinnerPlayer();
+                SendGameStatusToPlayers(game);
 
-                //send event to both cat and mouse (not all)
-                //todo send event to all clients, this game is over.
-
-                //remove game?
                 _games.Remove(game);
             }
             else
             {
-                NextTurn(game);
+                game.SetNextTurn();
+
+                SendGameStatusToPlayers(game);
             }
         }
 
+        public void CancelGame(GameIdModel model)
+        {
+            var game = _games
+                .Where(g => g.Id == model.GameId)
+                .Where(g => g.IsWaitingForSecondPlayerToStart())
+                .Where(g => g.GetPlayerByConnectionId(Context.ConnectionId) != null)
+                .FirstOrDefault();
 
-        private void NextTurn(GameModel game)
+            if (game != null)
+            {
+                _games.Remove(game);
+                SendGameListToClientsAsync(_connections);
+            }
+        }
+
+        public List<GameListItem> GetGameList()
+        {
+            var result = new List<GameListItem>();
+
+            _games
+                .Where(g => g.IsWaitingForSecondPlayerToStart())
+                .ToList()
+                .ForEach(g => result.Add(BuildGameListItem(g)));
+
+            return result;
+        }
+
+        public void GetGameStatusByConnectionId()
+        {
+            var game = GetGameByCurrentConnectionId();
+
+            var player = game.GetPlayerByConnectionId(Context.ConnectionId);
+
+            SendGameStatusToPlayer(player);
+        }
+
+        public void SendChatMessage(MessageModel model)
         {
 
-            game.SetNextTurn();
+            var game = GetGameByCurrentConnectionId();
 
-            var currentTurnPlayer = game.GetCurrentTurnPlayer();
-            var newTurnPlayerValidMoves = game.GetPlayerValidMoves(currentTurnPlayer);
+            var message = new ChatMessage
+            {
+                ChatLine = new ChatLineModel
+                {
+                    UserName = game.GetPlayerByConnectionId(Context.ConnectionId).Name,
+                    Message = model.Message
+                }
+            };
 
-            //send message so new player can move, send their available moves for each figure.
+            SendMessageToClientsAsync(game.GetPlayersConnections(), message);
+
         }
 
         public async override Task OnConnectedAsync()
@@ -141,6 +172,46 @@ namespace CatsAndMouseGame.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
+        private GameModel GetGameByCurrentConnectionId()
+        {
+            var game = _games
+                .Where(g => g.IsGameInProgress())
+                .Where(g => g.Players.Any(p => p.ConnectionId == Context.ConnectionId))
+                .FirstOrDefault();
+
+            if (game == null)
+            {
+                throw new Exception("Game does not exist");
+            }
+
+            return game;
+        }
+
+
+        private void SendGameStatusToPlayers(GameModel game)
+        {
+            foreach (var player in game.Players)
+            {
+                SendGameStatusToPlayer(player);
+            }
+
+        }
+
+        private void SendGameStatusToPlayer(PlayerModel player)
+        {
+            var gameStatus = GetGameStatusForPlayer(player);
+            var connectionsIds = new List<string> { player.ConnectionId };
+
+            var message = new GameStatusMessage
+            {
+                GameStatus = gameStatus
+            };
+
+            SendMessageToClientsAsync(connectionsIds, message);
+        }
+
+
+
         private async Task SendMessageToClientsAsync(List<string> connectionsIds, IMessageToClient message)
         {
             await Clients.Clients(connectionsIds).SendAsync("messageToClient", message);
@@ -149,25 +220,37 @@ namespace CatsAndMouseGame.Hubs
         private async Task SendGameListToClientsAsync(List<string> connectionsIds)
         {
 
-            var message = new UpdateGameList();
-
-            _games
-                .Where(g => g.IsWaitingForSecondPlayerToStart())
-                .ToList()
-                .ForEach(g =>
-                {
-                    message.GameList.Add(new GameListItem
-                    {
-                        GameId = g.Id,
-                        UserName = g.Players[0].Name,
-                        TeamId = g.Players[0].TeamId,
-                        IsPasswordProtected = g.IsPasswordProtected()
-                    });
-                });
+            var message = new GameListMessage();
+            message.GameList = GetGameList();
 
             await SendMessageToClientsAsync(connectionsIds, message);
         }
 
+        //todo rename GameListItem
+        //todo rename BuildGameListItem (this is a game that hasn't started) call it like this.
+        private GameListItem BuildGameListItem(GameModel game)
+        {
+            return new GameListItem
+            {
+                GameId = game.Id,
+                UserName = game.Players[0].Name,
+                TeamId = game.Players[0].TeamId,
+                IsPasswordProtected = game.IsPasswordProtected()
+            };
+        }
+
+        private GameStatusForPlayerModel GetGameStatusForPlayer(PlayerModel player)
+        {
+            var game = GetGameByCurrentConnectionId();
+
+            return new GameStatusForPlayerModel
+            {
+                Players = game.Players,
+                MyPlayerIndex = game.Players.IndexOf(player),
+                MyValidMoves = game.GetPlayerValidMoves(player)
+            };
+
+        }
 
     }
 }

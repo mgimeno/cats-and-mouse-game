@@ -1,6 +1,6 @@
 ﻿namespace CatsAndMouseGame.Models
 {
-    public class PositionModel
+    public class FigurePositionModel
     {
         public int RowIndex { get; set; }
         public int ColumnIndex { get; set; }

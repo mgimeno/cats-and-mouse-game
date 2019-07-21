@@ -25,14 +25,14 @@ namespace CatsAndMouseGame.Models
             this.DateCreated = DateTime.UtcNow;
         }
 
-        public void SetFirstPlayer(TeamEnum playerType, string userName, string connectionId)
+        public void SetFirstPlayer(TeamEnum teamId, string userName, string connectionId)
         {
-            SetPlayer(playerType, userName, connectionId);
+            SetPlayer(teamId, userName, connectionId);
         }
 
         public void SetSecondPlayer(string userName, string connectionId)
         {
-            if (!IsPlayerTypeAlreadyConnected(TeamEnum.Cats))
+            if (!IsTeamAlreadyConnected(TeamEnum.Cats))
             {
                 SetPlayer(TeamEnum.Cats, userName, connectionId);
             }
@@ -42,14 +42,14 @@ namespace CatsAndMouseGame.Models
             }
         }
 
-        public bool IsPlayerTypeAlreadyConnected(TeamEnum playerType)
+        public bool IsTeamAlreadyConnected(TeamEnum teamId)
         {
-            return this.Players.Any(p => p.TeamId == playerType);
+            return this.Players.Any(p => p.TeamId == teamId);
         }
 
         public void Start()
         {
-            var mousePlayer = GetPlayerByType(TeamEnum.Mouse);
+            var mousePlayer = GetPlayerByTeam(TeamEnum.Mouse);
 
             mousePlayer.IsTheirTurn = true;
             this.DateStarted = DateTime.UtcNow;
@@ -70,9 +70,13 @@ namespace CatsAndMouseGame.Models
             return player.Figures.Where(c => c.Id == figureId).FirstOrDefault();
         }
 
-        public List<PlayerValidMoves> GetPlayerValidMoves(PlayerModel player)
+        public List<string> GetPlayersConnections() {
+            return this.Players.Select(p => p.ConnectionId).ToList();
+        }
+
+        public List<PlayerValidMove> GetPlayerValidMoves(PlayerModel player)
         {
-            var result = new List<PlayerValidMoves>();
+            var result = new List<PlayerValidMove>();
 
             //todo use IsPositionCurrentlyTaken()
             //todo check newPosition is not out of the array
@@ -106,7 +110,7 @@ namespace CatsAndMouseGame.Models
         {
             figure.ChangePosition(rowIndex, columnIndex);
 
-            SetWinnerIfAny();
+            CheckForGameOver();
         }
 
         public bool IsGameOver()
@@ -133,15 +137,20 @@ namespace CatsAndMouseGame.Models
             return this.DateStarted == null && this.Players.Count == 1;
         }
 
+        public bool IsGameInProgress()
+        {
+            return !IsWaitingForSecondPlayerToStart() && !IsGameOver();
+        }
+
         public bool IsPasswordProtected() {
             return !string.IsNullOrWhiteSpace(this.Password);
         }
 
-        private void SetWinnerIfAny()
+        private void CheckForGameOver()
         {
 
-            var mousePlayer = GetPlayerByType(TeamEnum.Mouse) as MousePlayerModel;
-            var catsPlayer = GetPlayerByType(TeamEnum.Cats) as CatsPlayerModel;
+            var mousePlayer = GetPlayerByTeam(TeamEnum.Mouse) as MousePlayerModel;
+            var catsPlayer = GetPlayerByTeam(TeamEnum.Cats) as CatsPlayerModel;
             //todo, I don't link figures[0] maybe create a method getMouse() ?
             if (mousePlayer.Figures[0].Position.RowIndex == 0)
             {
@@ -149,7 +158,6 @@ namespace CatsAndMouseGame.Models
             }
             else
             {
-
                 var nextTurnPlayer = (mousePlayer.IsTheirTurn ? catsPlayer as PlayerModel : mousePlayer as PlayerModel);
 
                 var canNextTurnPlayerMoveAnyFigure = GetPlayerValidMoves(nextTurnPlayer).Any();
@@ -163,19 +171,20 @@ namespace CatsAndMouseGame.Models
 
             if (IsGameOver())
             {
+                Players.ForEach(p => p.IsTheirTurn = false);
                 this.DateFinished = DateTime.UtcNow;
             }
         }
 
-        private PlayerModel GetPlayerByType(TeamEnum playerType)
+        private PlayerModel GetPlayerByTeam(TeamEnum teamId)
         {
-            return this.Players.Where(p => p.TeamId == playerType).FirstOrDefault();
+            return this.Players.Where(p => p.TeamId == teamId).FirstOrDefault();
         }
 
-        private void SetPlayer(TeamEnum playerType, string userName, string connectionId)
+        private void SetPlayer(TeamEnum teamId, string userName, string connectionId)
         {
             PlayerModel player;
-            if (playerType == TeamEnum.Cats)
+            if (teamId == TeamEnum.Cats)
             {
                 player = new CatsPlayerModel();
             }

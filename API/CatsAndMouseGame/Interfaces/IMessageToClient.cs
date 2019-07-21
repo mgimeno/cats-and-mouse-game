@@ -7,6 +7,6 @@ namespace CatsAndMouseGame.Hubs
 {
     public interface IMessageToClient
     {
-        MessageToClientTypeEnum Type { get; set; }
+        MessageToClientTypeEnum TypeId { get; }
     }
 }

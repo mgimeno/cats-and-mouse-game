@@ -6,6 +6,10 @@ import { CreateGameDialogComponent } from '../game/create-game-dialog/create-gam
 import { JoinGameDialogComponent } from '../game/join-game-dialog/join-game-dialog.component';
 import { ActivatedRoute } from '@angular/router';
 import { SignalrService } from '../../shared/services/signalr-service';
+import { IMessageToClient } from '../../shared/interfaces/message-to-client.interface';
+import { MessageToClientTypeEnum } from '../../shared/enums/message-to-client-type.enum';
+import { IGameListMessage } from '../../shared/interfaces/game-list-message.interface';
+import { NotificationService } from '../../shared/services/notification.service';
 
 
 @Component({
@@ -19,11 +23,31 @@ export class HomeComponent implements OnInit {
 
   games: IGameListItem[] = [];
 
-  constructor(private dialog: MatDialog, private route: ActivatedRoute) { }
+  constructor(
+    private dialog: MatDialog,
+    private route: ActivatedRoute,
+    private signalrService: SignalrService,
+    private notificationService: NotificationService) {
+
+  }
 
   ngOnInit() {
+    this.signalrService.subscribeToMethod("messageToClient", (message: IMessageToClient) => {
 
-    //todo do this after the games have been retrieved
+      console.log("HomeComponent message", message);
+
+      if (message.typeId === MessageToClientTypeEnum.GameList) {
+
+        console.log("list of games received", (<IGameListMessage>message).gameList);
+        this.games = (<IGameListMessage>message).gameList;
+
+        this.openJoinGameDialogIfGameInUrl();
+      }
+    });
+  }
+
+  openJoinGameDialogIfGameInUrl = (): void => {
+
     const gameIdFromUrl: string = (this.route.snapshot.queryParams["joinGame"] || null);
     if (gameIdFromUrl) {
       this.openJoinGameDialog(gameIdFromUrl);
@@ -31,30 +55,17 @@ export class HomeComponent implements OnInit {
   }
 
   openCreateGameDialog(): void {
-    let dialogRef = this.dialog.open(CreateGameDialogComponent, { maxWidth: '310px' });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        //todo create game
-      }
-    });
+    this.dialog.open(CreateGameDialogComponent);
   }
 
   openJoinGameDialog(gameId: string): void {
     const game = this.games.find(g => g.gameId == gameId);
 
     if (!game) {
-      alert("Game does not exist");
-      //todo info dialog -> game does not exist
+      this.notificationService.showError("Game does not exist");
     }
     else {
-      let dialogRef = this.dialog.open(JoinGameDialogComponent, { data: game, maxWidth: '310px' });
-
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          //todo join game
-        }
-      });
+      this.dialog.open(JoinGameDialogComponent, { data: game });
     }
 
   }

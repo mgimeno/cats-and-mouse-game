@@ -1,0 +1,12 @@
+import { TeamEnum } from '../enums/team.enum';
+import { IFigure } from './figure.interface';
+
+export interface IPlayer {
+  //todo connectionId is coming back although I don't map it
+
+  name: string;
+  isTheirTurn: boolean;
+  teamId: TeamEnum;
+  isWinner: boolean;
+  figures: IFigure[];
+}

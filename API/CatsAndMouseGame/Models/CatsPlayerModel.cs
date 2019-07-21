@@ -11,7 +11,7 @@ namespace CatsAndMouseGame.Models
             var cat1 = new CatModel
             {
                 Id = 1,
-                Position = new PositionModel
+                Position = new FigurePositionModel
                 {
                     RowIndex = 0,
                     ColumnIndex = 1
@@ -22,7 +22,7 @@ namespace CatsAndMouseGame.Models
             var cat2 = new CatModel
             {
                 Id = 2,
-                Position = new PositionModel
+                Position = new FigurePositionModel
                 {
                     RowIndex = 0,
                     ColumnIndex = 3
@@ -33,7 +33,7 @@ namespace CatsAndMouseGame.Models
             var cat3 = new CatModel
             {
                 Id = 3,
-                Position = new PositionModel
+                Position = new FigurePositionModel
                 {
                     RowIndex = 0,
                     ColumnIndex = 5
@@ -44,7 +44,7 @@ namespace CatsAndMouseGame.Models
             var cat4 = new CatModel
             {
                 Id = 4,
-                Position = new PositionModel
+                Position = new FigurePositionModel
                 {
                     RowIndex = 0,
                     ColumnIndex = 7

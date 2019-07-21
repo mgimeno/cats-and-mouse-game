@@ -1,0 +1,20 @@
+
+<div class="chat-history">
+
+  <div class="chat-line" *ngFor="let chatLine of chatLines">
+    <span class="small">{{chatLine.userName}}</span>
+    <br />
+    {{chatLine.message}}
+  </div>
+
+</div>
+
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="false">
+  <mat-form-field [formGroup]=formGroup>
+    <input type="text" matInput placeholder="Send a message..." formControlName="message">
+  </mat-form-field>
+
+  <button type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary" cdkFocusInitial>
+    Send
+  </button>
+</form>

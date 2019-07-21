@@ -8,8 +8,14 @@ import { SignalrService } from './shared/services/signalr-service';
 })
 export class AppComponent {
 
-  constructor(private signalrService: SignalrService) {
+  constructor(
+    private signalrService: SignalrService) {
+
     this.signalrService.startConnection();
+  }
+
+  get connectionStatus(): signalR.HubConnectionState {
+    return this.signalrService.connectionStatus;
   }
 
 }

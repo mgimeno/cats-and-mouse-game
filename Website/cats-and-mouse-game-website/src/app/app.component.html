@@ -5,6 +5,10 @@
       <mat-icon>menu</mat-icon>
     </button>
     <a class="title" [routerLink]="['/']">Cats & Mouse Game</a>
+
+    <mat-icon *ngIf="connectionStatus === 1" matTooltip="Connected" class="green">sentiment_very_satisfied</mat-icon>
+    <mat-icon *ngIf="connectionStatus === 0" matTooltip="Disconnected" class="red">sentiment_very_dissatisfied</mat-icon>
+
   </mat-toolbar>
 
   <mat-sidenav-container class="sidenav-container">
@@ -19,6 +23,7 @@
     <mat-sidenav-content>
 
       <router-outlet></router-outlet>
+      
 
     </mat-sidenav-content>
 
