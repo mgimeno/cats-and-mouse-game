@@ -81,76 +81,45 @@ export class PlayGameComponent implements OnInit {
 
   }
 
+ 
+
   onChessBoxClicked = (rowIndex: number, columnIndex: number): void => {
-    console.log("app-chess-box clicked: " + rowIndex + "," + columnIndex);
 
     if (!this.isMyTurn()) {
       return;
     }
 
-    let chessBox = this.chessBoard[rowIndex][columnIndex];
+    let clickedChessBox = this.chessBoard[rowIndex][columnIndex];
 
+    const canMoveCurrentlySelectedFigureToThisPosition = this.chessBoxCurrentlySelected && this.chessBoxCurrentlySelected.figure.canMoveToPositions.some(p => p.rowIndex === rowIndex && p.columnIndex === columnIndex);
 
-    const canMoveCurrentlySelectedToNewPosition = this.chessBoxCurrentlySelected && this.chessBoxCurrentlySelected.figure.canMoveToPositions.some(p => p.rowIndex === rowIndex && p.columnIndex === columnIndex);
+    if (canMoveCurrentlySelectedFigureToThisPosition) {
 
-
-    if (canMoveCurrentlySelectedToNewPosition) {
-
-      //move figure.
-      const message = {
-        figureId: this.chessBoxCurrentlySelected.figure.id,
-        rowIndex: rowIndex,
-        columnIndex: columnIndex
-      };
-
-      this.signalrService.sendMessage("Move", message)
-        .catch((reason: any) => {
-          console.error(reason);
-        });
+      this.moveCurrentlySelectedFigure(rowIndex, columnIndex);
 
     }
     else {
 
-      if (chessBox.canFigureBeSelected) {
+      if (clickedChessBox.canFigureBeSelected && this.getNumberOfMyFiguresThatICanMove() > 1) {
+        //Select/Deselect a figure
 
+        this.deselectCurrentlySelectedChessBox();
 
-        //remove ALL highlight possible moves
-        for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.CHESS_BOARD_ROWS; rowIndex++) {
-
-          for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.CHESS_BOARD_COLUMNS; columnIndex++) {
-
-            this.chessBoard[rowIndex][columnIndex].canBeNewPositionForSelectedFigure = false;
-
-          }
-
+        if (clickedChessBox.isFigureSelected) {
+          clickedChessBox.isFigureSelected = false;
+        }
+        else {
+          this.selectChessBox(clickedChessBox);
         }
 
-        if (this.chessBoxCurrentlySelected) {
-          this.chessBoard[this.chessBoxCurrentlySelected.figure.position.rowIndex][this.chessBoxCurrentlySelected.figure.position.columnIndex].isFigureSelected = false;
-
-          this.chessBoxCurrentlySelected = null;
-        }
-
-
-        chessBox.isFigureSelected = !chessBox.isFigureSelected;
-
-        if (chessBox.isFigureSelected) {
-          this.chessBoxCurrentlySelected = chessBox;
-
-          //highlight possible moves
-          this.chessBoxCurrentlySelected.figure.canMoveToPositions.forEach(p => {
-
-            this.chessBoard[p.rowIndex][p.columnIndex].canBeNewPositionForSelectedFigure = true;
-
-          });
-
-        }
 
       }
 
     }
 
   };
+
+  
 
 
   isGameOver = (): boolean => {
@@ -182,7 +151,7 @@ export class PlayGameComponent implements OnInit {
         let chessBox = <IChessBox>{
           colorId: currentChessBoxColorId,
           figure: null,
-          //Todo these should be in the figure property
+          //Todo these should be in the figure property ?
           isFigureSelected: false,
           canFigureBeSelected: false,
           canBeNewPositionForSelectedFigure: false
@@ -213,10 +182,77 @@ export class PlayGameComponent implements OnInit {
 
     }
 
+
+    if (this.isMyTurn() && this.getNumberOfMyFiguresThatICanMove() === 1) {
+      this.preSelectTheOnlyChessBoxThatICanSelect();
+    }
+
+  };
+
+  private preSelectTheOnlyChessBoxThatICanSelect = (): void => {
+
+    const onlyFigureThatICanMove = this.gameStatus.players[this.gameStatus.myPlayerIndex].figures.find(f => f.canMoveToPositions.length > 0);
+    let chessBox = this.chessBoard[onlyFigureThatICanMove.position.rowIndex][onlyFigureThatICanMove.position.columnIndex];
+
+    this.selectChessBox(chessBox);
+  };
+
+  private selectChessBox = (chessBox: IChessBox): void => {
+    
+    chessBox.isFigureSelected = true;
+
+    this.chessBoxCurrentlySelected = chessBox;
+
+    //highlight possible moves
+    this.chessBoxCurrentlySelected.figure.canMoveToPositions.forEach(p => {
+
+      this.chessBoard[p.rowIndex][p.columnIndex].canBeNewPositionForSelectedFigure = true;
+
+    });
+  };
+
+  private getNumberOfMyFiguresThatICanMove = (): number => {
+    return this.gameStatus.players[this.gameStatus.myPlayerIndex].figures.filter(f => f.canMoveToPositions.length > 0).length;
   };
 
   private isMyFigure = (figureId: number): boolean => {
     return this.gameStatus.players[this.gameStatus.myPlayerIndex].figures.some(f => f.id === figureId);
   }
+
+  private deselectCurrentlySelectedChessBox = (): void => {
+
+    if (this.chessBoxCurrentlySelected) {
+      this.chessBoard[this.chessBoxCurrentlySelected.figure.position.rowIndex][this.chessBoxCurrentlySelected.figure.position.columnIndex].isFigureSelected = false;
+
+      this.chessBoxCurrentlySelected = null;
+
+      //remove all highlighted chessboxes possible moves
+      for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.CHESS_BOARD_ROWS; rowIndex++) {
+
+        for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.CHESS_BOARD_COLUMNS; columnIndex++) {
+
+          this.chessBoard[rowIndex][columnIndex].canBeNewPositionForSelectedFigure = false;
+
+        }
+
+      }
+
+    }
+
+  };
+
+  private moveCurrentlySelectedFigure = (rowIndex: number, columnIndex: number): void => {
+
+    const message = {
+      figureId: this.chessBoxCurrentlySelected.figure.id,
+      rowIndex: rowIndex,
+      columnIndex: columnIndex
+    };
+
+    this.signalrService.sendMessage("Move", message)
+      .catch((reason: any) => {
+        console.error(reason);
+      });
+  };
 
 }
