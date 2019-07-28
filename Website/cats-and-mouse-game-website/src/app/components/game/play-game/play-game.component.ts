@@ -119,8 +119,6 @@ export class PlayGameComponent implements OnInit {
 
   };
 
-  
-
 
   isGameOver = (): boolean => {
     return this.gameStatus.players.some(p => p.isWinner);
