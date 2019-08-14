@@ -2,12 +2,15 @@
 
   <mat-toolbar color="primary">
     <button mat-icon-button (click)="snav.toggle()">
-      <mat-icon>menu</mat-icon>
+      <!--<mat-icon>menu</mat-icon>-->
+      <i class="fas fa-bars"></i>
     </button>
     <a class="title" [routerLink]="['/']">Cats & Mouse Game</a>
 
-    <mat-icon *ngIf="connectionStatus === 1" matTooltip="Connected" class="green">sentiment_very_satisfied</mat-icon>
-    <mat-icon *ngIf="connectionStatus === 0" matTooltip="Disconnected" class="red">sentiment_very_dissatisfied</mat-icon>
+    <!--<mat-icon *ngIf="connectionStatus === 1" matTooltip="Connected" class="green">sentiment_very_satisfied</mat-icon>
+    <mat-icon *ngIf="connectionStatus === 0" matTooltip="Disconnected" class="red">sentiment_very_dissatisfied</mat-icon>-->
+    <i *ngIf="connectionStatus === 1" matTooltip="Connected" class="far fa-smile-beam green"></i>
+    <i *ngIf="connectionStatus === 0" matTooltip="Disconnected" class="far fa-frown red"></i>
 
   </mat-toolbar>
 

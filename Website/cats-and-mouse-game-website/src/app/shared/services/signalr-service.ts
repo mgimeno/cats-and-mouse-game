@@ -37,6 +37,10 @@ export class SignalrService {
     });
   };
 
+  unsubscribeToMethod = (methodName: string) => {
+    this.hubConnection.off(methodName);
+  };
+
   private start = (): void => {
 
     if (this.hubConnection.state === signalR.HubConnectionState.Connected) {

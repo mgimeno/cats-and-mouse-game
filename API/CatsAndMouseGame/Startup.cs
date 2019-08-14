@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using CatsAndMouseGame.Hubs;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace CatsAndMouseGame
 {
@@ -19,6 +20,13 @@ namespace CatsAndMouseGame
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
@@ -26,7 +34,7 @@ namespace CatsAndMouseGame
                    {
                        builder.AllowAnyMethod()
                                 .AllowAnyHeader()
-                              .WithOrigins("http://localhost:4200") //TODO FROM APP SETTINGS
+                                .WithOrigins(Configuration.GetSection("WebsiteUrl").Value)
                               .AllowCredentials();
                    });
 
@@ -45,6 +53,8 @@ namespace CatsAndMouseGame
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseForwardedHeaders();
 
             //app.UseWebSockets();
 

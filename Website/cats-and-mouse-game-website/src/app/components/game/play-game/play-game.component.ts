@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SignalrService } from '../../../shared/services/signalr-service';
 import { IMessageToClient } from '../../../shared/interfaces/message-to-client.interface';
 import { MessageToClientTypeEnum } from '../../../shared/enums/message-to-client-type.enum';
@@ -14,39 +14,41 @@ import { COMMON_CONSTANTS } from '../../../shared/constants/common';
   templateUrl: './play-game.component.html',
   styleUrls: ['./play-game.component.scss']
 })
-export class PlayGameComponent implements OnInit {
+export class PlayGameComponent implements OnInit, OnDestroy {
 
   private chessBoard: [IChessBox[], [], [], [], [], [], [], []] = null;
   private chessBoxCurrentlySelected: IChessBox = null;
 
-  private gameStatus: IGameStatus = null;
+  gameStatus: IGameStatus = null;
 
 
   constructor(private signalrService: SignalrService) {
+    console.log("play game constructor");
+    console.log(this.chessBoard);
+    console.log(this.chessBoxCurrentlySelected);
+    console.log(this.gameStatus);
+
     this.buildChessBoard();
   }
 
   ngOnInit() {
-    this.signalrService.sendMessage("GetGameStatusByConnectionId")
+    console.log("play game on init");
+
+    this.signalrService.sendMessage("SendInProgressGameStatusByConnectionId")
       .catch((reason: any) => {
         console.error(reason);
       });
 
 
-    this.signalrService.subscribeToMethod("messageToClient", (message: IMessageToClient) => {
+    this.signalrService.subscribeToMethod("GameStatus", (message: IGameStatusMessage) => {
 
-      if (message.typeId === MessageToClientTypeEnum.GameStatus) {
+      this.gameStatus = message.gameStatus;
+      console.log(message.gameStatus);
 
-        const gameStatusMessage: IGameStatusMessage = message as IGameStatusMessage;
+      this.chessBoxCurrentlySelected = null;
 
-        this.gameStatus = gameStatusMessage.gameStatus;
+      this.updateChessBoard();
 
-        this.chessBoxCurrentlySelected = null;
-
-        this.updateChessBoard();
-
-
-      }
     });
   }
 
@@ -81,7 +83,7 @@ export class PlayGameComponent implements OnInit {
 
   }
 
- 
+
 
   onChessBoxClicked = (rowIndex: number, columnIndex: number): void => {
 
@@ -196,7 +198,7 @@ export class PlayGameComponent implements OnInit {
   };
 
   private selectChessBox = (chessBox: IChessBox): void => {
-    
+
     chessBox.isFigureSelected = true;
 
     this.chessBoxCurrentlySelected = chessBox;
@@ -252,5 +254,15 @@ export class PlayGameComponent implements OnInit {
         console.error(reason);
       });
   };
+
+  ngOnDestroy(): void {
+    console.log("Destroy play game");
+    this.signalrService.unsubscribeToMethod("GameStatus");
+
+    //this.signalrService.sendMessage("PlayerLeft", message)
+    //  .catch((reason: any) => {
+    //    console.error(reason);
+    //  });
+  }
 
 }

@@ -1,20 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { IChatLine } from '../../../shared/interfaces/chat-line.interface';
 import { SignalrService } from '../../../shared/services/signalr-service';
-import { IMessageToClient } from '../../../shared/interfaces/message-to-client.interface';
-import { MessageToClientTypeEnum } from '../../../shared/enums/message-to-client-type.enum';
 import { IChatMessage } from '../../../shared/interfaces/chat-message.interface';
+import { TeamEnum } from '../../../shared/enums/team.enum';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
 
   formGroup: FormGroup = null;
   chatLines: IChatLine[] = [];
+
+  teamEnum = TeamEnum;
 
   constructor(private signalrService: SignalrService) {
 
@@ -25,14 +26,8 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.signalrService.subscribeToMethod("messageToClient", (message: IMessageToClient) => {
-
-      if (message.typeId === MessageToClientTypeEnum.ChatMessage) {
-
-        const chatMessage: IChatMessage = message as IChatMessage;
-
-        this.chatLines.push(chatMessage.chatLine);
-      }
+    this.signalrService.subscribeToMethod("ChatMessage", (message: IChatMessage) => {
+        this.chatLines.push(message.chatLine);
     });
   }
 
@@ -50,5 +45,10 @@ export class ChatComponent implements OnInit {
         console.error(reason);
       });
 
+  }
+
+  ngOnDestroy(): void {
+    console.log("Destroy chat");
+    this.signalrService.unsubscribeToMethod("ChatMessage");
   }
 }

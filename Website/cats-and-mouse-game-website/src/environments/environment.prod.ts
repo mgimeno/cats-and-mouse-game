@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   name: "production",
-  apiUrl: "http://localhost:5000/api/",
-  apiGameHubUrl: "http://localhost:5000/gameHub",
-  websiteUrl: "http://localhost:4200/"
+  apiUrl: "http://catsandmouseapi.compuglobalhypermeganet.ltd/api/",
+  apiGameHubUrl: "http://catsandmouseapi.compuglobalhypermeganet.ltd/gameHub",
+  websiteUrl: "http://catsandmouse.compuglobalhypermeganet.ltd/"
 };

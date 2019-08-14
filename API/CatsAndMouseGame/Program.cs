@@ -14,12 +14,12 @@ namespace CatsAndMouseGame
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+            .UseUrls("http://127.0.0.1:51000")
                 .UseStartup<Startup>().ConfigureAppConfiguration((builderContext, config) =>
                 {
                     IHostingEnvironment env = builderContext.HostingEnvironment;
 
                     config.SetBasePath(Directory.GetCurrentDirectory());
-                    //config.AddJsonFile("hosting.json", optional: true);
                     config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
                     config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 

@@ -1,4 +1,22 @@
-.chat-history {
-  max-height: 200px;
-  overflow-y: scroll;
+.chat {
+  margin-top: 25px;
+
+  .chat-history {
+    max-height: 200px;
+    overflow-y: scroll;
+
+    .chat-line {
+      margin-bottom: 10px;
+    }
+
+    .brown {
+      color: saddlebrown;
+    }
+  }
+
+  .chat-form {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+  }
 }

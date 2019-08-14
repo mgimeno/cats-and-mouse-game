@@ -1,20 +1,19 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ILabelValue } from 'src/app/shared/interfaces/label-value.interface';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { IGameListItem } from 'src/app/shared/interfaces/game-list-item.interface';
 import { TeamEnum } from 'src/app/shared/enums/team.enum';
 import { SignalrService } from '../../../shared/services/signalr-service';
-import { MessageToClientTypeEnum } from '../../../shared/enums/message-to-client-type.enum';
-import { IMessageToClient } from '../../../shared/interfaces/message-to-client.interface';
 import { Router } from '@angular/router';
+import { IGameStartMessage } from '../../../shared/interfaces/game-start-message.interface';
 
 
 @Component({
   templateUrl: './join-game-dialog.component.html',
   styleUrls: ['./join-game-dialog.component.scss']
 })
-export class JoinGameDialogComponent implements OnInit{
+export class JoinGameDialogComponent implements OnInit, OnDestroy {
 
   formGroup: FormGroup = null;
 
@@ -32,19 +31,18 @@ export class JoinGameDialogComponent implements OnInit{
 
   ngOnInit() {
 
-    this.signalrService.subscribeToMethod("messageToClient", (message: IMessageToClient) => {
+    this.signalrService.subscribeToMethod("GameStart", (message: IGameStartMessage) => {
 
       console.log("AppComponent message", message);
 
-      if (message.typeId === MessageToClientTypeEnum.GameStart) {
+      console.log("game start");
 
-        console.log("game start");
+      this.router.navigate(['/play']);
 
-        this.router.navigate(['/play']);
+      this.dialogRef.close();
 
-        this.dialogRef.close();
 
-      }
+
     });
 
     console.log(this.data);
@@ -88,4 +86,10 @@ export class JoinGameDialogComponent implements OnInit{
   onCancel(): void {
     this.dialogRef.close();
   }
+
+  ngOnDestroy(): void {
+    console.log("Destroy join game");
+    this.signalrService.unsubscribeToMethod("GameStart");
+  }
+
 }

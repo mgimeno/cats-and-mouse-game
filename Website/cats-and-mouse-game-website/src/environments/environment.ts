@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   name: "dev",
-  apiUrl: "http://localhost:5000/api/",
-  apiGameHubUrl: "http://localhost:5000/gameHub",
+  apiUrl: "http://localhost:51000/api/",
+  apiGameHubUrl: "http://localhost:51000/gameHub",
   websiteUrl: "http://localhost:4200/"
 };
 

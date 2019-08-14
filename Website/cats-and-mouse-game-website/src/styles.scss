@@ -70,10 +70,21 @@ a {
   color: $errorColor;
 }
 
+.black {
+  color: black;
+}
+
+.white{
+  color: white;
+}
+
 .bg-green {
   background-color: $successColor;
 }
 
+.wrapper{
+  padding: 0 35px;
+}
 
 //Notification Service
 
@@ -105,7 +116,7 @@ a {
 
 
 //Chess board (needs to be global) //todo! I think I can move this back to the components.
-.wrapper {
+.game-board {
   border: 25px solid #462921;
   margin: 0 auto;
   display: grid;
@@ -115,7 +126,7 @@ a {
   grid-auto-flow: row;
 }
 
-.wrapper-inner {
+.game-board-wrapper-inner {
   display: grid;
   grid-gap: 0;
   grid-template-columns: repeat(8, auto);

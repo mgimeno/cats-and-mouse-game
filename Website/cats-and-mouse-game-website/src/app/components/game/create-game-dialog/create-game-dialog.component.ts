@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ILabelValue } from 'src/app/shared/interfaces/label-value.interface';
 import { MatDialogRef } from '@angular/material';
@@ -6,8 +6,6 @@ import { TeamEnum } from 'src/app/shared/enums/team.enum';
 import { environment } from 'src/environments/environment';
 import { SignalrService } from '../../../shared/services/signalr-service';
 import { IGameListItem } from '../../../shared/interfaces/game-list-item.interface';
-import { IMessageToClient } from '../../../shared/interfaces/message-to-client.interface';
-import { MessageToClientTypeEnum } from '../../../shared/enums/message-to-client-type.enum';
 import { Router } from '@angular/router';
 import { IGameStartMessage } from '../../../shared/interfaces/game-start-message.interface';
 
@@ -16,7 +14,7 @@ import { IGameStartMessage } from '../../../shared/interfaces/game-start-message
   templateUrl: './create-game-dialog.component.html',
   styleUrls: ['./create-game-dialog.component.scss']
 })
-export class CreateGameDialogComponent implements OnInit {
+export class CreateGameDialogComponent implements OnInit, OnDestroy {
 
   formGroup: FormGroup = null;
   isGameCreated: boolean = false;
@@ -66,11 +64,9 @@ export class CreateGameDialogComponent implements OnInit {
         console.error(reason);
       });
 
-    this.signalrService.subscribeToMethod("messageToClient", (message: IMessageToClient) => {
+    this.signalrService.subscribeToMethod("GameStart", (message: IGameStartMessage) => {
 
       console.log("AppComponent message", message);
-
-      if (message.typeId === MessageToClientTypeEnum.GameStart) {
 
         console.log("game start");
 
@@ -78,7 +74,6 @@ export class CreateGameDialogComponent implements OnInit {
 
         this.dialogRef.close();
 
-      }
     });
 
   }
@@ -99,5 +94,10 @@ export class CreateGameDialogComponent implements OnInit {
       });
 
     this.dialogRef.close();
+  }
+
+  ngOnDestroy(): void {
+    console.log("Destroy create game");
+    this.signalrService.unsubscribeToMethod("GameStart");
   }
 }

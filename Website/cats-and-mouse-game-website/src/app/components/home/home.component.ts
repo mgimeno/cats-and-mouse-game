@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TeamEnum } from 'src/app/shared/enums/team.enum';
 import { IGameListItem } from 'src/app/shared/interfaces/game-list-item.interface';
 import { MatDialog } from '@angular/material';
@@ -6,8 +6,6 @@ import { CreateGameDialogComponent } from '../game/create-game-dialog/create-gam
 import { JoinGameDialogComponent } from '../game/join-game-dialog/join-game-dialog.component';
 import { ActivatedRoute } from '@angular/router';
 import { SignalrService } from '../../shared/services/signalr-service';
-import { IMessageToClient } from '../../shared/interfaces/message-to-client.interface';
-import { MessageToClientTypeEnum } from '../../shared/enums/message-to-client-type.enum';
 import { IGameListMessage } from '../../shared/interfaces/game-list-message.interface';
 import { NotificationService } from '../../shared/services/notification.service';
 
@@ -16,7 +14,7 @@ import { NotificationService } from '../../shared/services/notification.service'
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
 
   tableColumns: string[] = ["userName", "teamId", "isPasswordProtected", "gameId"];
   teamEnum = TeamEnum;
@@ -42,17 +40,15 @@ export class HomeComponent implements OnInit {
         console.error(reason);
       });
 
-    this.signalrService.subscribeToMethod("messageToClient", (message: IMessageToClient) => {
+    this.signalrService.subscribeToMethod("GameList", (message: IGameListMessage) => {
 
       console.log("HomeComponent message", message);
 
-      if (message.typeId === MessageToClientTypeEnum.GameList) {
-
-        console.log("list of games received", (<IGameListMessage>message).gameList);
-        this.games = (<IGameListMessage>message).gameList;
+        console.log("list of games received", message.gameList);
+        this.games = message.gameList;
 
         this.openJoinGameDialogIfGameInUrl();
-      }
+      
     });
   }
 
@@ -70,7 +66,7 @@ export class HomeComponent implements OnInit {
 
   openJoinGameDialog(gameId: string): void {
     const game = this.games.find(g => g.gameId == gameId);
-
+    console.log({ game });
     if (!game) {
       this.notificationService.showError("Game does not exist");
     }
@@ -78,5 +74,10 @@ export class HomeComponent implements OnInit {
       this.dialog.open(JoinGameDialogComponent, { data: game });
     }
 
+  }
+
+  ngOnDestroy(): void {
+    console.log("Destroy home");
+    this.signalrService.unsubscribeToMethod("GameList");
   }
 }

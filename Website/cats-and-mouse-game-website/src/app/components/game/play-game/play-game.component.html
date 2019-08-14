@@ -4,65 +4,62 @@
 
 <div *ngIf="gameStatus">
 
-  <div class="text-center turn-info">
+  <div class="wrapper">
 
-    <div *ngIf="isGameOver()">
-      <div *ngIf="amITheWinner()" class="green">YOU WIN! :)</div>
-      <div *ngIf="!amITheWinner()" class="red">YOU LOSE :(</div>
-    </div>
-    <div *ngIf="!isGameOver()">
-      <div *ngIf="isMyTurn()" class="green">Your Turn!</div>
-      <div *ngIf="!isMyTurn()" class="red">Their Turn</div>
-    </div>
+    <div class="text-center turn-info">
 
+      <div *ngIf="isGameOver()">
+        <div *ngIf="amITheWinner()" class="green">YOU WIN!</div>
+        <div *ngIf="!amITheWinner()" class="red">YOU LOSE</div>
+      </div>
+      <div *ngIf="!isGameOver()">
+        <div *ngIf="isMyTurn()" class="green">Your Turn!</div>
+        <div *ngIf="!isMyTurn()" class="red">Their Turn</div>
+      </div>
+
+    </div>
   </div>
+
 
   <div class="game-board">
-
-   
-    <div class="wrapper">
-      <div class="top">
-        <div class="wrapper-inner">
-          <div class="box-inner">1</div>
-          <div class="box-inner">2</div>
-          <div class="box-inner">3</div>
-          <div class="box-inner">4</div>
-          <div class="box-inner">5</div>
-          <div class="box-inner">6</div>
-          <div class="box-inner">7</div>
-          <div class="box-inner">8</div>
-        </div>
+    <div class="top">
+      <div class="game-board-wrapper-inner">
+        <div class="box-inner">1</div>
+        <div class="box-inner">2</div>
+        <div class="box-inner">3</div>
+        <div class="box-inner">4</div>
+        <div class="box-inner">5</div>
+        <div class="box-inner">6</div>
+        <div class="box-inner">7</div>
+        <div class="box-inner">8</div>
       </div>
-
-      <ng-container *ngFor="let rowIndex of [0,1,2,3,4,5,6,7]">
-        <app-chess-box
-                       *ngFor="let columnIndex of [0,1,2,3,4,5,6,7]"
-                       [chessBox]="chessBoard[rowIndex][columnIndex]"
-                       [chessBoxCurrentlySelected]="chessBoxCurrentlySelected" 
-                       (click)="onChessBoxClicked(rowIndex,columnIndex)">
-        </app-chess-box>
-      </ng-container>
-
-      
-
-      <div class="bottom">
-        <div class="wrapper-inner">
-          <div class="box-inner">1</div>
-          <div class="box-inner">2</div>
-          <div class="box-inner">3</div>
-          <div class="box-inner">4</div>
-          <div class="box-inner">5</div>
-          <div class="box-inner">6</div>
-          <div class="box-inner">7</div>
-          <div class="box-inner">8</div>
-        </div>
-      </div>
-
     </div>
 
+    <ng-container *ngFor="let rowIndex of [0,1,2,3,4,5,6,7]">
+      <app-chess-box *ngFor="let columnIndex of [0,1,2,3,4,5,6,7]"
+                     [chessBox]="chessBoard[rowIndex][columnIndex]"
+                     [chessBoxCurrentlySelected]="chessBoxCurrentlySelected"
+                     (click)="onChessBoxClicked(rowIndex,columnIndex)">
+      </app-chess-box>
+    </ng-container>
+
+    <div class="bottom">
+      <div class="game-board-wrapper-inner">
+        <div class="box-inner">1</div>
+        <div class="box-inner">2</div>
+        <div class="box-inner">3</div>
+        <div class="box-inner">4</div>
+        <div class="box-inner">5</div>
+        <div class="box-inner">6</div>
+        <div class="box-inner">7</div>
+        <div class="box-inner">8</div>
+      </div>
+    </div>
 
   </div>
 
-  <app-chat></app-chat>
+  <div class="wrapper">
+    <app-chat></app-chat>
+  </div>
 
 </div>
