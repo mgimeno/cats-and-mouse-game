@@ -8,6 +8,8 @@ import { ChessBoxColorEnum } from '../../../shared/enums/chess-box-color.enum';
 import { IFigure } from '../../../shared/interfaces/figure.interface';
 import { IChessBox } from '../../../shared/interfaces/chess-box.interface';
 import { COMMON_CONSTANTS } from '../../../shared/constants/common';
+import { IPlayer } from 'src/app/shared/interfaces/player.interface';
+import { TeamEnum } from 'src/app/shared/enums/team.enum';
 
 
 @Component({
@@ -114,24 +116,34 @@ export class PlayGameComponent implements OnInit, OnDestroy {
           this.selectChessBox(clickedChessBox);
         }
 
-
       }
 
     }
 
   };
 
+  getMyPlayer(): IPlayer{
+    return this.gameStatus.players[this.gameStatus.myPlayerIndex];
+  }
+
+  getEnemyPlayer(): IPlayer{
+    return this.gameStatus.players[(this.gameStatus.myPlayerIndex === 0 ? 1 : 0)];
+  }
 
   isGameOver = (): boolean => {
     return this.gameStatus.players.some(p => p.isWinner);
   }
 
   isMyTurn = (): boolean => {
-    return this.gameStatus.players[this.gameStatus.myPlayerIndex].isTheirTurn;
+    return this.getMyPlayer().isTheirTurn;
   }
 
   amITheWinner = (): boolean => {
-    return this.gameStatus.players[this.gameStatus.myPlayerIndex].isWinner;
+    return this.getMyPlayer().isWinner;
+  }
+
+  amICatsPlayer = (): boolean => {
+    return (this.getMyPlayer().teamId === TeamEnum.Cats);
   }
 
   private buildChessBoard = (): void => {
@@ -191,7 +203,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
   private preSelectTheOnlyChessBoxThatICanSelect = (): void => {
 
-    const onlyFigureThatICanMove = this.gameStatus.players[this.gameStatus.myPlayerIndex].figures.find(f => f.canMoveToPositions.length > 0);
+    const onlyFigureThatICanMove = this.getMyPlayer().figures.find(f => f.canMoveToPositions.length > 0);
     let chessBox = this.chessBoard[onlyFigureThatICanMove.position.rowIndex][onlyFigureThatICanMove.position.columnIndex];
 
     this.selectChessBox(chessBox);
@@ -212,11 +224,11 @@ export class PlayGameComponent implements OnInit, OnDestroy {
   };
 
   private getNumberOfMyFiguresThatICanMove = (): number => {
-    return this.gameStatus.players[this.gameStatus.myPlayerIndex].figures.filter(f => f.canMoveToPositions.length > 0).length;
+    return this.getMyPlayer().figures.filter(f => f.canMoveToPositions.length > 0).length;
   };
 
   private isMyFigure = (figureId: number): boolean => {
-    return this.gameStatus.players[this.gameStatus.myPlayerIndex].figures.some(f => f.id === figureId);
+    return this.getMyPlayer().figures.some(f => f.id === figureId);
   }
 
   private deselectCurrentlySelectedChessBox = (): void => {

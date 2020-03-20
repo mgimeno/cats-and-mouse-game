@@ -3,5 +3,6 @@ export const environment = {
   name: "production",
   apiUrl: "http://catsandmouseapi.compuglobalhypermeganet.ltd/api/",
   apiGameHubUrl: "http://catsandmouseapi.compuglobalhypermeganet.ltd/gameHub",
-  websiteUrl: "http://catsandmouse.compuglobalhypermeganet.ltd/"
+  websiteUrl: "http://catsandmouse.compuglobalhypermeganet.ltd/",
+  localStoragePrefix: "cat-and-mouse-game_"
 };

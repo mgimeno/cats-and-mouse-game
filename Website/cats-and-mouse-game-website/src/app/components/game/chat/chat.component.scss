@@ -1,16 +1,25 @@
 .chat {
   margin-top: 25px;
 
+  .chat-box-title{
+    color: #994a05; //todo from variables
+  }
+
   .chat-history {
+    margin-top: 15px;
     max-height: 200px;
     overflow-y: scroll;
 
     .chat-line {
       margin-bottom: 10px;
-    }
 
-    .brown {
-      color: saddlebrown;
+      .black {
+        color: #333;
+      }
+  
+      .white{
+        color:#aaa;
+      }
     }
   }
 
@@ -18,5 +27,9 @@
     display: flex;
     flex-direction: row;
     align-items: baseline;
+
+    .send-message-button{
+      margin-left:10px;
+    }
   }
 }

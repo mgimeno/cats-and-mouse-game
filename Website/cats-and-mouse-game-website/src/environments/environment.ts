@@ -7,7 +7,8 @@ export const environment = {
   name: "dev",
   apiUrl: "http://localhost:51000/api/",
   apiGameHubUrl: "http://localhost:51000/gameHub",
-  websiteUrl: "http://localhost:4200/"
+  websiteUrl: "http://localhost:4200/",
+  localStoragePrefix: "cat-and-mouse-game_dev_"
 };
 
 /*

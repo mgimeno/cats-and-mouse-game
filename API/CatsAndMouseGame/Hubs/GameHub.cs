@@ -51,9 +51,9 @@ namespace CatsAndMouseGame.Hubs
 
             game.Start();
 
-            SendGamesAwaitingForSecondPlayerToAllClientsAsync();
-
             SendMessageToClientsAsync("GameStart", game.GetPlayersConnections(), new GameStartMessage());
+
+            SendGamesAwaitingForSecondPlayerToAllClientsAsync();
         }
 
         public void Move(MoveFigureModel model)

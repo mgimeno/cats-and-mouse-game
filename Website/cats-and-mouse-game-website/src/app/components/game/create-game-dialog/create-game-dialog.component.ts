@@ -31,8 +31,11 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
     private router: Router) { }
 
   ngOnInit() {
+
+    const previousUserName = localStorage.getItem(`${environment.localStoragePrefix}user-name`);
+
     this.formGroup = new FormGroup({
-      'userName': new FormControl(null, Validators.required),
+      'userName': new FormControl(previousUserName || null, Validators.required),
       'teamId': new FormControl(null, Validators.required),
       'gamePassword': new FormControl(null)
     });
@@ -44,11 +47,15 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
 
+    const userName = this.formGroup.controls.userName.value;
+
     const message = {
-      userName: this.formGroup.controls.userName.value,
+      userName: userName,
       teamId: this.formGroup.controls.teamId.value,
       gamePassword: this.formGroup.controls.gamePassword.value
     };
+
+    localStorage.setItem(`${environment.localStoragePrefix}user-name`, userName);
 
     this.signalrService.sendMessage("CreateGame", message)
       .then((game: IGameListItem) => {
@@ -68,11 +75,11 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
 
       console.log("AppComponent message", message);
 
-        console.log("game start");
+      console.log("game start");
 
-        this.router.navigate(['/play']);
+      this.router.navigate(['/play']);
 
-        this.dialogRef.close();
+      this.dialogRef.close();
 
     });
 

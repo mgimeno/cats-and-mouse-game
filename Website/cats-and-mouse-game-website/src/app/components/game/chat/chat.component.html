@@ -1,12 +1,14 @@
 
   <div class="chat">
 
+    <b class="chat-box-title">Chat box</b>
+
     <div class="chat-history" #scrollMe [scrollTop]="scrollMe.scrollHeight">
 
       <div class="chat-line" *ngFor="let chatLine of chatLines">
         <b class="small"
            [class.black]="chatLine.teamId == teamEnum.Cats"
-           [class.brown]="chatLine.teamId == teamEnum.Mouse">{{chatLine.userName}}</b>
+           [class.white]="chatLine.teamId == teamEnum.Mouse">{{chatLine.userName}}</b>
         <br />
         {{chatLine.message}}
       </div>
@@ -15,10 +17,10 @@
 
     <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="false" class="chat-form">
       <mat-form-field [formGroup]=formGroup>
-        <input type="text" matInput placeholder="Send a message..." formControlName="message">
+        <input type="text" matInput placeholder="Send a message..." formControlName="message" autocomplete="false">
       </mat-form-field>
 
-      <button type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary" cdkFocusInitial>
+      <button class="send-message-button" type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary" cdkFocusInitial>
         Send
       </button>
     </form>

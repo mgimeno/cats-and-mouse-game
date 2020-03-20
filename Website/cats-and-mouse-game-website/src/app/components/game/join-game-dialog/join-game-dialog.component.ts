@@ -7,6 +7,7 @@ import { TeamEnum } from 'src/app/shared/enums/team.enum';
 import { SignalrService } from '../../../shared/services/signalr-service';
 import { Router } from '@angular/router';
 import { IGameStartMessage } from '../../../shared/interfaces/game-start-message.interface';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -49,10 +50,11 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
 
     //todo gamePAssword is required if this game has a password.
 
+    const previousUserName = localStorage.getItem(`${environment.localStoragePrefix}user-name`);
     this.teamId = (this.data.teamId == TeamEnum.Cats ? TeamEnum.Mouse : TeamEnum.Cats);
 
     this.formGroup = new FormGroup({
-      'userName': new FormControl(null, Validators.required),
+      'userName': new FormControl(previousUserName || null, Validators.required),
       'teamId': new FormControl({ value: this.teamId, disabled: true }, Validators.required)
     });
 
@@ -67,10 +69,14 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
 
+    const userName = this.formGroup.controls.userName.value;
+
     let message: any = {
       gameId: this.data.gameId,
-      userName: this.formGroup.controls.userName.value
+      userName: userName
     };
+
+    localStorage.setItem(`${environment.localStoragePrefix}user-name`, userName);
 
     if (this.data.isPasswordProtected) {
       message.gamePassword = this.formGroup.controls.gamePassword.value;
