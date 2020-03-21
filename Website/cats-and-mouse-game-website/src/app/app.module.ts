@@ -36,11 +36,14 @@ import { MatTableModule, MatSnackBarModule, MatTooltipModule } from '@angular/ma
 import { SignalrService } from './shared/services/signalr-service';
 import { ChessBoxComponent } from './components/game/chess-box/chess-box.component';
 import { ChatComponent } from './components/game/chat/chat.component';
+import { ReconnectingDialogComponent } from './components/reconnecting-dialog/reconnecting-dialog.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
+
+    ReconnectingDialogComponent,
 
     AboutComponent,
     HowToPlayComponent,
@@ -82,7 +85,8 @@ import { ChatComponent } from './components/game/chat/chat.component';
   ],
   entryComponents: [
     CreateGameDialogComponent,
-    JoinGameDialogComponent
+    JoinGameDialogComponent,
+    ReconnectingDialogComponent
   ],
   providers: [
     SignalrService,

@@ -25,8 +25,7 @@ export class SignalrService {
       console.error("on close connection", error);
       this.restart();
     })
-
-
+    
     this.start();
 
   }

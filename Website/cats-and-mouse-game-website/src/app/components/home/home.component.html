@@ -1,14 +1,12 @@
 <div class="wrapper">
-  <h1>Cats & Mouse Game</h1>
 
-  <p>
-    Little explanation, see <a [routerLink]="['/how-to-play']">how to play</a>
+  
+    <button type="button" mat-raised-button color="primary" (click)="openCreateGameDialog()">Create game</button>
+    <br>
+    <button type="button" mat-flat-button color="secondary" (click)="openCreateGameDialog()">How to play</button>
 
-
-    <div class="header-container">
-      <h2 class="flex-auto">Games</h2>
-      <button type="button" mat-raised-button color="primary" (click)="openCreateGameDialog()">Create Game</button>
-    </div>
+    
+    <h2>Available games</h2>
 
 
     <div *ngIf="!games.length" class="text-center">
