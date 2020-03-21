@@ -1,8 +1,10 @@
+@import 'variables';
+
 .chat {
   margin-top: 25px;
 
   .chat-box-title{
-    color: #994a05; //todo from variables
+    color: $primaryColor;
   }
 
   .chat-history {

@@ -31,9 +31,6 @@ export class AppComponent {
       }
     }, 100);
 
-
-
-    this.signalrService.connectionStatus
   }
 
   get connectionStatus(): signalR.HubConnectionState {

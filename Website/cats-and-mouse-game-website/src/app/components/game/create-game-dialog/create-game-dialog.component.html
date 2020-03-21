@@ -3,7 +3,6 @@
   <h1 mat-dialog-title>Create game</h1>
 
   <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="off">
-    <mat-dialog-content>
 
       <mat-form-field [formGroup]=formGroup>
         <input type="text" matInput placeholder="Your name" formControlName="userName">
@@ -22,43 +21,39 @@
         <mat-hint align="start">optional</mat-hint>
       </mat-form-field>
 
-    </mat-dialog-content>
-    <mat-dialog-actions>
-      <button type="button" mat-raised-button (click)="onCancel()">Cancel</button>
       <button type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
-        cdkFocusInitial>Create Game</button>
-    </mat-dialog-actions>
+        cdkFocusInitial>Create game</button>
+        <br>
+        <br>
+      <button type="button" mat-stroked-button (click)="onCancel()">Cancel</button>
+      
   </form>
 
 </ng-container>
 
 <div *ngIf="isGameCreated" class="text-center">
 
-  <h1 mat-dialog-title>Game created</h1>
+  <h1 mat-dialog-title>Awaiting for another player</h1>
 
-  <mat-dialog-content>
+    <app-loader></app-loader>
 
     <br />
     <br />
 
-    <b>Awaiting for another player</b>
-    <br />
-    <br />
-    <p *ngIf="joinGameUrl">
-      Share this link to join your game:
-    </p>
-
-    <div class="copy-link-container" #container>
-      <button mat-flat-button color="primary" [class.link-copied]="isJoinGameLinkCopiedToClipboard" ngxClipboard
-              [cbContent]="joinGameUrl" [container]="container" (click)="onCopyLinkClick()">
-        <span *ngIf="!isJoinGameLinkCopiedToClipboard">Copy link</span>
-        <span *ngIf="isJoinGameLinkCopiedToClipboard">Copied!</span>
-      </button>
+    <div *ngIf="joinGameUrl">
+      <p>
+        Share this link to join your game:
+      </p>
+  
+      <div class="copy-link-container" #container>
+        <button mat-raised-button cdkFocusInitial color="primary" [class.link-copied]="isJoinGameLinkCopiedToClipboard" ngxClipboard
+                [cbContent]="joinGameUrl" [container]="container" (click)="onCopyLinkClick()">
+          <span *ngIf="!isJoinGameLinkCopiedToClipboard">Copy link</span>
+          <span *ngIf="isJoinGameLinkCopiedToClipboard">Copied!</span>
+        </button>
+      </div>
     </div>
 
-  </mat-dialog-content>
-  <mat-dialog-actions>
+    <button type="button" mat-stroked-button (click)="onCancelGame()">Cancel game</button>
 
-    <button type="button" mat-raised-button (click)="onCancelGame()">Cancel Game</button>
-  </mat-dialog-actions>
 </div>

@@ -3,7 +3,7 @@
 <p>Game versus: {{data.userName}}</p>
 
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()"  autocomplete="off">
-<mat-dialog-content>
+
 
   <mat-form-field [formGroup]=formGroup>
     <input type="text" matInput placeholder="Your name" formControlName="userName">
@@ -20,11 +20,14 @@
   <mat-form-field *ngIf="data.isPasswordProtected" [formGroup]=formGroup>
     <input type="password" matInput placeholder="Game password" formControlName="gamePassword" autocomplete="new-password">
   </mat-form-field>
+
   
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button type="button" mat-raised-button (click)="onCancel()">Cancel</button>
   <button type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
-    cdkFocusInitial>Join Game</button>
-</mat-dialog-actions>
+    cdkFocusInitial>Join game</button>
+  <br>
+  <br>
+  <button type="button" mat-stroked-button (click)="onCancel()">Cancel</button>
+  
+  
+
 </form>

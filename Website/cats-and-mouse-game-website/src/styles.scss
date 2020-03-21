@@ -1,8 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import 'variables';
 
-$primaryColor: #994a05; //todo from variables
 $successColor: #43A047;
 $errorColor: #f55f5f;
 $warnColor: #ecb13b;
@@ -23,29 +23,41 @@ body {
 
 h1 {
   margin: 25px 0 40px;
-  font-size: 1.5em;
+  font-size: 1.69em;
 }
 
 h2 {
-  font-size: 1.25em;
+  font-size: 1em;
 }
 
 a {
   text-decoration: none;
 }
 
+.primary{
+  color: $primaryColor;
+}
+
+.secondary{
+  color: $secondaryColor;
+}
+
 .full-width {
   width: 100%;
 }
 
-.header-container {
-  display: flex;
-  align-items: baseline;
-
-  .flex-auto {
-    flex: auto;
-  }
+//Dialog
+.mat-dialog-title{
+  text-align:center;
+  margin: 50px 0 !important;
+  font-size: 1.69em;
+  color: $primaryColor;
 }
+
+.mat-dialog-content{
+  padding-bottom:20px !important;
+}
+
 
 .text-center {
   text-align: center;
@@ -74,8 +86,6 @@ a {
 .red {
   color: $errorColor;
 }
-
-
 
 
 .bg-green {

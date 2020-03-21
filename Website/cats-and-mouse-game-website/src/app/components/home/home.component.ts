@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { SignalrService } from '../../shared/services/signalr-service';
 import { IGameListMessage } from '../../shared/interfaces/game-list-message.interface';
 import { NotificationService } from '../../shared/services/notification.service';
+import { HowToPlayDialogComponent } from '../how-to-play-dialog/how-to-play-dialog.component';
 
 
 @Component({
@@ -61,7 +62,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openCreateGameDialog(): void {
-    this.dialog.open(CreateGameDialogComponent);
+    this.dialog.open(CreateGameDialogComponent, {height: "100%", width: "100%"});
   }
 
   openJoinGameDialog(gameId: string): void {
@@ -71,9 +72,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.notificationService.showError("Game does not exist");
     }
     else {
-      this.dialog.open(JoinGameDialogComponent, { data: game });
+      this.dialog.open(JoinGameDialogComponent, { data: game,height: "100%", width: "100%" });
     }
 
+  }
+
+  openHowToPlayDialog(): void{
+    this.dialog.open(HowToPlayDialogComponent, {height: "100%", width: "100%"});
   }
 
   ngOnDestroy(): void {

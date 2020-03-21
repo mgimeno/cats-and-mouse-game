@@ -25,8 +25,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
 import { JwtInterceptor } from './shared/interceptors/jwt.interceptor';
 import { LoaderInterceptor } from './shared/interceptors/loader.interceptor';
-import { AboutComponent } from './components/about/about.component';
-import { HowToPlayComponent } from './components/how-to-play/how-to-play.component';
+import { HowToPlayDialogComponent } from './components/how-to-play-dialog/how-to-play-dialog.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { PlayGameComponent } from './components/game/play-game/play-game.component';
 import { CreateGameDialogComponent } from './components/game/create-game-dialog/create-game-dialog.component';
@@ -37,6 +36,7 @@ import { SignalrService } from './shared/services/signalr-service';
 import { ChessBoxComponent } from './components/game/chess-box/chess-box.component';
 import { ChatComponent } from './components/game/chat/chat.component';
 import { ReconnectingDialogComponent } from './components/reconnecting-dialog/reconnecting-dialog.component';
+import { LoaderComponent } from './shared/components/loader/loader.component';
 
 
 @NgModule({
@@ -45,8 +45,7 @@ import { ReconnectingDialogComponent } from './components/reconnecting-dialog/re
 
     ReconnectingDialogComponent,
 
-    AboutComponent,
-    HowToPlayComponent,
+    HowToPlayDialogComponent,
     PageNotFoundComponent,
 
     CreateGameDialogComponent,
@@ -56,7 +55,9 @@ import { ReconnectingDialogComponent } from './components/reconnecting-dialog/re
     HomeComponent,
 
     ChessBoxComponent,
-    ChatComponent
+    ChatComponent,
+
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -86,7 +87,8 @@ import { ReconnectingDialogComponent } from './components/reconnecting-dialog/re
   entryComponents: [
     CreateGameDialogComponent,
     JoinGameDialogComponent,
-    ReconnectingDialogComponent
+    ReconnectingDialogComponent,
+    HowToPlayDialogComponent
   ],
   providers: [
     SignalrService,
