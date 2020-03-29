@@ -18,12 +18,12 @@ export class AppComponent {
     private signalrService: SignalrService,
     private dialog: MatDialog) {
 
+    this.openReconnectingDialog();
     this.signalrService.startConnection();
 
     setInterval(() => {
       if (!this.isReconnectingDialogOpen && this.connectionStatus !== signalR.HubConnectionState.Connected) {
-        this.isReconnectingDialogOpen = true;
-        this.reconnectingDialogRef = this.dialog.open(ReconnectingDialogComponent, {height: "100%", width: "100%"});
+        this.openReconnectingDialog();
       }
       else if (this.isReconnectingDialogOpen && this.connectionStatus === signalR.HubConnectionState.Connected && this.reconnectingDialogRef) {
         this.reconnectingDialogRef.close();
@@ -33,8 +33,13 @@ export class AppComponent {
 
   }
 
-  get connectionStatus(): signalR.HubConnectionState {
+  private get connectionStatus(): signalR.HubConnectionState {
     return this.signalrService.connectionStatus;
+  }
+
+  private openReconnectingDialog(): void {
+    this.isReconnectingDialogOpen = true;
+    this.reconnectingDialogRef = this.dialog.open(ReconnectingDialogComponent, { height: "100%", width: "100%" });
   }
 
 }

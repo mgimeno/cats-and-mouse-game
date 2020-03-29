@@ -21,11 +21,6 @@ body {
   font-family: Roboto, sans-serif;
 }
 
-h1 {
-  margin: 25px 0 40px;
-  font-size: 1.69em;
-}
-
 h2 {
   font-size: 1em;
 }
@@ -46,8 +41,7 @@ a {
   width: 100%;
 }
 
-//Dialog
-.mat-dialog-title{
+h1, .mat-dialog-title{
   text-align:center;
   margin: 50px 0 !important;
   font-size: 1.69em;
@@ -98,6 +92,21 @@ a {
 
 .mini-wrapper{
   padding: 0 15px;
+}
+
+.buttons-container{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    button{
+      margin-top: 15px;
+    }
+}
+
+.max-container-width{
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 //Notification Service

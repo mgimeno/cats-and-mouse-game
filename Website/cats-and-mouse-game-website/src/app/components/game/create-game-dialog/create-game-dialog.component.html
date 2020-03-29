@@ -2,31 +2,29 @@
 
   <h1 mat-dialog-title>Create game</h1>
 
-  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="off">
+  <form class="max-container-width" [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="off">
 
-      <mat-form-field [formGroup]=formGroup>
-        <input type="text" matInput placeholder="Your name" formControlName="userName">
-      </mat-form-field>
+    <mat-form-field [formGroup]=formGroup>
+      <input type="text" matInput placeholder="Your name" formControlName="userName">
+    </mat-form-field>
 
-      <mat-form-field [formGroup]=formGroup>
-        <mat-select formControlName="teamId" placeholder="Team">
-          <mat-option *ngFor="let team of teams" [value]="team.value">
-            {{team.label}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <mat-form-field [formGroup]=formGroup>
+      <input type="password" matInput placeholder="Game password" formControlName="gamePassword"
+        autocomplete="new-password">
+      <mat-hint align="start">optional</mat-hint>
+    </mat-form-field>
 
-      <mat-form-field [formGroup]=formGroup>
-        <input type="password" matInput placeholder="Game password" formControlName="gamePassword" autocomplete="new-password">
-        <mat-hint align="start">optional</mat-hint>
-      </mat-form-field>
+    <app-team-select [formGroup]=formGroup></app-team-select>
+
+    <div class="buttons-container">
 
       <button type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
         cdkFocusInitial>Create game</button>
-        <br>
-        <br>
+
       <button type="button" mat-stroked-button (click)="onCancel()">Cancel</button>
-      
+
+    </div>
+
   </form>
 
 </ng-container>
@@ -35,25 +33,25 @@
 
   <h1 mat-dialog-title>Awaiting for another player</h1>
 
-    <app-loader></app-loader>
+  <app-loader></app-loader>
 
-    <br />
-    <br />
+  <br />
+  <br />
 
-    <div *ngIf="joinGameUrl">
-      <p>
-        Share this link to join your game:
-      </p>
-  
-      <div class="copy-link-container" #container>
-        <button mat-raised-button cdkFocusInitial color="primary" [class.link-copied]="isJoinGameLinkCopiedToClipboard" ngxClipboard
-                [cbContent]="joinGameUrl" [container]="container" (click)="onCopyLinkClick()">
-          <span *ngIf="!isJoinGameLinkCopiedToClipboard">Copy link</span>
-          <span *ngIf="isJoinGameLinkCopiedToClipboard">Copied!</span>
-        </button>
-      </div>
+  <div *ngIf="joinGameUrl">
+    <p>
+      <b class="secondary">Share this link to join your game:</b>
+    </p>
+
+    <div class="copy-link-container" #container>
+      <button mat-raised-button cdkFocusInitial color="primary" [class.link-copied]="isJoinGameLinkCopiedToClipboard"
+        ngxClipboard [cbContent]="joinGameUrl" [container]="container" (click)="onCopyLinkClick()">
+        <span *ngIf="!isJoinGameLinkCopiedToClipboard">Copy link</span>
+        <span *ngIf="isJoinGameLinkCopiedToClipboard">Copied!</span>
+      </button>
     </div>
+  </div>
 
-    <button type="button" mat-stroked-button (click)="onCancelGame()">Cancel game</button>
+  <button type="button" mat-stroked-button (click)="onCancelGame()">Cancel game</button>
 
 </div>

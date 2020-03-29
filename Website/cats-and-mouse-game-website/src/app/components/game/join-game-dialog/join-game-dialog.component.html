@@ -1,33 +1,31 @@
 <h1 mat-dialog-title>Join game</h1>
 
-<p>Game versus: {{data.userName}}</p>
 
-<form [formGroup]="formGroup" (ngSubmit)="onSubmit()"  autocomplete="off">
 
+<form class="max-container-width" [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="off">
+
+  <p><b class="secondary">Game versus: {{data.userName}}</b></p>
 
   <mat-form-field [formGroup]=formGroup>
     <input type="text" matInput placeholder="Your name" formControlName="userName">
   </mat-form-field>
 
-  <mat-form-field [formGroup]=formGroup>
-    <mat-select formControlName="teamId" placeholder="Team">
-      <mat-option *ngFor="let team of teams" [value]="team.value">
-        {{team.label}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
   <mat-form-field *ngIf="data.isPasswordProtected" [formGroup]=formGroup>
-    <input type="password" matInput placeholder="Game password" formControlName="gamePassword" autocomplete="new-password">
+    <input type="password" matInput placeholder="Game password" formControlName="gamePassword"
+      autocomplete="new-password">
   </mat-form-field>
 
-  
-  <button type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
-    cdkFocusInitial>Join game</button>
-  <br>
-  <br>
-  <button type="button" mat-stroked-button (click)="onCancel()">Cancel</button>
-  
-  
+  <app-team-select [formGroup]=formGroup></app-team-select>
+
+
+  <div class="buttons-container">
+
+
+    <button type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
+      cdkFocusInitial>Join game</button>
+
+    <button type="button" mat-stroked-button (click)="onCancel()">Cancel</button>
+
+  </div>
 
 </form>

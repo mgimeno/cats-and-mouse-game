@@ -1,0 +1,15 @@
+<b class="secondary">Select a team</b>
+
+<div class="teams-container">
+
+  <div class="team-box" (click)="selectTeam(teamEnum.Cats)">
+    <div class="image">CATS</div>
+    <div class="name">{{getTeamName(teamEnum.Cats)}}</div>
+  </div>
+
+  <div class="team-box" (click)="selectTeam(teamEnum.Mouse)">
+    <div class="image">MOUSE</div>
+    <div class="name">{{getTeamName(teamEnum.Mouse)}}</div>
+  </div>
+  
+</div>

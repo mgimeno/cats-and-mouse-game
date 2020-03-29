@@ -17,7 +17,7 @@ namespace CatsAndMouseGame.Models
 
         public GameModel(string gamePassword = null)
         {
-            this.Id = Guid.NewGuid().ToString();
+            this.Id = Guid.NewGuid().ToString().Replace("-","").Substring(0,5);
             this.Password = gamePassword;
 
             this.Players = new List<PlayerModel>();

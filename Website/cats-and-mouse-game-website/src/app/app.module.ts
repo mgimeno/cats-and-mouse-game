@@ -37,6 +37,7 @@ import { ChessBoxComponent } from './components/game/chess-box/chess-box.compone
 import { ChatComponent } from './components/game/chat/chat.component';
 import { ReconnectingDialogComponent } from './components/reconnecting-dialog/reconnecting-dialog.component';
 import { LoaderComponent } from './shared/components/loader/loader.component';
+import { TeamSelectComponent } from './shared/components/team-select/team-select.component';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { LoaderComponent } from './shared/components/loader/loader.component';
     ChessBoxComponent,
     ChatComponent,
 
-    LoaderComponent
+    LoaderComponent,
+    TeamSelectComponent
   ],
   imports: [
     BrowserModule,
