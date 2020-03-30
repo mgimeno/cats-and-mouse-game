@@ -12,9 +12,9 @@ namespace CatsAndMouseGame.Controllers
 
     public class GameController : ControllerBase
     {
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
-        public GameController(IHostingEnvironment environment)
+        public GameController(IWebHostEnvironment environment)
         {
             _environment = environment;
         }

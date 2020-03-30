@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using CatsAndMouseGame.Hubs;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CatsAndMouseGame
 {
@@ -41,13 +41,23 @@ namespace CatsAndMouseGame
             }
                );
 
-            services.AddSignalR();
+            services.AddControllers();
+            //.AddNewtonsoftJson();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddSignalR(hubOptions =>
+            {
+                //hubOptions.SupportedProtocols
+            })
+                .AddJsonProtocol(options =>
+                {
+                    options.PayloadSerializerOptions.WriteIndented = false;
+                });
+            //.AddNewtonsoftJsonProtocol();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -58,14 +68,16 @@ namespace CatsAndMouseGame
 
             //app.UseWebSockets();
 
+            app.UseRouting();
+
             app.UseCors("CorsPolicy");
 
-            app.UseSignalR(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapHub<GameHub>("/gameHub");
+                //endpoints.MapControllers();
+                endpoints.MapHub<GameHub>("/gameHub");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
-
-            app.UseMvc();
 
         }
     }

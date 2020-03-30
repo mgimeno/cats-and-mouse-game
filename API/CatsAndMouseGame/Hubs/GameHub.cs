@@ -175,6 +175,7 @@ namespace CatsAndMouseGame.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
+
         private GameModel GetInProgressGameByCurrentConnectionId()
         {
             var game = _games

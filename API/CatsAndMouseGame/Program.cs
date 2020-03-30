@@ -17,7 +17,7 @@ namespace CatsAndMouseGame
             .UseUrls("http://127.0.0.1:51000")
                 .UseStartup<Startup>().ConfigureAppConfiguration((builderContext, config) =>
                 {
-                    IHostingEnvironment env = builderContext.HostingEnvironment;
+                    IWebHostEnvironment env = builderContext.HostingEnvironment;
 
                     config.SetBasePath(Directory.GetCurrentDirectory());
                     config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
