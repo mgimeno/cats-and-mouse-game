@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { SignalrService } from './shared/services/signalr-service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import * as signalR from "@aspnet/signalr";
 import { ReconnectingDialogComponent } from './components/reconnecting-dialog/reconnecting-dialog.component';
 
 @Component({
@@ -22,19 +21,15 @@ export class AppComponent {
     this.signalrService.startConnection();
 
     setInterval(() => {
-      if (!this.isReconnectingDialogOpen && this.connectionStatus !== signalR.HubConnectionState.Connected) {
+      if (!this.isReconnectingDialogOpen && !this.signalrService.isConnected) {
         this.openReconnectingDialog();
       }
-      else if (this.isReconnectingDialogOpen && this.connectionStatus === signalR.HubConnectionState.Connected && this.reconnectingDialogRef) {
+      else if (this.isReconnectingDialogOpen && this.signalrService.isConnected && this.reconnectingDialogRef) {
         this.reconnectingDialogRef.close();
         this.isReconnectingDialogOpen = false;
       }
     }, 100);
 
-  }
-
-  private get connectionStatus(): signalR.HubConnectionState {
-    return this.signalrService.connectionStatus;
   }
 
   private openReconnectingDialog(): void {

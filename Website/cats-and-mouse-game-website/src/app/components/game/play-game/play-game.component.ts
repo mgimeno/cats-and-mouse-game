@@ -10,6 +10,8 @@ import { IChessBox } from '../../../shared/interfaces/chess-box.interface';
 import { COMMON_CONSTANTS } from '../../../shared/constants/common';
 import { IPlayer } from 'src/app/shared/interfaces/player.interface';
 import { TeamEnum } from 'src/app/shared/enums/team.enum';
+import { Router } from '@angular/router';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 
 @Component({
@@ -24,7 +26,10 @@ export class PlayGameComponent implements OnInit, OnDestroy {
   gameStatus: IGameStatus = null;
 
 
-  constructor(private signalrService: SignalrService) {
+  constructor(private signalrService: SignalrService, 
+    private router: Router,
+    private notificationService: NotificationService) {
+
     console.log("play game constructor");
     console.log(this.chessBoard);
     console.log(this.chessBoxCurrentlySelected);
@@ -39,6 +44,8 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     this.signalrService.sendMessage("SendInProgressGameStatusByConnectionId")
       .catch((reason: any) => {
         console.error(reason);
+        this.notificationService.showError("Game does not exist");
+        this.router.navigate(['/']);
       });
 
 
@@ -263,6 +270,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
     this.signalrService.sendMessage("Move", message)
       .catch((reason: any) => {
+        this.notificationService.showError("Error when moving the piece");
         console.error(reason);
       });
   };
@@ -270,11 +278,6 @@ export class PlayGameComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     console.log("Destroy play game");
     this.signalrService.unsubscribeToMethod("GameStatus");
-
-    //this.signalrService.sendMessage("PlayerLeft", message)
-    //  .catch((reason: any) => {
-    //    console.error(reason);
-    //  });
   }
 
 }

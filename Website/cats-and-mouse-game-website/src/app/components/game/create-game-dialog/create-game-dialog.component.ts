@@ -8,6 +8,7 @@ import { SignalrService } from '../../../shared/services/signalr-service';
 import { IGameListItem } from '../../../shared/interfaces/game-list-item.interface';
 import { Router } from '@angular/router';
 import { IGameStartMessage } from '../../../shared/interfaces/game-start-message.interface';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 
 @Component({
@@ -28,7 +29,8 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<CreateGameDialogComponent>,
     private signalrService: SignalrService,
-    private router: Router) { }
+    private router: Router,
+    private notificationService: NotificationService) { }
 
   ngOnInit() {
 
@@ -68,6 +70,7 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
 
       })
       .catch((reason: any) => {
+        this.notificationService.showError("Error when creating the game");
         console.error(reason);
       });
 
@@ -97,6 +100,7 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
 
     this.signalrService.sendMessage("CancelGame", { gameId: this.createdGame.gameId })
       .catch((reason: any) => {
+        this.notificationService.showError("Error when canceling the game");
         console.error(reason);
       });
 

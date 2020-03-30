@@ -4,6 +4,7 @@ import { IChatLine } from '../../../shared/interfaces/chat-line.interface';
 import { SignalrService } from '../../../shared/services/signalr-service';
 import { IChatMessage } from '../../../shared/interfaces/chat-message.interface';
 import { TeamEnum } from '../../../shared/enums/team.enum';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   selector: 'app-chat',
@@ -17,7 +18,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   teamEnum = TeamEnum;
 
-  constructor(private signalrService: SignalrService) {
+  constructor(
+    private signalrService: SignalrService,
+    private notificationService: NotificationService) {
 
     this.formGroup = new FormGroup({
       'message': new FormControl(null)
@@ -42,6 +45,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.formGroup.controls.message.setValue(null);
       })
       .catch((reason: any) => {
+        this.notificationService.showError("Error when sending message");
         console.error(reason);
       });
 

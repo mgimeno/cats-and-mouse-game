@@ -8,6 +8,7 @@ import { SignalrService } from '../../../shared/services/signalr-service';
 import { Router } from '@angular/router';
 import { IGameStartMessage } from '../../../shared/interfaces/game-start-message.interface';
 import { environment } from 'src/environments/environment';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 
 @Component({
@@ -27,7 +28,8 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<JoinGameDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IGameListItem,
     private signalrService: SignalrService,
-    private router: Router) {
+    private router: Router,
+    private notificationService: NotificationService) {
   }
 
   ngOnInit() {
@@ -84,6 +86,7 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
 
     this.signalrService.sendMessage("JoinGame", message)
       .catch((reason: any) => {
+        this.notificationService.showError("Error when joining the game");
         console.error(reason);
       });
 

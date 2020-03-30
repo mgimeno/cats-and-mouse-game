@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as signalR from "@aspnet/signalr";
+import * as signalR from "@microsoft/signalr";
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -9,8 +9,6 @@ export class SignalrService {
 
   private hubConnection: signalR.HubConnection;
 
-  private restartIntervalsIds: number[] = [];
-
   constructor() {
   }
 
@@ -19,15 +17,14 @@ export class SignalrService {
       .withUrl(environment.apiGameHubUrl)
       .configureLogging(signalR.LogLevel.Information)
       //.withHubProtocol()
+      .withAutomaticReconnect([0,1,2,3,4,5,6,7,8,9,10]) // todo make it infinity
       .build();
 
     this.hubConnection.onclose((error: Error) => {
       console.error("on close connection", error);
-      this.restart();
     })
-    
-    this.start();
 
+    this.start();
   }
 
   subscribeToMethod = (methodName: string, callback: any) => {
@@ -40,48 +37,26 @@ export class SignalrService {
     this.hubConnection.off(methodName);
   };
 
-  private start = (): void => {
-
-    if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
-      this.restartIntervalsIds.forEach(i => clearInterval(i));
-      return;
-    }
-    else {
-      this.hubConnection.start()
-        .then(() => {
-          this.restartIntervalsIds.forEach(i => clearInterval(i));
-        })
-        .catch(err => {
-          this.restart();
-        });
-    }
-  };
-
-  private restart = (): void => {
-
-    const restartIntervalId = window.setInterval(() => {
-
-      console.log("interval run");
-
-      if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
-        this.restartIntervalsIds.forEach(i => clearInterval(i));
-      }
-      else {
-        console.log("Reconnecting...");
-        this.start();
-      }
-
-    }, 5000);
-
-    this.restartIntervalsIds.push(restartIntervalId);
-
-  };
-
-  get connectionStatus(): signalR.HubConnectionState {
-    return this.hubConnection.state;
+  get isConnected(): boolean {
+    return this.hubConnection.state === signalR.HubConnectionState.Connected;
   }
 
-  sendMessage = (method: string, parameters: any = null): Promise<any> => {
+  private start(): void  {
+
+    if (!this.isConnected) {
+      this.hubConnection.start()
+        .catch(async err => {
+          await new Promise(r => setTimeout(r, 100));
+          this.start();
+        });
+    }
+  } 
+
+  async sendMessage(method: string, parameters: any = null): Promise<any> {
+
+    while (!this.isConnected) {
+      await new Promise(r => setTimeout(r, 100));
+    }
 
     if (parameters) {
       return this.hubConnection.invoke(method, parameters);
@@ -90,10 +65,7 @@ export class SignalrService {
       return this.hubConnection.invoke(method);
     }
 
-
   }
-
-
 
 }
 

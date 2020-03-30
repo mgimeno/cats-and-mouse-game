@@ -38,6 +38,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.signalrService.sendMessage("SendGamesAwaitingForSecondPlayerToCallerAsync")
       .catch((reason: any) => {
+        this.notificationService.showError("Error when getting the list of games");
         console.error(reason);
       });
 
