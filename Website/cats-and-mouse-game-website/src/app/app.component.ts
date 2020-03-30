@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SignalrService } from './shared/services/signalr-service';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import * as signalR from "@aspnet/signalr";
 import { ReconnectingDialogComponent } from './components/reconnecting-dialog/reconnecting-dialog.component';
 

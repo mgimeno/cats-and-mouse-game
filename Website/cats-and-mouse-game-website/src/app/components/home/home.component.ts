@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TeamEnum } from 'src/app/shared/enums/team.enum';
 import { IGameListItem } from 'src/app/shared/interfaces/game-list-item.interface';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { CreateGameDialogComponent } from '../game/create-game-dialog/create-game-dialog.component';
 import { JoinGameDialogComponent } from '../game/join-game-dialog/join-game-dialog.component';
 import { ActivatedRoute } from '@angular/router';

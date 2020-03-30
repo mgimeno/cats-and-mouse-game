@@ -31,7 +31,9 @@ import { PlayGameComponent } from './components/game/play-game/play-game.compone
 import { CreateGameDialogComponent } from './components/game/create-game-dialog/create-game-dialog.component';
 import { JoinGameDialogComponent } from './components/game/join-game-dialog/join-game-dialog.component';
 import { HomeComponent } from './components/home/home.component';
-import { MatTableModule, MatSnackBarModule, MatTooltipModule } from '@angular/material';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { SignalrService } from './shared/services/signalr-service';
 import { ChessBoxComponent } from './components/game/chess-box/chess-box.component';
 import { ChatComponent } from './components/game/chat/chat.component';

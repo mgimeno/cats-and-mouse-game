@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ILabelValue } from 'src/app/shared/interfaces/label-value.interface';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IGameListItem } from 'src/app/shared/interfaces/game-list-item.interface';
 import { TeamEnum } from 'src/app/shared/enums/team.enum';
 import { SignalrService } from '../../../shared/services/signalr-service';
