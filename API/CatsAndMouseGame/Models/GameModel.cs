@@ -178,6 +178,20 @@ namespace CatsAndMouseGame.Models
             return !string.IsNullOrWhiteSpace(this.Password);
         }
 
+        public void PlayerLeftGame(PlayerModel player, PlayerModel opponentPlayer) {
+
+            if (!this.IsGameOver())
+            {
+
+                player.IsWinner = false;
+                opponentPlayer.IsWinner = true;
+
+                this.Players.ForEach(p => p.IsTheirTurn = false);
+                this.DateFinished = DateTime.UtcNow;
+
+            }
+        }
+
         private void CheckForGameOver()
         {
             var mousePlayer = GetPlayerByTeam(TeamEnum.Mouse) as MousePlayerModel;

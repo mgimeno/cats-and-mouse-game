@@ -4,7 +4,7 @@ import { IGameListItem } from 'src/app/shared/interfaces/game-list-item.interfac
 import { MatDialog } from '@angular/material/dialog';
 import { CreateGameDialogComponent } from '../game/create-game-dialog/create-game-dialog.component';
 import { JoinGameDialogComponent } from '../game/join-game-dialog/join-game-dialog.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SignalrService } from '../../shared/services/signalr-service';
 import { IGameListMessage } from '../../shared/interfaces/game-list-message.interface';
 import { NotificationService } from '../../shared/services/notification.service';
@@ -26,7 +26,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private signalrService: SignalrService,
-    private notificationService: NotificationService) {
+    private notificationService: NotificationService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute) {
 
     console.log("home constructor")
 
@@ -46,11 +48,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       console.log("HomeComponent message", message);
 
-        console.log("list of games received", message.gameList);
-        this.games = message.gameList;
+      console.log("list of games received", message.gameList);
+      this.games = message.gameList;
 
-        this.openJoinGameDialogIfGameInUrl();
-      
+      this.openJoinGameDialogIfGameInUrl();
+
     });
   }
 
@@ -58,12 +60,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     const gameIdFromUrl: string = (this.route.snapshot.queryParams["joinGame"] || null);
     if (gameIdFromUrl) {
+      //Remove joinGame url param to avoid issues.
+      this.router.navigate(
+        [],
+        {
+          relativeTo: this.activatedRoute
+        });
       this.openJoinGameDialog(gameIdFromUrl);
     }
   }
 
   openCreateGameDialog(): void {
-    this.dialog.open(CreateGameDialogComponent, {height: "100%", width: "100%"});
+    this.dialog.open(CreateGameDialogComponent, { height: "100%", width: "100%" });
   }
 
   openJoinGameDialog(gameId: string): void {
@@ -73,13 +81,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.notificationService.showError("Game does not exist");
     }
     else {
-      this.dialog.open(JoinGameDialogComponent, { data: game,height: "100%", width: "100%" });
+      this.dialog.open(JoinGameDialogComponent, { data: game, height: "100%", width: "100%" });
     }
 
   }
 
-  openHowToPlayDialog(): void{
-    this.dialog.open(HowToPlayDialogComponent, {height: "100%", width: "100%"});
+  openHowToPlayDialog(): void {
+    this.dialog.open(HowToPlayDialogComponent, { height: "100%", width: "100%" });
   }
 
   ngOnDestroy(): void {

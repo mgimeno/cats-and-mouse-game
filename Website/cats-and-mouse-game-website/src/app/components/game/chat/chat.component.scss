@@ -1,7 +1,7 @@
 @import 'variables';
 
 .chat {
-  margin-top: 25px;
+  margin-top: 5px;
 
   .chat-box-title{
     color: $primaryColor;
@@ -13,7 +13,7 @@
     overflow-y: scroll;
 
     .chat-line {
-      margin-bottom: 10px;
+      margin: 0 15px 10px 0;
 
       .black {
         color: #333;

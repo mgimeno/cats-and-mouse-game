@@ -5,7 +5,9 @@
 
     <div class="chat-history" #scrollMe [scrollTop]="scrollMe.scrollHeight">
 
-      <div class="chat-line" *ngFor="let chatLine of chatLines">
+      <div *ngFor="let chatLine of chatLines" 
+      class="chat-line" 
+      [class.text-right]="chatLine.teamId == teamEnum.Mouse">
         <b class="small"
            [class.black]="chatLine.teamId == teamEnum.Cats"
            [class.white]="chatLine.teamId == teamEnum.Mouse">{{chatLine.userName}}</b>
@@ -24,5 +26,7 @@
         Send
       </button>
     </form>
+
+   
 
   </div>

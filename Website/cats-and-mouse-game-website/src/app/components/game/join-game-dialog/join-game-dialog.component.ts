@@ -45,12 +45,9 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
       this.dialogRef.close();
 
 
-
     });
 
     console.log(this.data);
-
-    //todo gamePAssword is required if this game has a password.
 
     const previousUserName = localStorage.getItem(`${environment.localStoragePrefix}user-name`);
     this.teamId = (this.data.teamId == TeamEnum.Cats ? TeamEnum.Mouse : TeamEnum.Cats);

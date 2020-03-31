@@ -17,7 +17,7 @@ export class SignalrService {
       .withUrl(environment.apiGameHubUrl)
       .configureLogging(signalR.LogLevel.Information)
       //.withHubProtocol()
-      .withAutomaticReconnect([0,1,2,3,4,5,6,7,8,9,10]) // todo make it infinity
+      .withAutomaticReconnect(this.getRetryDelaysArray())
       .build();
 
     this.hubConnection.onclose((error: Error) => {
@@ -65,6 +65,17 @@ export class SignalrService {
       return this.hubConnection.invoke(method);
     }
 
+  }
+
+  private getRetryDelaysArray(): number[]{
+
+    let result = [];
+    const oneHourInSeconds = 3600;
+    for(let sec = 0; sec <= oneHourInSeconds; sec++){
+      result.push(sec*1000);
+    }
+
+    return result;
   }
 
 }

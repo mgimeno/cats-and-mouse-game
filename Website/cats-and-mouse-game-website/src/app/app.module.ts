@@ -40,6 +40,7 @@ import { ChatComponent } from './components/game/chat/chat.component';
 import { ReconnectingDialogComponent } from './components/reconnecting-dialog/reconnecting-dialog.component';
 import { LoaderComponent } from './shared/components/loader/loader.component';
 import { TeamSelectComponent } from './shared/components/team-select/team-select.component';
+import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { TeamSelectComponent } from './shared/components/team-select/team-select
     ReconnectingDialogComponent,
 
     HowToPlayDialogComponent,
+    ConfirmationDialogComponent,
     PageNotFoundComponent,
 
     CreateGameDialogComponent,
@@ -92,7 +94,8 @@ import { TeamSelectComponent } from './shared/components/team-select/team-select
     CreateGameDialogComponent,
     JoinGameDialogComponent,
     ReconnectingDialogComponent,
-    HowToPlayDialogComponent
+    HowToPlayDialogComponent,
+    ConfirmationDialogComponent
   ],
   providers: [
     SignalrService,

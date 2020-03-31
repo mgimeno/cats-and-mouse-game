@@ -1,10 +1,6 @@
 <h1 mat-dialog-title>Join game</h1>
 
-
-
 <form class="max-container-width" [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="off">
-
-  <p><b class="secondary">Game versus: {{data.userName}}</b></p>
 
   <mat-form-field [formGroup]=formGroup>
     <input type="text" matInput placeholder="Your name" formControlName="userName">
@@ -15,7 +11,7 @@
       autocomplete="new-password">
   </mat-form-field>
 
-  <app-team-select [formGroup]=formGroup></app-team-select>
+  <app-team-select [formGroup]=formGroup [game]=data></app-team-select>
 
 
   <div class="buttons-container">

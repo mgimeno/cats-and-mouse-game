@@ -3,10 +3,7 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import 'variables';
 
-$successColor: #43A047;
-$errorColor: #f55f5f;
-$warnColor: #ecb13b;
-$infoColor: #39befe;
+
 
 .mat-toolbar.mat-primary,
 .mat-fab.mat-primary, .mat-flat-button.mat-primary, .mat-mini-fab.mat-primary, .mat-raised-button.mat-primary{
@@ -240,12 +237,15 @@ h1, .mat-dialog-title{
       width: 65%;
     }
 
-    .chat-container{
+    .options-container{
       width: 35%;
+      margin-top:0;
     }
 
-    .chat .chat-history{
-      max-height: 500px;
+    .chat{
+       .chat-history{
+          max-height: 506px !important;
+       }
     }
   }
 }

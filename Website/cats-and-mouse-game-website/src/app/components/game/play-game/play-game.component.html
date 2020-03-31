@@ -50,8 +50,15 @@
 
   </div>
 
-  <div class="chat-container">
+  <div class="options-container">
+
     <div class="mini-wrapper">
+
+      <div class="options-buttons">
+        <button mat-button (click)=openHowToPlayDialog()><i class="far fa-question-circle"></i> how to play</button>
+        <button mat-button color="warn" (click)=openExitGameDialog()><i class="fas fa-sign-out-alt"></i> exit game</button>
+      </div>
+
       <app-chat></app-chat>
     </div>
   </div>

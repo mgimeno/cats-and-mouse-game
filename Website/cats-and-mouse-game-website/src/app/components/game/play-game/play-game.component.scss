@@ -1,11 +1,22 @@
 @import 'variables';
 
+.options-container{
+  
+  margin-top:10px;
+
+  .options-buttons{
+    text-align: right;
+  }
+}
+
 .turn-info{
   font-size:30px;
+  font-weight: bold;
   margin: 15px 0 30px;
 
   .turn-info-details{
     font-size: 15px;
+    font-weight: bold;
     color: $secondaryColor;
     margin-top: 10px;
 

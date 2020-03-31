@@ -175,6 +175,31 @@ namespace CatsAndMouseGame.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
+        public void ExitGameByConnectionId()
+        {
+
+            var message = new MessageModel
+            {
+                Message = "left the game."
+            };
+            SendChatMessage(message);
+
+            var game = GetGameByCurrentConnectionId();
+
+            if (!game.IsGameOver())
+            {
+
+                var player = game.GetPlayerByConnectionId(Context.ConnectionId);
+                var opponentPlayer = game.Players.Where(p => p.ConnectionId != Context.ConnectionId).FirstOrDefault();
+
+                game.PlayerLeftGame(player, opponentPlayer);
+
+                SendGameStatusToPlayer(game, opponentPlayer);
+
+            }
+
+        }
+
 
         private GameModel GetInProgressGameByCurrentConnectionId()
         {
@@ -215,7 +240,7 @@ namespace CatsAndMouseGame.Hubs
 
         }
 
-        private void SendGameStatusToPlayer(GameModel game,PlayerModel player)
+        private void SendGameStatusToPlayer(GameModel game, PlayerModel player)
         {
             var gameStatus = GetGameStatusForPlayer(game, player);
             var connectionsIds = new List<string> { player.ConnectionId };
