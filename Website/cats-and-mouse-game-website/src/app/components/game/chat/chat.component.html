@@ -2,7 +2,7 @@
 
   <b class="chat-box-title">Chat box</b>
 
-  <div class="chat-history" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+  <div *ngIf="chatLines.length" class="chat-history" #scrollMe [scrollTop]="scrollMe.scrollHeight">
 
     <div *ngFor="let chatLine of chatLines" class="chat-line" [class.text-right]="chatLine.teamId == teamEnum.Mouse">
       <!-- <b class="small"
@@ -17,8 +17,8 @@
 
   </div>
 
-  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="false" class="chat-form">
-    <mat-form-field [formGroup]=formGroup>
+  <form *ngIf="canSendMessages" [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="false" class="chat-form">
+    <mat-form-field [formGroup]=formGroup >
       <input type="text" matInput placeholder="Send a message..." formControlName="message" autocomplete="false">
     </mat-form-field>
 

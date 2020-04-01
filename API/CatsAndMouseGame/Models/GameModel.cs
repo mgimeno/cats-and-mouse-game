@@ -177,9 +177,10 @@ namespace CatsAndMouseGame.Models
             return !string.IsNullOrWhiteSpace(this.Password);
         }
 
-        public void PlayerLeftGame(PlayerModel playerWhoLeft, PlayerModel opponentPlayer) {
+        public void PlayerLeftInProgressGame(PlayerModel playerWhoLeft, PlayerModel opponentPlayer) {
 
-            if (!this.IsGameOver())
+
+            if (this.IsGameInProgress())
             {
 
                 playerWhoLeft.IsWinner = false;

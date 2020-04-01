@@ -14,6 +14,7 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 export class ChatComponent implements OnInit, OnDestroy {
 
   @Input() gameId: string;
+  @Input() canSendMessages: boolean;
 
   formGroup: FormGroup = null;
   chatLines: IChatLine[] = [];

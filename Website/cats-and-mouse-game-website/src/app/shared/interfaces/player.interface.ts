@@ -9,4 +9,5 @@ export interface IPlayer {
   teamId: TeamEnum;
   isWinner: boolean;
   figures: IFigure[];
+  hasUserLeftTheGame: boolean;
 }

@@ -179,6 +179,10 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     return (this.getMyPlayer().teamId === TeamEnum.Cats);
   }
 
+  hasAnyPlayerLeft = (): boolean => {
+    return this.gameStatus.players.some(p=> p.hasUserLeftTheGame);
+  }
+
   openHowToPlayDialog(): void {
     this.dialog.open(HowToPlayDialogComponent, { height: "100%", width: "100%" });
   }
@@ -186,7 +190,14 @@ export class PlayGameComponent implements OnInit, OnDestroy {
   exitGame(): void {
 
     if (this.isGameOver()) {
-      this.router.navigate(['/']);
+      this.signalrService.sendMessage("ExitFinishedGame", { gameId: this.gameStatus.gameId})
+        .then(() => {
+          this.router.navigate(['/']);
+        })
+        .catch((reason: any) => {
+          console.error(reason);
+          this.notificationService.showError("Error when exiting the game");
+        });
     }
     else {
       const dialogRef = this.dialog.open(ConfirmationDialogComponent,
@@ -201,7 +212,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
         if (result.confirmed) {
 
-          this.signalrService.sendMessage("ExitGame")
+          this.signalrService.sendMessage("ExitInProgressGame")
             .then(() => {
               this.router.navigate(['/']);
             })

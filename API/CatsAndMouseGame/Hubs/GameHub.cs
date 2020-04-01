@@ -150,7 +150,8 @@ namespace CatsAndMouseGame.Hubs
                 _games.Remove(game);
 
 
-                if (model.SendAwaitingGamesToAllClients) {
+                if (model.SendAwaitingGamesToAllClients)
+                {
                     SendGamesAwaitingForSecondPlayerToAllClientsAsync();
                 }
             }
@@ -201,7 +202,7 @@ namespace CatsAndMouseGame.Hubs
 
         }
 
-        public void ExitGame()
+        public void ExitInProgressGame()
         {
             var game = GetInProgressGame();
 
@@ -212,14 +213,31 @@ namespace CatsAndMouseGame.Hubs
             };
             SendChatMessage(message);
 
-
             var playerWhoLeft = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
             var opponentPlayer = game.Players.Where(p => p.UserId != playerWhoLeft.UserId).FirstOrDefault();
 
-            game.PlayerLeftGame(playerWhoLeft, opponentPlayer);
+            playerWhoLeft.HasUserLeftTheGame = true;
+
+            game.PlayerLeftInProgressGame(playerWhoLeft, opponentPlayer);
 
             SendGameStatusToPlayer(game, opponentPlayer);
 
+        }
+
+        public void ExitFinishedGame(GameIdModel model)
+        {
+            var game = GetGame(model.GameId);
+
+            var message = new MessageModel
+            {
+                GameId = game.Id,
+                Message = "left the game."
+            };
+            SendChatMessage(message);
+
+            var playerWhoLeft = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
+
+            playerWhoLeft.HasUserLeftTheGame = true;
         }
 
 
@@ -348,7 +366,8 @@ namespace CatsAndMouseGame.Hubs
                 .Where(g => g.GetPlayerByUserId(userId) != null)
                 .ToList();
 
-            games.ForEach(g => CancelGameThatHasNotStarted(new CancelGameModel { 
+            games.ForEach(g => CancelGameThatHasNotStarted(new CancelGameModel
+            {
                 GameId = g.Id,
                 UserId = userId,
                 SendAwaitingGamesToAllClients = false

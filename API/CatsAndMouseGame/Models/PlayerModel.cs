@@ -13,6 +13,8 @@ namespace CatsAndMouseGame.Models
 
         public List<FigureModel> Figures { get; set; }
 
+        public bool HasUserLeftTheGame { get; set; } = false;
+
         public PlayerModel() {
             this.Figures = new List<FigureModel>();
         }
