@@ -38,6 +38,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     console.log("home on init")
 
+    this.signalrService.sendMessage("HasInProgressGameByConnectionId")
+      .then((hasInProgressGame: boolean) => {
+        if (hasInProgressGame) {
+          this.router.navigate(['/play']);
+        }
+      })
+      .catch((reason: any) => {
+        console.error(reason);
+      });
+
     this.signalrService.sendMessage("SendGamesAwaitingForSecondPlayerToCallerAsync")
       .catch((reason: any) => {
         this.notificationService.showError("Error when getting the list of games");
@@ -60,7 +70,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     const gameIdFromUrl: string = (this.route.snapshot.queryParams["joinGame"] || null);
     if (gameIdFromUrl) {
-      //Remove joinGame url param to avoid issues.
+      //This removes the 'joinGame' url param to avoid issues.
       this.router.navigate(
         [],
         {

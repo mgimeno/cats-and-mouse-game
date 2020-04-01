@@ -127,6 +127,13 @@ namespace CatsAndMouseGame.Hubs
             SendGameStatusToPlayer(game, player);
         }
 
+        public bool HasInProgressGameByConnectionId()
+        {
+            var game = GetInProgressGameByCurrentConnectionId();
+
+            return (game != null);
+        }
+
         public void SendChatMessage(MessageModel model)
         {
 
