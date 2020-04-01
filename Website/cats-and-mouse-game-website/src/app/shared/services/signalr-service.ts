@@ -20,8 +20,14 @@ export class SignalrService {
       .withAutomaticReconnect(this.getRetryDelaysArray())
       .build();
 
+    this.hubConnection.serverTimeoutInMilliseconds = 15 * 60 * 1000;
+
     this.hubConnection.onclose((error: Error) => {
       console.error("on close connection", error);
+    });
+
+    this.hubConnection.onreconnected(() => {
+      this.registerConnection();
     })
 
     this.start();
@@ -41,16 +47,23 @@ export class SignalrService {
     return this.hubConnection.state === signalR.HubConnectionState.Connected;
   }
 
-  private start(): void  {
+  private registerConnection(): void{
+    this.sendMessage("RegisterConnection", localStorage[`${environment.localStoragePrefix}user-id`]);
+  }
+
+  private start(): void {
 
     if (!this.isConnected) {
       this.hubConnection.start()
+        .then(() => {
+          this.registerConnection();
+        })
         .catch(async err => {
           await new Promise(r => setTimeout(r, 100));
           this.start();
         });
     }
-  } 
+  }
 
   async sendMessage(method: string, parameters: any = null): Promise<any> {
 
@@ -67,12 +80,12 @@ export class SignalrService {
 
   }
 
-  private getRetryDelaysArray(): number[]{
+  private getRetryDelaysArray(): number[] {
 
     let result = [];
     const oneHourInSeconds = 3600;
-    for(let sec = 0; sec <= oneHourInSeconds; sec++){
-      result.push(sec*1000);
+    for (let sec = 0; sec <= oneHourInSeconds; sec++) {
+      result.push(sec * 1000);
     }
 
     return result;

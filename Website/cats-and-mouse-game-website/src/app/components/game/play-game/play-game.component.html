@@ -57,11 +57,11 @@
       <div class="options-buttons">
         <button mat-button (click)=openHowToPlayDialog()><i class="far fa-question-circle"></i> how to play</button>
 
-        <button *ngIf="!isGameOver()" mat-button color="warn" (click)=openExitGameDialog()><i class="fas fa-sign-out-alt"></i> exit game</button>
-        <button *ngIf="isGameOver()" mat-raised-button color="warn" (click)=openExitGameDialog()><i class="fas fa-sign-out-alt"></i> exit game</button>
+        <button *ngIf="!isGameOver()" mat-button color="warn" (click)=exitGame()><i class="fas fa-sign-out-alt"></i> exit game</button>
+        <button *ngIf="isGameOver()" mat-raised-button color="warn" (click)=exitGame()><i class="fas fa-sign-out-alt"></i> exit game</button>
       </div>
 
-      <app-chat></app-chat>
+      <app-chat [gameId]=gameStatus.gameId></app-chat>
     </div>
   </div>
 

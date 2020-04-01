@@ -13,6 +13,8 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 })
 export class ChatComponent implements OnInit, OnDestroy {
 
+  @Input() gameId: string;
+
   formGroup: FormGroup = null;
   chatLines: IChatLine[] = [];
 
@@ -30,7 +32,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.signalrService.subscribeToMethod("ChatMessage", (message: IChatMessage) => {
+      if (message.gameId === this.gameId) {
         this.chatLines.push(message.chatLine);
+      }
     });
   }
 
@@ -40,7 +44,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
 
-    this.signalrService.sendMessage("SendChatMessage", { message: this.formGroup.controls.message.value })
+    this.signalrService.sendMessage("SendChatMessage", { gameId: this.gameId, message: this.formGroup.controls.message.value })
       .then(() => {
         this.formGroup.controls.message.setValue(null);
       })

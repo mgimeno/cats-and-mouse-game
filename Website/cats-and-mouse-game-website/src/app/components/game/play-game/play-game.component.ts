@@ -47,7 +47,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
   ngOnInit() {
     console.log("play game on init");
 
-    this.signalrService.sendMessage("SendInProgressGameStatusByConnectionId")
+    this.signalrService.sendMessage("SendInProgressGameStatusToCaller")
       .catch((reason: any) => {
         console.error(reason);
         this.notificationService.showError("Game does not exist");
@@ -183,27 +183,39 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     this.dialog.open(HowToPlayDialogComponent, { height: "100%", width: "100%" });
   }
 
-  openExitGameDialog(): void{
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, 
-      {data: {
-        dialogTitle: "Exit this game?",
-        dialogBody: null
-      }});
+  exitGame(): void {
 
-    dialogRef.afterClosed().subscribe((result: any)=>{
+    if (this.isGameOver()) {
+      this.router.navigate(['/']);
+    }
+    else {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent,
+        {
+          data: {
+            dialogTitle: "Exit this game?",
+            dialogBody: null
+          }
+        });
 
-      if(result.confirmed){
-        this.signalrService.sendMessage("ExitGameByConnectionId")
-        .then(() => {
-          this.router.navigate(['/']);
-        })
-      .catch((reason: any) => {
-        console.error(reason);
-        this.notificationService.showError("Error when exiting the game");
+      dialogRef.afterClosed().subscribe((result: any) => {
+
+        if (result.confirmed) {
+
+          this.signalrService.sendMessage("ExitGame")
+            .then(() => {
+              this.router.navigate(['/']);
+            })
+            .catch((reason: any) => {
+              console.error(reason);
+              this.notificationService.showError("Error when exiting the game");
+            });
+
+        }
+
       });
-      }
+    }
 
-    });
+
   }
 
   private buildChessBoard = (): void => {

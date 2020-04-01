@@ -98,7 +98,12 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
 
   onCancelGame(): void {
 
-    this.signalrService.sendMessage("CancelGame", { gameId: this.createdGame.gameId })
+    const cancelGameModel = {
+      gameId: this.createdGame.gameId,
+      userId: localStorage.getItem(`${environment.localStoragePrefix}user-id`)
+    };
+
+    this.signalrService.sendMessage("CancelGameThatHasNotStarted", cancelGameModel)
       .catch((reason: any) => {
         this.notificationService.showError("Error when canceling the game");
         console.error(reason);

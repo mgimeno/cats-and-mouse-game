@@ -25,20 +25,20 @@ namespace CatsAndMouseGame.Models
             this.DateCreated = DateTime.UtcNow;
         }
 
-        public void SetFirstPlayer(TeamEnum teamId, string userName, string connectionId)
+        public void SetFirstPlayer(TeamEnum teamId, string userName, string userId)
         {
-            SetPlayer(teamId, userName, connectionId);
+            SetPlayer(teamId, userName, userId);
         }
 
-        public void SetSecondPlayer(string userName, string connectionId)
+        public void SetSecondPlayer(string userName, string userId)
         {
             if (!IsTeamAlreadyConnected(TeamEnum.Cats))
             {
-                SetPlayer(TeamEnum.Cats, userName, connectionId);
+                SetPlayer(TeamEnum.Cats, userName, userId);
             }
             else
             {
-                SetPlayer(TeamEnum.Mouse, userName, connectionId);
+                SetPlayer(TeamEnum.Mouse, userName, userId);
             }
         }
 
@@ -57,9 +57,9 @@ namespace CatsAndMouseGame.Models
             RecalculateFiguresCanMoveToPositions();
         }
 
-        public PlayerModel GetPlayerByConnectionId(string connectionId)
+        public PlayerModel GetPlayerByUserId(string userId)
         {
-            return this.Players.Where(p => p.ConnectionId == connectionId).FirstOrDefault();
+            return this.Players.Where(p => p.UserId == userId).FirstOrDefault();
         }
 
         public FigureModel GetPlayerFigure(PlayerModel player, int figureId)
@@ -72,11 +72,10 @@ namespace CatsAndMouseGame.Models
             return player.Figures.Where(c => c.Id == figureId).FirstOrDefault();
         }
 
-        public List<string> GetPlayersConnections() {
-            return this.Players.Select(p => p.ConnectionId).ToList();
+        public List<string> GetPlayersUsersIds() {
+            return this.Players.Select(p => p.UserId).ToList();
         }
-
-        
+  
 
         public void RecalculateFiguresCanMoveToPositions()
         {
@@ -147,7 +146,7 @@ namespace CatsAndMouseGame.Models
 
         public bool IsGameOver()
         {
-            return this.Players.Any(p => p.IsWinner);
+            return this.Players.Any(p => p.IsWinner == true);
         }
 
         public PlayerModel GetWinnerPlayer()
@@ -171,19 +170,19 @@ namespace CatsAndMouseGame.Models
 
         public bool IsGameInProgress()
         {
-            return !IsWaitingForSecondPlayer() && !IsGameOver();
+            return (this.DateStarted.HasValue && !IsGameOver());
         }
 
         public bool IsPasswordProtected() {
             return !string.IsNullOrWhiteSpace(this.Password);
         }
 
-        public void PlayerLeftGame(PlayerModel player, PlayerModel opponentPlayer) {
+        public void PlayerLeftGame(PlayerModel playerWhoLeft, PlayerModel opponentPlayer) {
 
             if (!this.IsGameOver())
             {
 
-                player.IsWinner = false;
+                playerWhoLeft.IsWinner = false;
                 opponentPlayer.IsWinner = true;
 
                 this.Players.ForEach(p => p.IsTheirTurn = false);
@@ -226,7 +225,7 @@ namespace CatsAndMouseGame.Models
             return this.Players.Where(p => p.TeamId == teamId).FirstOrDefault();
         }
 
-        private void SetPlayer(TeamEnum teamId, string userName, string connectionId)
+        private void SetPlayer(TeamEnum teamId, string userName, string userId)
         {
             PlayerModel player;
             if (teamId == TeamEnum.Cats)
@@ -239,7 +238,7 @@ namespace CatsAndMouseGame.Models
             }
 
             player.Name = userName;
-            player.ConnectionId = connectionId;
+            player.UserId = userId;
 
             this.Players.Add(player);
         }

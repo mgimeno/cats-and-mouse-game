@@ -1,5 +1,4 @@
-﻿using CatsAndMouseGame.Enums;
-using CatsAndMouseGame.Models;
+﻿using CatsAndMouseGame.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -14,12 +13,40 @@ namespace CatsAndMouseGame.Hubs
     {
 
         private static readonly List<GameModel> _games = new List<GameModel>();
-        private static readonly List<string> _connections = new List<string>();
+
+        private static readonly ConnectionMapping<string> _connections = new ConnectionMapping<string>();
+
+        public async override Task OnConnectedAsync()
+        {
+            await base.OnConnectedAsync();
+        }
+
+        public void RegisterConnection(string userId)
+        {
+            if (!_connections.GetConnectionsByKey(userId).Contains(Context.ConnectionId))
+            {
+                _connections.Add(userId, Context.ConnectionId);
+            }
+
+            SendGamesAwaitingForSecondPlayerToCallerAsync();
+        }
+
+        public async override Task OnDisconnectedAsync(Exception exception)
+        {
+            var result = _connections.RemoveConnection(Context.ConnectionId);
+
+            if (!result.HasOtherActiveConnections)
+            {
+                CancelGamesThatHaveNotStartedCreatedByUser(result.Key);
+            }
+
+            await base.OnDisconnectedAsync(exception);
+        }
 
         public GameListItem CreateGame(CreateGameModel model)
         {
             var newGame = new GameModel(model.GamePassword);
-            newGame.SetFirstPlayer(model.TeamId, model.UserName, Context.ConnectionId);
+            newGame.SetFirstPlayer(model.TeamId, model.UserName, GetUserIdByCurrentConnectionId());
 
             _games.Add(newGame);
 
@@ -47,25 +74,32 @@ namespace CatsAndMouseGame.Hubs
                 throw new Exception("Game is in progress or over");
             }
 
-            game.SetSecondPlayer(model.UserName, Context.ConnectionId);
+            game.SetSecondPlayer(model.UserName, GetUserIdByCurrentConnectionId());
 
             game.Start();
 
-            SendMessageToClientsAsync("GameStart", game.GetPlayersConnections(), new GameStartMessage());
+            var allPlayersConnections = GetAllConnectionsByUsersIds(game.GetPlayersUsersIds());
+
+            SendMessageToClientsAsync("GameStart", allPlayersConnections, new GameStartMessage());
 
             SendGamesAwaitingForSecondPlayerToAllClientsAsync();
         }
 
         public void Move(MoveFigureModel model)
         {
-            var game = GetInProgressGameByCurrentConnectionId();
+            var game = GetInProgressGame();
+
+            if (game == null)
+            {
+                throw new Exception("Game does not exist");
+            }
 
             if (game.IsGameOver())
             {
                 throw new Exception("Game is over");
             }
 
-            var player = game.GetPlayerByConnectionId(Context.ConnectionId);
+            var player = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
 
             if (player == null)
             {
@@ -93,43 +127,52 @@ namespace CatsAndMouseGame.Hubs
 
             if (game.IsGameOver())
             {
-                SendGameStatusToPlayers(game);
+                SendGameStatusToAllPlayers(game);
             }
             else
             {
                 game.SetNextTurn();
 
-                SendGameStatusToPlayers(game);
+                SendGameStatusToAllPlayers(game);
             }
         }
 
-        public void CancelGame(GameIdModel model)
+        public void CancelGameThatHasNotStarted(CancelGameModel model)
         {
             var game = _games
                 .Where(g => g.Id == model.GameId)
                 .Where(g => g.IsWaitingForSecondPlayer())
-                .Where(g => g.GetPlayerByConnectionId(Context.ConnectionId) != null)
+                .Where(g => g.GetPlayerByUserId(model.UserId) != null)
                 .FirstOrDefault();
 
             if (game != null)
             {
                 _games.Remove(game);
-                SendGamesAwaitingForSecondPlayerToAllClientsAsync();
+
+
+                if (model.SendAwaitingGamesToAllClients) {
+                    SendGamesAwaitingForSecondPlayerToAllClientsAsync();
+                }
             }
         }
 
-        public void SendInProgressGameStatusByConnectionId()
+        public void SendInProgressGameStatusToCaller()
         {
-            var game = GetInProgressGameByCurrentConnectionId();
+            var game = GetInProgressGame();
 
-            var player = game.GetPlayerByConnectionId(Context.ConnectionId);
+            if (game == null)
+            {
+                throw new Exception("Game does not exist");
+            }
+
+            var player = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
 
             SendGameStatusToPlayer(game, player);
         }
 
-        public bool HasInProgressGameByConnectionId()
+        public bool HasInProgressGame()
         {
-            var game = GetInProgressGameByCurrentConnectionId();
+            var game = GetInProgressGame();
 
             return (game != null);
         }
@@ -137,12 +180,13 @@ namespace CatsAndMouseGame.Hubs
         public void SendChatMessage(MessageModel model)
         {
 
-            var game = GetGameByCurrentConnectionId();
+            var game = GetGame(model.GameId);
 
-            var player = game.GetPlayerByConnectionId(Context.ConnectionId);
+            var player = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
 
             var message = new ChatMessage
             {
+                GameId = model.GameId,
                 ChatLine = new ChatLineModel
                 {
                     UserName = player.Name,
@@ -151,82 +195,53 @@ namespace CatsAndMouseGame.Hubs
                 }
             };
 
-            SendMessageToClientsAsync("ChatMessage", game.GetPlayersConnections(), message);
+            var allPlayersConnections = GetAllConnectionsByUsersIds(game.GetPlayersUsersIds());
+
+            SendMessageToClientsAsync("ChatMessage", allPlayersConnections, message);
 
         }
 
-        public async override Task OnConnectedAsync()
+        public void ExitGame()
         {
-            if (!_connections.Any(c => c == Context.ConnectionId))
-            {
-                _connections.Add(Context.ConnectionId);
-            }
-
-            SendGamesAwaitingForSecondPlayerToCallerAsync();
-
-            await base.OnConnectedAsync();
-        }
-
-        public async override Task OnDisconnectedAsync(Exception exception)
-        {
-            if (_connections.Any(c => c == Context.ConnectionId))
-            {
-                //todo if he was part of an active game, they have lost.
-                //set to lost and send message to opponent
-                //also send message to all saying game is over.
-                //also delete the game from _games.
-
-                _connections.Remove(Context.ConnectionId);
-            }
-
-            await base.OnDisconnectedAsync(exception);
-        }
-
-        public void ExitGameByConnectionId()
-        {
+            var game = GetInProgressGame();
 
             var message = new MessageModel
             {
+                GameId = game.Id,
                 Message = "left the game."
             };
             SendChatMessage(message);
 
-            var game = GetGameByCurrentConnectionId();
 
-            if (!game.IsGameOver())
-            {
+            var playerWhoLeft = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
+            var opponentPlayer = game.Players.Where(p => p.UserId != playerWhoLeft.UserId).FirstOrDefault();
 
-                var player = game.GetPlayerByConnectionId(Context.ConnectionId);
-                var opponentPlayer = game.Players.Where(p => p.ConnectionId != Context.ConnectionId).FirstOrDefault();
+            game.PlayerLeftGame(playerWhoLeft, opponentPlayer);
 
-                game.PlayerLeftGame(player, opponentPlayer);
-
-                SendGameStatusToPlayer(game, opponentPlayer);
-
-            }
+            SendGameStatusToPlayer(game, opponentPlayer);
 
         }
 
 
-        private GameModel GetInProgressGameByCurrentConnectionId()
+        private GameModel GetInProgressGame()
         {
+            var userId = GetUserIdByCurrentConnectionId();
+
             var game = _games
                 .Where(g => g.IsGameInProgress())
-                .Where(g => g.Players.Any(p => p.ConnectionId == Context.ConnectionId))
+                .Where(g => g.Players.Any(p => p.UserId == userId))
                 .FirstOrDefault();
-
-            if (game == null)
-            {
-                throw new Exception("Game does not exist");
-            }
 
             return game;
         }
 
-        private GameModel GetGameByCurrentConnectionId()
+        private GameModel GetGame(string gameId = null)
         {
+            var userId = GetUserIdByCurrentConnectionId();
+
             var game = _games
-                .Where(g => g.Players.Any(p => p.ConnectionId == Context.ConnectionId))
+                .Where(g => g.Players.Any(p => p.UserId == userId))
+                .Where(g => (gameId == null || (g.Id.Equals(gameId))))
                 .FirstOrDefault();
 
             if (game == null)
@@ -238,7 +253,7 @@ namespace CatsAndMouseGame.Hubs
         }
 
 
-        private void SendGameStatusToPlayers(GameModel game)
+        private void SendGameStatusToAllPlayers(GameModel game)
         {
             foreach (var player in game.Players)
             {
@@ -250,14 +265,14 @@ namespace CatsAndMouseGame.Hubs
         private void SendGameStatusToPlayer(GameModel game, PlayerModel player)
         {
             var gameStatus = GetGameStatusForPlayer(game, player);
-            var connectionsIds = new List<string> { player.ConnectionId };
+            var userConnections = _connections.GetConnectionsByKey(player.UserId);
 
             var message = new GameStatusMessage
             {
                 GameStatus = gameStatus
             };
 
-            SendMessageToClientsAsync("GameStatus", connectionsIds, message);
+            SendMessageToClientsAsync("GameStatus", userConnections, message);
         }
 
 
@@ -272,7 +287,7 @@ namespace CatsAndMouseGame.Hubs
             var message = new GameListMessage();
             message.GameList = GetGamesAwaitingForSecondPlayer();
 
-            SendMessageToClientsAsync("GameList", new List<string> { Context.ConnectionId }, message);
+            SendMessageToClientsAsync("GameList", GetAllConnectionsOfCurrentConnectionUser(), message);
         }
 
 
@@ -282,7 +297,7 @@ namespace CatsAndMouseGame.Hubs
             var message = new GameListMessage();
             message.GameList = GetGamesAwaitingForSecondPlayer();
 
-            await SendMessageToClientsAsync("GameList", _connections, message);
+            await SendMessageToClientsAsync("GameList", _connections.GetAllConnections(), message);
         }
 
         private List<GameListItem> GetGamesAwaitingForSecondPlayer()
@@ -317,10 +332,53 @@ namespace CatsAndMouseGame.Hubs
         {
             return new GameStatusForPlayerModel
             {
+                GameId = game.Id,
                 Players = game.Players,
                 MyPlayerIndex = game.Players.IndexOf(player)
             };
 
+        }
+
+        private void CancelGamesThatHaveNotStartedCreatedByUser(string userId)
+        {
+            var gamesIds = GetGamesAwaitingForSecondPlayer().Select(g => g.GameId).ToList();
+
+            var games = _games
+                .Where(g => gamesIds.Contains(g.Id))
+                .Where(g => g.GetPlayerByUserId(userId) != null)
+                .ToList();
+
+            games.ForEach(g => CancelGameThatHasNotStarted(new CancelGameModel { 
+                GameId = g.Id,
+                UserId = userId,
+                SendAwaitingGamesToAllClients = false
+            }));
+
+            SendGamesAwaitingForSecondPlayerToAllClientsAsync();
+        }
+
+        private string GetUserIdByCurrentConnectionId()
+        {
+            return _connections.GetKeyByConnection(Context.ConnectionId);
+        }
+
+        private List<string> GetAllConnectionsOfCurrentConnectionUser()
+        {
+            var userId = GetUserIdByCurrentConnectionId();
+
+            return _connections.GetConnectionsByKey(userId);
+        }
+
+        private List<string> GetAllConnectionsByUsersIds(List<string> usersIds)
+        {
+            var result = new List<string>();
+
+            foreach (var userId in usersIds)
+            {
+                result.AddRange(_connections.GetConnectionsByKey(userId));
+            }
+
+            return result;
         }
 
     }

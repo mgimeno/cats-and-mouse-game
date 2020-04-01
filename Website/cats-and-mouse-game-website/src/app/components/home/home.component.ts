@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TeamEnum } from 'src/app/shared/enums/team.enum';
 import { IGameListItem } from 'src/app/shared/interfaces/game-list-item.interface';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CreateGameDialogComponent } from '../game/create-game-dialog/create-game-dialog.component';
 import { JoinGameDialogComponent } from '../game/join-game-dialog/join-game-dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { SignalrService } from '../../shared/services/signalr-service';
 import { IGameListMessage } from '../../shared/interfaces/game-list-message.interface';
 import { NotificationService } from '../../shared/services/notification.service';
 import { HowToPlayDialogComponent } from '../how-to-play-dialog/how-to-play-dialog.component';
+import { IGameStartMessage } from 'src/app/shared/interfaces/game-start-message.interface';
 
 
 @Component({
@@ -21,6 +22,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   teamEnum = TeamEnum;
 
   games: IGameListItem[] = [];
+
+  createGameDialogRef: MatDialogRef<CreateGameDialogComponent>;
+  joinGameDialogRef:MatDialogRef<JoinGameDialogComponent>;
+  howToPlayDialogRef:MatDialogRef<HowToPlayDialogComponent>;
 
   constructor(
     private dialog: MatDialog,
@@ -38,8 +43,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     console.log("home on init")
 
-    this.signalrService.sendMessage("HasInProgressGameByConnectionId")
+    this.signalrService.sendMessage("HasInProgressGame")
       .then((hasInProgressGame: boolean) => {
+        console.log({hasInProgressGame});
         if (hasInProgressGame) {
           this.router.navigate(['/play']);
         }
@@ -64,6 +70,28 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.openJoinGameDialogIfGameInUrl();
 
     });
+
+    this.signalrService.subscribeToMethod("GameStart", (message: IGameStartMessage) => {
+
+      console.log("Home Component message", message);
+
+      console.log("game start");
+
+      if(this.createGameDialogRef){
+        this.createGameDialogRef.close();
+      }
+
+      if(this.joinGameDialogRef){
+        this.joinGameDialogRef.close();
+      }
+
+      if(this.howToPlayDialogRef){
+        this.howToPlayDialogRef.close();
+      }
+
+      this.router.navigate(['/play']);
+
+    });
   }
 
   openJoinGameDialogIfGameInUrl = (): void => {
@@ -79,9 +107,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.openJoinGameDialog(gameIdFromUrl);
     }
   }
+  
 
   openCreateGameDialog(): void {
-    this.dialog.open(CreateGameDialogComponent, { height: "100%", width: "100%" });
+    this.createGameDialogRef =this.dialog.open(CreateGameDialogComponent, { height: "100%", width: "100%" });
   }
 
   openJoinGameDialog(gameId: string): void {
@@ -91,17 +120,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.notificationService.showError("Game does not exist");
     }
     else {
-      this.dialog.open(JoinGameDialogComponent, { data: game, height: "100%", width: "100%" });
+      this.joinGameDialogRef = this.dialog.open(JoinGameDialogComponent, { data: game, height: "100%", width: "100%" });
     }
 
   }
 
   openHowToPlayDialog(): void {
-    this.dialog.open(HowToPlayDialogComponent, { height: "100%", width: "100%" });
+    this.howToPlayDialogRef =this.dialog.open(HowToPlayDialogComponent, { height: "100%", width: "100%" });
   }
 
   ngOnDestroy(): void {
     console.log("Destroy home");
     this.signalrService.unsubscribeToMethod("GameList");
+    this.signalrService.unsubscribeToMethod("GameStart");
   }
 }

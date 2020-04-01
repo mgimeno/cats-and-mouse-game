@@ -34,18 +34,7 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.signalrService.subscribeToMethod("GameStart", (message: IGameStartMessage) => {
-
-      console.log("AppComponent message", message);
-
-      console.log("game start");
-
-      this.router.navigate(['/play']);
-
-      this.dialogRef.close();
-
-
-    });
+    
 
     console.log(this.data);
 
