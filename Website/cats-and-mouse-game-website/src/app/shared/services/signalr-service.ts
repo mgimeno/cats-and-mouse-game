@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
 import { environment } from '../../../environments/environment';
+import { NotificationService } from './notification.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +11,9 @@ export class SignalrService {
 
   private hubConnection: signalR.HubConnection;
 
-  constructor() {
+  constructor(
+    private notificationService: NotificationService,
+    private router: Router) {
   }
 
   startConnection = (): void => {
@@ -47,8 +51,21 @@ export class SignalrService {
     return this.hubConnection.state === signalR.HubConnectionState.Connected;
   }
 
-  private registerConnection(): void{
-    this.sendMessage("RegisterConnection", localStorage[`${environment.localStoragePrefix}user-id`]);
+  private registerConnection(): void {
+
+    this.sendMessage("RegisterConnection", localStorage[`${environment.localStoragePrefix}user-id`])
+    .then(() => {
+      
+      if (this.router.url === "/play") {
+        this.sendMessage("SendInProgressGameStatusToCaller")
+          .catch((reason: any) => {
+            console.error(reason);
+            this.notificationService.showError("Game does not exist");
+            this.router.navigate(['/']);
+          });
+      }
+
+    });
   }
 
   private start(): void {

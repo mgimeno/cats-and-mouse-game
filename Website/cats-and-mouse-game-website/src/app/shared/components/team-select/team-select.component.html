@@ -1,25 +1,21 @@
-<b class="secondary">Select a team</b>
+<div *ngIf="canSelectTeam()" class="secondary-title">
+  Select a team
+</div>
 
 <div class="teams-container">
 
-  <div class="team-box" 
-  (click)="selectMyTeam(teamEnum.Cats)" 
-  [class.selected]="isMyTeamSelected(teamEnum.Cats)" 
-  [class.clickable]="canSelectTeam()"
-  [class.opponent]="isOpponentTeamSelected(teamEnum.Cats)">
-    <div class="image">CATS</div>
-    <div class="name secondary">{{getTeamName(teamEnum.Cats)}}</div>
+  <div class="team-box" (click)="selectMyTeam(teamEnum.Cats)" [class.selected]="isMyTeamSelected(teamEnum.Cats)"
+    [class.clickable]="canSelectTeam()" [class.opponent]="isOpponentTeamSelected(teamEnum.Cats)">
+    <div class="image cat-figure"></div>
+    <div class="name secondary">{{getTeamName(teamEnum.Cats) || 'cats'}}</div>
   </div>
 
-  <div>VS</div>
+  <div class="versus"><b class="secondary">VS</b></div>
 
-  <div class="team-box" 
-  (click)="selectMyTeam(teamEnum.Mouse)" 
-  [class.selected]="isMyTeamSelected(teamEnum.Mouse)" 
-  [class.clickable]="canSelectTeam()"
-  [class.opponent]="isOpponentTeamSelected(teamEnum.Mouse)">
-    <div class="image">MOUSE</div>
-    <div class="name secondary">{{getTeamName(teamEnum.Mouse)}}</div>
+  <div class="team-box" (click)="selectMyTeam(teamEnum.Mouse)" [class.selected]="isMyTeamSelected(teamEnum.Mouse)"
+    [class.clickable]="canSelectTeam()" [class.opponent]="isOpponentTeamSelected(teamEnum.Mouse)">
+    <div class="image mouse-figure"></div>
+    <div class="name secondary">{{getTeamName(teamEnum.Mouse) || 'mouse'}}</div>
   </div>
-  
+
 </div>

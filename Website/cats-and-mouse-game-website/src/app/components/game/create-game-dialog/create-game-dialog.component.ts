@@ -9,6 +9,7 @@ import { IGameListItem } from '../../../shared/interfaces/game-list-item.interfa
 import { Router } from '@angular/router';
 import { IGameStartMessage } from '../../../shared/interfaces/game-start-message.interface';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { COMMON_CONSTANTS } from 'src/app/shared/constants/common';
 
 
 @Component({
@@ -37,10 +38,14 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
     const previousUserName = localStorage.getItem(`${environment.localStoragePrefix}user-name`);
 
     this.formGroup = new FormGroup({
-      'userName': new FormControl(previousUserName || null, Validators.required),
+      'userName': new FormControl(previousUserName || null, [Validators.required, Validators.maxLength(this.getMaxUserNameLength())]),
       'teamId': new FormControl(null, Validators.required),
       'gamePassword': new FormControl(null)
     });
+  }
+
+  getMaxUserNameLength(): number {
+    return COMMON_CONSTANTS.MAX_USERNAME_LENGTH;
   }
 
   isSubmitButtonDisabled(): boolean {
@@ -74,18 +79,6 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
         console.error(reason);
       });
 
-    this.signalrService.subscribeToMethod("GameStart", (message: IGameStartMessage) => {
-
-      console.log("AppComponent message", message);
-
-      console.log("game start");
-
-      this.router.navigate(['/play']);
-
-      this.dialogRef.close();
-
-    });
-
   }
 
   onCopyLinkClick(): void {
@@ -114,6 +107,5 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log("Destroy create game");
-    this.signalrService.unsubscribeToMethod("GameStart");
   }
 }

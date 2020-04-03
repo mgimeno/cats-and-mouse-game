@@ -1,0 +1,17 @@
+.secondary-title{
+    margin: 60px 0 25px;
+}
+
+.player-cell{
+    display:flex;
+    align-items: center;
+
+    .cat-figure, .mouse-figure{
+        width: 25px;
+        height: 25px;
+    }
+
+    .player-name{
+        margin-left:15px;
+    }
+}

@@ -2,14 +2,19 @@
 
 <form class="max-container-width" [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="off">
 
+
+  <div class="secondary-title">
+    Your name
+  </div>
+
   <mat-form-field [formGroup]=formGroup>
-    <input type="text" matInput placeholder="Your name" formControlName="userName">
+    <input type="text" matInput formControlName="userName" [maxlength]="getMaxUserNameLength()" class="text-center">
   </mat-form-field>
 
-  <mat-form-field *ngIf="data.isPasswordProtected" [formGroup]=formGroup>
+  <!-- <mat-form-field *ngIf="data.isPasswordProtected" [formGroup]=formGroup>
     <input type="password" matInput placeholder="Game password" formControlName="gamePassword"
       autocomplete="new-password">
-  </mat-form-field>
+  </mat-form-field> -->
 
   <app-team-select [formGroup]=formGroup [game]=data></app-team-select>
 
@@ -18,9 +23,9 @@
 
 
     <button type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
-      cdkFocusInitial>Join game</button>
+      cdkFocusInitial>Start game</button>
 
-    <button type="button" mat-stroked-button (click)="onCancel()">Cancel</button>
+    <button type="button" mat-button (click)="onCancel()">Cancel</button>
 
   </div>
 

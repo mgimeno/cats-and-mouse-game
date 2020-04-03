@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { IGameStartMessage } from '../../../shared/interfaces/game-start-message.interface';
 import { environment } from 'src/environments/environment';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { COMMON_CONSTANTS } from 'src/app/shared/constants/common';
 
 
 @Component({
@@ -34,21 +35,23 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    
-
     console.log(this.data);
 
     const previousUserName = localStorage.getItem(`${environment.localStoragePrefix}user-name`);
     this.teamId = (this.data.teamId == TeamEnum.Cats ? TeamEnum.Mouse : TeamEnum.Cats);
 
     this.formGroup = new FormGroup({
-      'userName': new FormControl(previousUserName || null, Validators.required),
+      'userName': new FormControl(previousUserName || null, [Validators.required, Validators.maxLength(this.getMaxUserNameLength())]),
       'teamId': new FormControl({ value: this.teamId, disabled: true }, Validators.required)
     });
 
     if (this.data.isPasswordProtected) {
       this.formGroup.addControl("gamePassword", new FormControl(null, Validators.required));
     }
+  }
+
+  getMaxUserNameLength(): number {
+    return COMMON_CONSTANTS.MAX_USERNAME_LENGTH;
   }
 
   isSubmitButtonDisabled(): boolean {
@@ -84,7 +87,6 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log("Destroy join game");
-    this.signalrService.unsubscribeToMethod("GameStart");
   }
 
 }

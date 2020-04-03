@@ -333,8 +333,6 @@ namespace CatsAndMouseGame.Hubs
 
         }
 
-        //todo rename GameListItem
-        //todo rename BuildGameListItem (this is a game that hasn't started) call it like this.
         private GameListItem BuildGameListItem(GameModel game)
         {
             return new GameListItem

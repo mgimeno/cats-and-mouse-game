@@ -15,13 +15,14 @@
         <div *ngIf="isGameOver()">
           <div *ngIf="amITheWinner()" class="green">YOU WIN!</div>
           <div *ngIf="!amITheWinner()" class="red">YOU LOSE</div>
+          <div class="turn-info-details">&nbsp;</div>
         </div>
         <div *ngIf="!isGameOver()">
           <div *ngIf="isMyTurn()" class="green">
             <div>Your turn!</div>
             <div class="turn-info-details">
               <ng-container *ngIf="amICatsPlayer()">
-                select a cat piece and move it
+                select a cat and then move it
               </ng-container>
               <ng-container *ngIf="!amICatsPlayer()">
                 move the mouse piece

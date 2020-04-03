@@ -17,23 +17,15 @@ export class ChessBoxComponent {
   figureTypeEnum = FigureTypeEnum;
   chessBoxColorEnum = ChessBoxColorEnum;
 
-
   constructor() {
-    
   }
 
-
-  ngOnInit() {
-  }
-
-  hasFigure = (): boolean => {
-    return this.chessBox.figure != null;
+  hasFigureOfType = (figureType: FigureTypeEnum): boolean => {
+    return this.chessBox.figure != null && (this.chessBox.figure.typeId === figureType);
   }
 
   isThereAFigureSelected = (): boolean => {
     return this.chessBoxCurrentlySelected != null;
   }
-
-
   
 }

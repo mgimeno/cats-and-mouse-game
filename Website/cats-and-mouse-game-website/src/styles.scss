@@ -14,12 +14,22 @@ body {
   margin: 0;
 }
 
+body, .mat-dialog-container, table{
+  background-color: #fafafa;
+}
+
 * {
   font-family: Roboto, sans-serif;
 }
 
 h2 {
   font-size: 1em;
+}
+
+.secondary-title{
+  font-size: 1.2em;
+  color: $secondaryColor;
+  text-align: center;
 }
 
 a {
@@ -114,6 +124,38 @@ h1, .mat-dialog-title{
   margin: 0 auto;
 }
 
+input{
+  font-size: 1.2em !important;
+  color: #803e04  !important;
+
+  &.text-center{
+    text-align: center !important;
+  }
+}
+
+.mat-form-field-appearance-legacy .mat-form-field-underline {
+  background-color: rgba(100,100,100,0.1);
+}
+
+.mat-form-field.mat-focused .mat-form-field-label{
+  display: none !important;
+}
+
+.figure{
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+.mouse-figure{
+  @extend .figure;
+  background-image: url('/assets/images/mouse.svg');
+}
+
+.cat-figure{
+  @extend .figure;
+  background-image: url('/assets/images/cat.svg');
+}
+
 //Notification Service
 
 .mat-snack-bar-container {
@@ -200,18 +242,15 @@ h1, .mat-dialog-title{
       cursor: pointer;
     }
 
-    .figure-icon{
-      &.black {
-        color: #333;
-      }
-      
-      &.white{
-        color: #eee;
-      }
+    &.mouse-figure, &.cat-figure{
+      background-size: 80%;
     }
+    
   }
 
 }
+
+
 
 @media only screen and (max-width: 570px) {
     

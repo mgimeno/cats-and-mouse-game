@@ -18,7 +18,8 @@ import { IGameStartMessage } from 'src/app/shared/interfaces/game-start-message.
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  tableColumns: string[] = ["userName", "teamId", "isPasswordProtected", "gameId"];
+  //tableColumns: string[] = ["userName", "isPasswordProtected", "gameId"];
+  tableColumns: string[] = ["userName",  "gameId"];
   teamEnum = TeamEnum;
 
   games: IGameListItem[] = [];

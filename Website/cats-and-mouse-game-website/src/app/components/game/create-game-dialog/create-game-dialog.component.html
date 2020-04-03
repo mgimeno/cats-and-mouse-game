@@ -4,15 +4,19 @@
 
   <form class="max-container-width" [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="off">
 
-    <mat-form-field [formGroup]=formGroup>
-      <input type="text" matInput placeholder="Your name" formControlName="userName">
-    </mat-form-field>
+    <div class="secondary-title">
+      Your name
+    </div>
 
     <mat-form-field [formGroup]=formGroup>
+      <input type="text" matInput formControlName="userName" [maxlength]="getMaxUserNameLength()" class="text-center">
+    </mat-form-field>
+
+    <!-- <mat-form-field [formGroup]=formGroup>
       <input type="password" matInput placeholder="Game password" formControlName="gamePassword"
         autocomplete="new-password">
       <mat-hint align="start">optional</mat-hint>
-    </mat-form-field>
+    </mat-form-field> -->
 
     <app-team-select [formGroup]=formGroup [game]=createdGame></app-team-select>
 
@@ -21,7 +25,7 @@
       <button type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
         cdkFocusInitial>Create game</button>
 
-      <button type="button" mat-stroked-button (click)="onCancel()">Cancel</button>
+      <button type="button" mat-button (click)="onCancel()">Cancel</button>
 
     </div>
 
@@ -40,7 +44,7 @@
 
   <div *ngIf="joinGameUrl">
     <p>
-      <b class="secondary">Share this link to join your game:</b>
+      <b class="secondary">Share this link to join your game</b>
     </p>
 
     <div class="copy-link-container" #container>
@@ -52,6 +56,6 @@
     </div>
   </div>
 
-  <button type="button" mat-stroked-button (click)="onCancelGame()">Cancel game</button>
+  <button type="button" mat-button (click)="onCancelGame()">Cancel</button>
 
 </div>
