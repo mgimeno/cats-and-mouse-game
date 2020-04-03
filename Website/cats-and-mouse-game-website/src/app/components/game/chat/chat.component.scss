@@ -1,7 +1,7 @@
 @import 'variables';
 
 .chat {
-  margin-top: 5px;
+  margin-top: 25px;
 
   .chat-box-title{
     color: $primaryColor;
@@ -32,6 +32,7 @@
 
     .send-message-button{
       margin-left:10px;
+      width: 80px;
     }
   }
 }

@@ -177,13 +177,15 @@ namespace CatsAndMouseGame.Models
             return !string.IsNullOrWhiteSpace(this.Password);
         }
 
-        public void PlayerLeftInProgressGame(PlayerModel playerWhoLeft, PlayerModel opponentPlayer) {
+        public void PlayerLeft(PlayerModel playerWhoLeft) {
 
+            playerWhoLeft.HasUserLeftTheGame = true;
 
             if (this.IsGameInProgress())
             {
 
                 playerWhoLeft.IsWinner = false;
+                var opponentPlayer = GetPlayerByTeam(playerWhoLeft.TeamId == TeamEnum.Cats ? TeamEnum.Mouse : TeamEnum.Cats);
                 opponentPlayer.IsWinner = true;
 
                 this.Players.ForEach(p => p.IsTheirTurn = false);

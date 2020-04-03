@@ -10,6 +10,11 @@ import { IGameListMessage } from '../../shared/interfaces/game-list-message.inte
 import { NotificationService } from '../../shared/services/notification.service';
 import { HowToPlayDialogComponent } from '../how-to-play-dialog/how-to-play-dialog.component';
 import { IGameStartMessage } from 'src/app/shared/interfaces/game-start-message.interface';
+import { COMMON_CONSTANTS } from 'src/app/shared/constants/common';
+import { IChessBox } from 'src/app/shared/interfaces/chess-box.interface';
+import { CommonHelper } from 'src/app/shared/helpers/common-helper';
+import { FigureTypeEnum } from 'src/app/shared/enums/figure-type.enum';
+import { IFigure } from 'src/app/shared/interfaces/figure.interface';
 
 
 @Component({
@@ -28,6 +33,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   joinGameDialogRef:MatDialogRef<JoinGameDialogComponent>;
   howToPlayDialogRef:MatDialogRef<HowToPlayDialogComponent>;
 
+  private chessBoard : [IChessBox[], IChessBox[], IChessBox[], IChessBox[],IChessBox[], IChessBox[], IChessBox[], IChessBox[]] = null;
+
   constructor(
     private dialog: MatDialog,
     private route: ActivatedRoute,
@@ -36,10 +43,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute) {
 
-    console.log("home constructor")
+    console.log("home constructor");
+
+    this.setupLogoChessBoard();
 
   }
 
+ 
   ngOnInit() {
 
     console.log("home on init")
@@ -95,6 +105,31 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  private setupLogoChessBoard(): void{
+    this.chessBoard = CommonHelper.buildChessBoard(COMMON_CONSTANTS.LOGO_CHESS_BOARD_ROWS,COMMON_CONSTANTS.LOGO_CHESS_BOARD_COLUMNS);
+
+    this.chessBoard[0][5].figure = <IFigure>{typeId: FigureTypeEnum.Cat};
+    this.chessBoard[0][7].figure = <IFigure>{typeId: FigureTypeEnum.Cat};
+    this.chessBoard[2][5].figure = <IFigure>{typeId: FigureTypeEnum.Cat};
+    this.chessBoard[2][7].figure = <IFigure>{typeId: FigureTypeEnum.Cat};
+    
+    this.chessBoard[1][6].figure = <IFigure>{typeId: FigureTypeEnum.Mouse};
+
+    this.chessBoard[0][0].text= "C";
+    this.chessBoard[0][1].text= "A";
+    this.chessBoard[0][2].text= "T";
+    this.chessBoard[0][3].text= "S";
+
+    this.chessBoard[1][2].text= "&";
+
+    this.chessBoard[2][0].text= "M";
+    this.chessBoard[2][1].text= "O";
+    this.chessBoard[2][2].text= "U";
+    this.chessBoard[2][3].text= "S";
+    this.chessBoard[2][4].text= "E";
+  }
+
+
   openJoinGameDialogIfGameInUrl = (): void => {
 
     const gameIdFromUrl: string = (this.route.snapshot.queryParams["joinGame"] || null);
@@ -128,6 +163,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   openHowToPlayDialog(): void {
     this.howToPlayDialogRef =this.dialog.open(HowToPlayDialogComponent, { height: "100%", width: "100%" });
+  }
+
+  toggleLanguage():void{
+    ;
   }
 
   ngOnDestroy(): void {

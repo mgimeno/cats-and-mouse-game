@@ -9,4 +9,6 @@ export interface IChessBox {
   isFigureSelected: boolean;
   canFigureBeSelected: boolean;
   canBeNewPositionForSelectedFigure: boolean;
+
+  text: string;
 }

@@ -216,9 +216,7 @@ namespace CatsAndMouseGame.Hubs
             var playerWhoLeft = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
             var opponentPlayer = game.Players.Where(p => p.UserId != playerWhoLeft.UserId).FirstOrDefault();
 
-            playerWhoLeft.HasUserLeftTheGame = true;
-
-            game.PlayerLeftInProgressGame(playerWhoLeft, opponentPlayer);
+            game.PlayerLeft(playerWhoLeft);
 
             SendGameStatusToPlayer(game, opponentPlayer);
 
@@ -237,7 +235,7 @@ namespace CatsAndMouseGame.Hubs
 
             var playerWhoLeft = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
 
-            playerWhoLeft.HasUserLeftTheGame = true;
+            game.PlayerLeft(playerWhoLeft);
         }
 
 

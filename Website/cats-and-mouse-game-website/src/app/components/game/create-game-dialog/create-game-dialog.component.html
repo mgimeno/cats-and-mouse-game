@@ -22,10 +22,10 @@
 
     <div class="buttons-container">
 
-      <button type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
+      <button class="big-button" type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
         cdkFocusInitial>Create game</button>
 
-      <button type="button" mat-button (click)="onCancel()">Cancel</button>
+      <button class="big-button" type="button" mat-button (click)="onCancel()">Cancel</button>
 
     </div>
 
@@ -48,7 +48,7 @@
     </p>
 
     <div class="copy-link-container" #container>
-      <button mat-raised-button cdkFocusInitial color="primary" [class.link-copied]="isJoinGameLinkCopiedToClipboard"
+      <button class="big-button" mat-raised-button cdkFocusInitial color="primary" [class.link-copied]="isJoinGameLinkCopiedToClipboard"
         ngxClipboard [cbContent]="joinGameUrl" [container]="container" (click)="onCopyLinkClick()">
         <span *ngIf="!isJoinGameLinkCopiedToClipboard">Copy link</span>
         <span *ngIf="isJoinGameLinkCopiedToClipboard">Copied!</span>
@@ -56,6 +56,6 @@
     </div>
   </div>
 
-  <button type="button" mat-button (click)="onCancelGame()">Cancel</button>
+  <button class="big-button" type="button" mat-button (click)="onCancelGame()">Cancel</button>
 
 </div>

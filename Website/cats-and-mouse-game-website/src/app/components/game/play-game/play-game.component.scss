@@ -1,24 +1,30 @@
 @import 'variables';
 
-.options-container{
-  
-  margin-top:13px;
+.play-container{
 
-  .options-buttons{
-    text-align: right;
+  margin-top: 40px;
+
+  .options-container{
+    
+    margin-top:13px;
+
+    .options-buttons{
+      text-align: right;
+    }
   }
-}
 
-.turn-info{
-  font-size:30px;
-  font-weight: bold;
-  margin: 15px 0 30px;
-
-  .turn-info-details{
-    font-size: 15px;
+  .turn-info{
+    font-size:30px;
     font-weight: bold;
-    color: $secondaryColor;
-    margin-top: 10px;
+    margin: 15px 0 30px;
 
+    .turn-info-details{
+      font-size: 15px;
+      font-weight: bold;
+      color: $secondaryColor;
+      margin-top: 10px;
+
+    }
   }
+
 }

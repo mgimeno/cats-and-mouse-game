@@ -15,6 +15,7 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 import { HowToPlayDialogComponent } from '../../how-to-play-dialog/how-to-play-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
+import { CommonHelper } from 'src/app/shared/helpers/common-helper';
 
 
 @Component({
@@ -23,7 +24,7 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 })
 export class PlayGameComponent implements OnInit, OnDestroy {
 
-  private chessBoard: [IChessBox[], [], [], [], [], [], [], []] = null;
+  private chessBoard : [IChessBox[], IChessBox[], IChessBox[], IChessBox[],IChessBox[], IChessBox[], IChessBox[], IChessBox[]] = null;
   private chessBoxCurrentlySelected: IChessBox = null;
 
   gameStatus: IGameStatus = null;
@@ -41,7 +42,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     console.log(this.chessBoxCurrentlySelected);
     console.log(this.gameStatus);
 
-    this.buildChessBoard();
+    this.chessBoard = CommonHelper.buildChessBoard(COMMON_CONSTANTS.PLAY_CHESS_BOARD_ROWS, COMMON_CONSTANTS.PLAY_CHESS_BOARD_COLUMNS);
   }
 
   ngOnInit() {
@@ -180,7 +181,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
   }
 
   hasAnyPlayerLeft = (): boolean => {
-    return this.gameStatus.players.some(p=> p.hasUserLeftTheGame);
+    return this.gameStatus.players.some(p => p.hasUserLeftTheGame);
   }
 
   openHowToPlayDialog(): void {
@@ -190,7 +191,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
   exitGame(): void {
 
     if (this.isGameOver()) {
-      this.signalrService.sendMessage("ExitFinishedGame", { gameId: this.gameStatus.gameId})
+      this.signalrService.sendMessage("ExitFinishedGame", { gameId: this.gameStatus.gameId })
         .then(() => {
           this.router.navigate(['/']);
         })
@@ -235,9 +236,9 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
     let currentChessBoxColorId: ChessBoxColorEnum = ChessBoxColorEnum.White;
 
-    for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.CHESS_BOARD_ROWS; rowIndex++) {
+    for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.PLAY_CHESS_BOARD_ROWS; rowIndex++) {
 
-      for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.CHESS_BOARD_COLUMNS; columnIndex++) {
+      for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.PLAY_CHESS_BOARD_COLUMNS; columnIndex++) {
 
         if (columnIndex !== 0) {
           currentChessBoxColorId = (currentChessBoxColorId === ChessBoxColorEnum.White ? ChessBoxColorEnum.Black : ChessBoxColorEnum.White)
@@ -262,9 +263,9 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
   private updateChessBoard = (): void => {
 
-    for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.CHESS_BOARD_ROWS; rowIndex++) {
+    for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.PLAY_CHESS_BOARD_ROWS; rowIndex++) {
 
-      for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.CHESS_BOARD_COLUMNS; columnIndex++) {
+      for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.PLAY_CHESS_BOARD_COLUMNS; columnIndex++) {
 
         const figure = this.getFigureInPosition(rowIndex, columnIndex);
         this.chessBoard[rowIndex][columnIndex].figure = figure;
@@ -322,9 +323,9 @@ export class PlayGameComponent implements OnInit, OnDestroy {
       this.chessBoxCurrentlySelected = null;
 
       //remove all highlighted chessboxes possible moves
-      for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.CHESS_BOARD_ROWS; rowIndex++) {
+      for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.PLAY_CHESS_BOARD_ROWS; rowIndex++) {
 
-        for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.CHESS_BOARD_COLUMNS; columnIndex++) {
+        for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.PLAY_CHESS_BOARD_COLUMNS; columnIndex++) {
 
           this.chessBoard[rowIndex][columnIndex].canBeNewPositionForSelectedFigure = false;
 
