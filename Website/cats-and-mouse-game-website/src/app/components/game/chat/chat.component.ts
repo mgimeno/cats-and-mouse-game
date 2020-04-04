@@ -22,6 +22,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   teamEnum = TeamEnum;
 
+  sendPlaceholder: string = $localize`:@@chat.send_placeholder:Send a message...`;
+
   constructor(
     private signalrService: SignalrService,
     private notificationService: NotificationService) {
@@ -47,7 +49,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         const chatLine = <IChatLine>{
           userName: message.userName,
           teamId: message.teamId,
-          message: `${message.userName} has left the game.`,
+          message: `${message.userName} ${$localize`:@@chat.player_has_left:has left the game.`}`,
           isSystemMessage: true
         };
 

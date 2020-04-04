@@ -15,6 +15,9 @@ import { IChessBox } from 'src/app/shared/interfaces/chess-box.interface';
 import { CommonHelper } from 'src/app/shared/helpers/common-helper';
 import { FigureTypeEnum } from 'src/app/shared/enums/figure-type.enum';
 import { IFigure } from 'src/app/shared/interfaces/figure.interface';
+import { SelectLanguageComponent } from '../select-language/select-language.component';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -24,16 +27,16 @@ import { IFigure } from 'src/app/shared/interfaces/figure.interface';
 export class HomeComponent implements OnInit, OnDestroy {
 
   //tableColumns: string[] = ["userName", "isPasswordProtected", "gameId"];
-  tableColumns: string[] = ["userName",  "gameId"];
+  tableColumns: string[] = ["userName", "gameId"];
   teamEnum = TeamEnum;
 
   games: IGameListItem[] = [];
 
   createGameDialogRef: MatDialogRef<CreateGameDialogComponent>;
-  joinGameDialogRef:MatDialogRef<JoinGameDialogComponent>;
-  howToPlayDialogRef:MatDialogRef<HowToPlayDialogComponent>;
+  joinGameDialogRef: MatDialogRef<JoinGameDialogComponent>;
+  howToPlayDialogRef: MatDialogRef<HowToPlayDialogComponent>;
 
-  private chessBoard : [IChessBox[], IChessBox[], IChessBox[], IChessBox[],IChessBox[], IChessBox[], IChessBox[], IChessBox[]] = null;
+  private chessBoard: [IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[]] = null;
 
   constructor(
     private dialog: MatDialog,
@@ -41,18 +44,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     private signalrService: SignalrService,
     private notificationService: NotificationService,
     private router: Router,
-    private activatedRoute: ActivatedRoute) {
-
-    console.log("home constructor");
+    private activatedRoute: ActivatedRoute,
+    private bottomSheet: MatBottomSheet) {
 
     this.setupLogoChessBoard();
 
   }
 
- 
+
   ngOnInit() {
 
-    console.log("home on init")
 
     this.signalrService.sendMessage("SendWhetherHasInProgressGameToCaller")
       .catch((reason: any) => {
@@ -68,9 +69,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.signalrService.subscribeToMethod("GameList", (message: IGameListMessage) => {
 
-      console.log("HomeComponent message", message);
+      console.log("Games received", message.gameList);
 
-      console.log("list of games received", message.gameList);
       this.games = message.gameList;
 
       this.openJoinGameDialogIfGameInUrl();
@@ -79,19 +79,15 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.signalrService.subscribeToMethod("GameStart", (message: IGameStartMessage) => {
 
-      console.log("Home Component message", message);
-
-      console.log("game start");
-
-      if(this.createGameDialogRef){
+      if (this.createGameDialogRef) {
         this.createGameDialogRef.close();
       }
 
-      if(this.joinGameDialogRef){
+      if (this.joinGameDialogRef) {
         this.joinGameDialogRef.close();
       }
 
-      if(this.howToPlayDialogRef){
+      if (this.howToPlayDialogRef) {
         this.howToPlayDialogRef.close();
       }
 
@@ -100,28 +96,49 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setupLogoChessBoard(): void{
-    this.chessBoard = CommonHelper.buildChessBoard(COMMON_CONSTANTS.LOGO_CHESS_BOARD_ROWS,COMMON_CONSTANTS.LOGO_CHESS_BOARD_COLUMNS);
+  openSelectLanguage(): void {
+    const bottomSheetRef = this.bottomSheet.open(SelectLanguageComponent);
 
-    this.chessBoard[0][5].figure = <IFigure>{typeId: FigureTypeEnum.Cat};
-    this.chessBoard[0][7].figure = <IFigure>{typeId: FigureTypeEnum.Cat};
-    this.chessBoard[2][5].figure = <IFigure>{typeId: FigureTypeEnum.Cat};
-    this.chessBoard[2][7].figure = <IFigure>{typeId: FigureTypeEnum.Cat};
-    
-    this.chessBoard[1][6].figure = <IFigure>{typeId: FigureTypeEnum.Mouse};
+    bottomSheetRef.afterDismissed().subscribe((newLanguageCode: string) => {
 
-    this.chessBoard[0][0].text= "C";
-    this.chessBoard[0][1].text= "A";
-    this.chessBoard[0][2].text= "T";
-    this.chessBoard[0][3].text= "S";
+      if (newLanguageCode) {
+        
+        const oldLanguageCode = localStorage.getItem(`${environment.localStoragePrefix}language`);
 
-    this.chessBoard[1][2].text= "&";
+        if(newLanguageCode !== oldLanguageCode){
+          localStorage.setItem(`${environment.localStoragePrefix}language`, newLanguageCode);
+          window.location.reload();
+        }
+        
+      }
 
-    this.chessBoard[2][0].text= "M";
-    this.chessBoard[2][1].text= "O";
-    this.chessBoard[2][2].text= "U";
-    this.chessBoard[2][3].text= "S";
-    this.chessBoard[2][4].text= "E";
+    });
+  }
+
+  private setupLogoChessBoard(): void {
+    this.chessBoard = CommonHelper.buildChessBoard(COMMON_CONSTANTS.LOGO_CHESS_BOARD_ROWS, COMMON_CONSTANTS.LOGO_CHESS_BOARD_COLUMNS);
+
+    this.chessBoard[0][5].figure = <IFigure>{ typeId: FigureTypeEnum.Cat };
+    this.chessBoard[0][7].figure = <IFigure>{ typeId: FigureTypeEnum.Cat };
+    this.chessBoard[2][5].figure = <IFigure>{ typeId: FigureTypeEnum.Cat };
+    this.chessBoard[2][7].figure = <IFigure>{ typeId: FigureTypeEnum.Cat };
+
+    this.chessBoard[1][6].figure = <IFigure>{ typeId: FigureTypeEnum.Mouse };
+
+    const logoTitle = $localize`:@@home.title:CATS & MOUSE`;
+
+    this.chessBoard[0][0].text = logoTitle[0];
+    this.chessBoard[0][1].text = logoTitle[1];
+    this.chessBoard[0][2].text = logoTitle[2];
+    this.chessBoard[0][3].text = logoTitle[3];
+
+    this.chessBoard[1][2].text = logoTitle[5];
+
+    this.chessBoard[2][0].text = logoTitle[7];
+    this.chessBoard[2][1].text = logoTitle[8];
+    this.chessBoard[2][2].text = logoTitle[9];
+    this.chessBoard[2][3].text = logoTitle[10];
+    this.chessBoard[2][4].text = logoTitle[11];
   }
 
 
@@ -138,15 +155,15 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.openJoinGameDialog(gameIdFromUrl);
     }
   }
-  
+
 
   openCreateGameDialog(): void {
-    this.createGameDialogRef =this.dialog.open(CreateGameDialogComponent, { height: "100%", width: "100%" });
+    this.createGameDialogRef = this.dialog.open(CreateGameDialogComponent, { height: "100%", width: "100%" });
   }
 
   openJoinGameDialog(gameId: string): void {
     const game = this.games.find(g => g.gameId == gameId);
-    console.log({ game });
+
     if (!game) {
       this.notificationService.showError("Game does not exist");
     }
@@ -157,15 +174,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openHowToPlayDialog(): void {
-    this.howToPlayDialogRef =this.dialog.open(HowToPlayDialogComponent, { height: "100%", width: "100%" });
+    this.howToPlayDialogRef = this.dialog.open(HowToPlayDialogComponent, { height: "100%", width: "100%" });
   }
 
-  toggleLanguage():void{
+  toggleLanguage(): void {
     ;
   }
 
   ngOnDestroy(): void {
-    console.log("Destroy home");
+
     this.signalrService.unsubscribeToMethod("GameList");
     this.signalrService.unsubscribeToMethod("GameStart");
   }

@@ -1,9 +1,9 @@
-<h1 mat-dialog-title>Join game</h1>
+<h1 mat-dialog-title i18n="@@join.title">Join game</h1>
 
 <form class="max-container-width" [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="off">
 
 
-  <div class="secondary-title">
+  <div class="secondary-title" i18n="@@join.name">
     Your name
   </div>
 
@@ -22,10 +22,14 @@
   <div class="buttons-container">
 
 
-    <button class="big-button" type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
-      cdkFocusInitial>Start game</button>
+    <button class="big-button" type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button
+      color="primary" cdkFocusInitial i18n="@@join.start_game">
+      Start game
+    </button>
 
-    <button class="big-button" type="button" mat-button (click)="onCancel()">Cancel</button>
+    <button class="big-button" type="button" mat-button (click)="onCancel()" i18n="@@button.cancel">
+      Cancel
+    </button>
 
   </div>
 

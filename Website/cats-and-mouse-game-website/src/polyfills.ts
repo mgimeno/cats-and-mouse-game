@@ -18,6 +18,84 @@ import '@angular/localize/init';
  * Learn more in https://angular.io/guide/browser-support
  */
 
+import { loadTranslations } from '@angular/localize';
+
+let language = "en";
+
+if (localStorage.getItem(`${environment.localStoragePrefix}language`)) {
+    language = localStorage.getItem(`${environment.localStoragePrefix}language`);
+}
+else {
+    language = navigator.language.substring(0, 1);
+}
+
+language = language.toLowerCase();
+
+localStorage.setItem(`${environment.localStoragePrefix}language`, language);
+
+if (language == "es") {
+
+    loadTranslations({
+
+        'index.title': 'El juego del Gato y el Raton',
+        'index.meta_description': 'Juega online gratis al juego del Gato y el Raton.',
+
+        'home.title': 'GATO Y RATON',
+        'home.description': 'Juega al Gato y Raton gratis',
+        'home.create_game': 'Crear partida',
+        'home.how_to_play': 'Como jugar',
+        'home.language': 'Idioma',
+        'home.join_game_description': 'Unirse a una partida',
+        'home.no_games_available': '0 partidas disponibles',
+        'home.table.player': 'Jugador',
+        'home.table.join': 'Entrar',
+
+        'reconnecting.connecting': 'Conectando al servidor',
+
+        'select-language.select': 'Selecciona un idioma',
+
+        'page-not-found.not-found': '404 - Pagina no encontrada',
+        'page-not-found.back': 'Volver',
+
+        'play.win': 'Ganaste!',
+        'play.lose': 'Perdiste',
+        'play.your_turn': 'Tu turno!',
+        'play.cat_turn_info': 'Selecciona un gato y muevelo',
+        'play.mouse_turn_info': 'Mueve el raton',
+        'play.their_turn': 'Turno del oponente',
+        'play.is_thinking': 'esta pensando...',
+        'play.how_to_play': 'como jugar',
+        'play.exit_game': 'salir',
+        'play.exit-game-question': 'Salir de la partida?',
+
+        'join.title': 'Entrar a una partida',
+        'join.name': 'Tu nombre',
+        'join.start_game': 'Empezar',
+
+        'create.title': 'Crear partida',
+        'create.name': 'Tu nombre',
+        'create.create_game': 'Crear partida',
+        'create.awaiting_title': 'Esperando a otro jugador',
+        'create.share_link_description': 'Comparte este link para unirse a tu partida',
+        'create.copy_link': 'Copiar link',
+        'create.copied': 'Copiado!',
+
+        'chat.chat': 'Chat',
+        'chat.send': 'Enviar',
+        'chat.send_placeholder': 'Enviar mensaje...',
+        'chat.player_has_left': 'ha dejado la partida.',
+
+        'select_team.select': 'Selecciona tu equipo',
+        'select_team.cats': 'gatos',
+        'select_team.mouse': 'raton',
+        'select_team.opponent': 'oponente',
+
+        'button.cancel': 'Cancelar',
+        'button.yes': 'Si'
+    });
+
+}
+
 /***************************************************************************************************
  * BROWSER POLYFILLS
  */
@@ -60,6 +138,7 @@ import '@angular/localize/init';
  * Zone JS is required by default for Angular itself.
  */
 import 'zone.js/dist/zone';  // Included with Angular CLI.
+import { environment } from './environments/environment';
 
 
 /***************************************************************************************************

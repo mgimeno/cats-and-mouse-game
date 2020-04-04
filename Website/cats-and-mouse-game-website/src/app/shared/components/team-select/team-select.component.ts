@@ -16,6 +16,10 @@ export class TeamSelectComponent {
 
   teamEnum = TeamEnum;
 
+  catsText:string = $localize`:@@select_team.cats:cats`;
+  mouseText:string = $localize`:@@select_team.mouse:mouse`;
+  opponentText:string = $localize`:@@select_team.opponent:opponent`;
+
   constructor() { }
 
   getTeamName(teamEnum: TeamEnum): string {
@@ -32,10 +36,10 @@ export class TeamSelectComponent {
     else {
       if (this.formGroup.controls.teamId.value == null) {
         if (teamEnum === TeamEnum.Cats) {
-          return "cats";
+          return this.catsText;
         }
         else {
-          return "mouse";
+          return this.mouseText;
         }
       }
       else {
@@ -43,7 +47,7 @@ export class TeamSelectComponent {
           return this.formGroup.controls.userName.value;
         }
         else {
-          return "opponent";
+          return this.opponentText;
         }
       }
     }

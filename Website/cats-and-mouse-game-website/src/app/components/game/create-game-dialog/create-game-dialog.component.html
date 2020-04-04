@@ -1,10 +1,10 @@
 <ng-container *ngIf="!isGameCreated">
 
-  <h1 mat-dialog-title>Create game</h1>
+  <h1 mat-dialog-title i18n="@@create.title">Create game</h1>
 
   <form class="max-container-width" [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="off">
 
-    <div class="secondary-title">
+    <div class="secondary-title" i18n="@@create.name">
       Your name
     </div>
 
@@ -23,9 +23,9 @@
     <div class="buttons-container">
 
       <button class="big-button" type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
-        cdkFocusInitial>Create game</button>
+        cdkFocusInitial i18n="@@create.create_game">Create game</button>
 
-      <button class="big-button" type="button" mat-button (click)="onCancel()">Cancel</button>
+      <button class="big-button" type="button" mat-button (click)="onCancel()" i18n="@@button.cancel">Cancel</button>
 
     </div>
 
@@ -35,7 +35,7 @@
 
 <div *ngIf="isGameCreated" class="text-center">
 
-  <h1 mat-dialog-title>Awaiting for another player</h1>
+  <h1 mat-dialog-title i18n="@@create.awaiting_title">Awaiting for another player</h1>
 
   <app-loader></app-loader>
 
@@ -44,18 +44,18 @@
 
   <div *ngIf="joinGameUrl">
     <p>
-      <b class="secondary">Share this link to join your game</b>
+      <b class="secondary" i18n="@@create.share_link_description">Share this link to join your game</b>
     </p>
 
     <div class="copy-link-container" #container>
       <button class="big-button" mat-raised-button cdkFocusInitial color="primary" [class.link-copied]="isJoinGameLinkCopiedToClipboard"
         ngxClipboard [cbContent]="joinGameUrl" [container]="container" (click)="onCopyLinkClick()">
-        <span *ngIf="!isJoinGameLinkCopiedToClipboard">Copy link</span>
-        <span *ngIf="isJoinGameLinkCopiedToClipboard">Copied!</span>
+        <span *ngIf="!isJoinGameLinkCopiedToClipboard" i18n="@@create.copy_link">Copy link</span>
+        <span *ngIf="isJoinGameLinkCopiedToClipboard" i18n="@@create.copied">Copied!</span>
       </button>
     </div>
   </div>
 
-  <button class="big-button" type="button" mat-button (click)="onCancelGame()">Cancel</button>
+  <button class="big-button" type="button" mat-button (click)="onCancelGame()" i18n="@@button.cancel">Cancel</button>
 
 </div>

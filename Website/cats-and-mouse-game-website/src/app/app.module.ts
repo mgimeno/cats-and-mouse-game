@@ -20,11 +20,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { ClipboardModule } from 'ngx-clipboard';
 
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
-import { JwtInterceptor } from './shared/interceptors/jwt.interceptor';
-import { LoaderInterceptor } from './shared/interceptors/loader.interceptor';
 import { HowToPlayDialogComponent } from './components/how-to-play-dialog/how-to-play-dialog.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { PlayGameComponent } from './components/game/play-game/play-game.component';
@@ -41,6 +38,7 @@ import { ReconnectingDialogComponent } from './components/reconnecting-dialog/re
 import { LoaderComponent } from './shared/components/loader/loader.component';
 import { TeamSelectComponent } from './shared/components/team-select/team-select.component';
 import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
+import { SelectLanguageComponent } from './components/select-language/select-language.component';
 
 
 @NgModule({
@@ -63,7 +61,10 @@ import { ConfirmationDialogComponent } from './shared/components/confirmation-di
     ChatComponent,
 
     LoaderComponent,
-    TeamSelectComponent
+    TeamSelectComponent,
+
+    
+    SelectLanguageComponent
   ],
   imports: [
     BrowserModule,
@@ -88,21 +89,19 @@ import { ConfirmationDialogComponent } from './shared/components/confirmation-di
     MatTableModule,
     MatSnackBarModule,
     MatTooltipModule,
-    ClipboardModule
+    ClipboardModule,
   ],
   entryComponents: [
     CreateGameDialogComponent,
     JoinGameDialogComponent,
     ReconnectingDialogComponent,
     HowToPlayDialogComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    SelectLanguageComponent
   ],
   providers: [
     SignalrService,
-    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: true, disableClose: true, minWidth:310 } },
-    //{ provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
-    //{ provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    //{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: true, disableClose: true } },
   ],
   bootstrap: [AppComponent]
 })

@@ -1,25 +1,21 @@
-import {Component, OnInit, Input, Inject} from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {Component, Inject} from '@angular/core';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 @Component({
   templateUrl: './confirmation-dialog.component.html',
   styleUrls: ['./confirmation-dialog.component.scss']
 })
-export class ConfirmationDialogComponent implements OnInit {
+export class ConfirmationDialogComponent {
 
-  constructor(public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
-
-  ngOnInit() {
-
+  constructor(private bottomSheetRef: MatBottomSheetRef<ConfirmationDialogComponent>,
+              @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {
   }
 
   onConfirmation(): void {
-    this.dialogRef.close({confirmed: true});
+    this.bottomSheetRef.dismiss(true);
   }
 
   onCancel(): void {
-    this.dialogRef.close({confirmed: false});
+    this.bottomSheetRef.dismiss(false);
   }
 }

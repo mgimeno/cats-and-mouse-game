@@ -16,6 +16,7 @@ import { HowToPlayDialogComponent } from '../../how-to-play-dialog/how-to-play-d
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { CommonHelper } from 'src/app/shared/helpers/common-helper';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
 
 @Component({
@@ -35,7 +36,8 @@ export class PlayGameComponent implements OnInit, OnDestroy {
   constructor(private signalrService: SignalrService,
     private router: Router,
     private notificationService: NotificationService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private bottomSheet: MatBottomSheet) {
 
     console.log("play game constructor");
     console.log(this.chessBoard);
@@ -196,17 +198,17 @@ export class PlayGameComponent implements OnInit, OnDestroy {
         });
     }
     else {
-      const dialogRef = this.dialog.open(ConfirmationDialogComponent,
-        {
+      
+        const bottomSheetRef = this.bottomSheet.open(ConfirmationDialogComponent,{
           data: {
-            dialogTitle: "Exit this game?",
+            dialogTitle: $localize`:@@play.exit-game-question:Exit this game?`,
             dialogBody: null
           }
         });
+      
+        bottomSheetRef.afterDismissed().subscribe((confirmed: boolean) => {
 
-      dialogRef.afterClosed().subscribe((result: any) => {
-
-        if (result.confirmed) {
+        if (confirmed) {
 
           this.signalrService.sendMessage("ExitInProgressGame")
             .then(() => {

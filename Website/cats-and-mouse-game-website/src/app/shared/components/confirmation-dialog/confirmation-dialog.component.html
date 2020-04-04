@@ -1,13 +1,19 @@
-<h1 mat-dialog-title *ngIf="data.dialogTitle">{{data.dialogTitle}}</h1>
+<div class="text-center">
 
-<mat-dialog-content *ngIf="data.dialogBody">
+  <h1 *ngIf="data.dialogTitle">{{data.dialogTitle}}</h1>
 
-  {{data.dialogBody}}
+  <p *ngIf="data.dialogBody">
 
-</mat-dialog-content>
+    {{data.dialogBody}}
 
-<mat-dialog-actions>
-  <button class="big-button" mat-button (click)="onCancel()">Cancel</button>
-  <button class="big-button" mat-raised-button color="primary" (click)="onConfirmation()"
-          cdkFocusInitial>Yes</button>
-</mat-dialog-actions>
+  </p>
+
+  <div class="buttons-container">
+    <button class="big-button" mat-raised-button color="primary" (click)="onConfirmation()" cdkFocusInitial
+      i18n="@@button.yes">Yes</button>
+
+    <button class="big-button" mat-button (click)="onCancel()" i18n="@@button.cancel">Cancel</button>
+
+  </div>
+
+</div>

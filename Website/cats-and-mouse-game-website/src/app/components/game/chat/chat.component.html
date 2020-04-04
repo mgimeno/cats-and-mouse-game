@@ -1,6 +1,6 @@
 <div class="chat">
 
-  <b class="chat-box-title">Chat box</b>
+  <b class="chat-box-title" i18n="@@chat.chat">Chat box</b>
 
   <div *ngIf="chatLines.length" class="chat-history" #scrollMe [scrollTop]="scrollMe.scrollHeight">
 
@@ -19,11 +19,11 @@
 
   <form *ngIf="canSendMessages" [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="false" class="chat-form">
     <mat-form-field [formGroup]=formGroup >
-      <input type="text" matInput placeholder="Send a message..." formControlName="message" autocomplete="false">
+      <input type="text" matInput [placeholder]=sendPlaceholder formControlName="message" autocomplete="false">
     </mat-form-field>
 
     <button class="send-message-button" type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button
-      color="primary" cdkFocusInitial>
+      color="primary" cdkFocusInitial i18n="@@chat.send">
       Send
     </button>
   </form>
