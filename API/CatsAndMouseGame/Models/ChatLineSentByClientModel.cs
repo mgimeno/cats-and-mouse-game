@@ -1,8 +1,10 @@
-﻿namespace CatsAndMouseGame.Models
+﻿
+namespace CatsAndMouseGame.Models
 {
-    public class MessageModel { 
-
+    public class ChatLineSentByClientModel
+    {
         public string GameId { get; set; }
         public string Message { get; set; }
+
     }
 }

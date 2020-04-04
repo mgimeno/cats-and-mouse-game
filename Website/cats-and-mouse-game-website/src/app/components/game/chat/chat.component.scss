@@ -22,6 +22,10 @@
       .white{
         color:#888;
       }
+
+      .red{
+        color: $errorColor !important;
+      }
     }
   }
 

@@ -28,7 +28,16 @@ namespace CatsAndMouseGame.Hubs
                 _connections.Add(userId, Context.ConnectionId);
             }
 
-            SendGamesAwaitingForSecondPlayerToCallerAsync();
+            var playerInProgressGame = GetInProgressGame();
+            if (playerInProgressGame != null)
+            {
+                SendInProgressGameStatusToCaller();
+            }
+            else {
+                SendGamesAwaitingForSecondPlayerToCallerAsync();
+            }
+
+            SendWhetherHasInProgressGameToCaller();
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)
@@ -171,14 +180,17 @@ namespace CatsAndMouseGame.Hubs
             SendGameStatusToPlayer(game, player);
         }
 
-        public bool HasInProgressGame()
-        {
+        public void SendWhetherHasInProgressGameToCaller() {
             var game = GetInProgressGame();
 
-            return (game != null);
+            var message = new PlayerHasInProgressGameMessage
+            {
+                HasInProgressGame = (game != null)
+            };
+            SendMessageToClientsAsync("HasInProgressGame", GetAllConnectionsOfCurrentConnectionUser(), message);
         }
 
-        public void SendChatMessage(MessageModel model)
+        public void SendChatMessage(ChatLineSentByClientModel model)
         {
 
             var game = GetGame(model.GameId);
@@ -205,17 +217,19 @@ namespace CatsAndMouseGame.Hubs
         public void ExitInProgressGame()
         {
             var game = GetInProgressGame();
-
-            var message = new MessageModel
-            {
-                GameId = game.Id,
-                Message = "left the game."
-            };
-            SendChatMessage(message);
-
             var playerWhoLeft = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
             var opponentPlayer = game.Players.Where(p => p.UserId != playerWhoLeft.UserId).FirstOrDefault();
 
+            var message = new PlayerHasLeftGameMessage
+            {
+                GameId = game.Id,
+                UserName = playerWhoLeft.Name,
+                TeamId = playerWhoLeft.TeamId
+            };
+
+            SendMessageToClientsAsync("PlayerHasLeftGame", GetAllConnectionsByUsersIds(new List<string>() { opponentPlayer.UserId }), message);
+
+           
             game.PlayerLeft(playerWhoLeft);
 
             SendGameStatusToPlayer(game, opponentPlayer);
@@ -225,16 +239,8 @@ namespace CatsAndMouseGame.Hubs
         public void ExitFinishedGame(GameIdModel model)
         {
             var game = GetGame(model.GameId);
-
-            var message = new MessageModel
-            {
-                GameId = game.Id,
-                Message = "left the game."
-            };
-            SendChatMessage(message);
-
             var playerWhoLeft = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
-
+            
             game.PlayerLeft(playerWhoLeft);
         }
 

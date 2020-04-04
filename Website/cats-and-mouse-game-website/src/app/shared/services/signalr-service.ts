@@ -12,8 +12,9 @@ export class SignalrService {
   private hubConnection: signalR.HubConnection;
 
   constructor(
-    private notificationService: NotificationService,
-    private router: Router) {
+    //private notificationService: NotificationService,
+    //private router: Router
+    ){
   }
 
   startConnection = (): void => {
@@ -54,18 +55,19 @@ export class SignalrService {
   private registerConnection(): void {
 
     this.sendMessage("RegisterConnection", localStorage[`${environment.localStoragePrefix}user-id`])
-    .then(() => {
+    // .then(() => {
       
-      if (this.router.url === "/play") {
-        this.sendMessage("SendInProgressGameStatusToCaller")
-          .catch((reason: any) => {
-            console.error(reason);
-            this.notificationService.showError("Game does not exist");
-            this.router.navigate(['/']);
-          });
-      }
+    //   if (this.router.url === "/play") {
+    //     this.sendMessage("SendInProgressGameStatusToCaller")
+    //       .catch((reason: any) => {
+    //         console.error(reason);
+    //         this.notificationService.showError("Game does not exist");
+    //         this.router.navigate(['/']);
+    //       });
+    //   }
 
-    });
+    // })
+    ;
   }
 
   private start(): void {

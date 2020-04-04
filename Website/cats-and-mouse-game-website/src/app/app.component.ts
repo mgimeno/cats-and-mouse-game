@@ -4,6 +4,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ReconnectingDialogComponent } from './components/reconnecting-dialog/reconnecting-dialog.component';
 import { environment } from 'src/environments/environment';
 import { CommonHelper } from './shared/helpers/common-helper';
+import { Router } from '@angular/router';
+import { IPlayerHasInProgressGameMessage } from './shared/interfaces/player-has-in-progress-game-message';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +19,8 @@ export class AppComponent {
 
   constructor(
     private signalrService: SignalrService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private router: Router) {
 
     this.createBrowserUserId();
 
@@ -34,6 +37,17 @@ export class AppComponent {
       }
     }, 100);
 
+    this.signalrService.subscribeToMethod("HasInProgressGame", (message: IPlayerHasInProgressGameMessage) => {
+
+      if (message.hasInProgressGame) {
+        this.router.navigate(['/play']);
+      }
+      else {
+        this.router.navigate(['/']);
+      }
+
+    });
+
   }
 
   private openReconnectingDialog(): void {
@@ -41,10 +55,10 @@ export class AppComponent {
     this.reconnectingDialogRef = this.dialog.open(ReconnectingDialogComponent, { height: "100%", width: "100%" });
   }
 
-  private createBrowserUserId(): void{
+  private createBrowserUserId(): void {
     const userId = localStorage.getItem(`${environment.localStoragePrefix}user-id`);
-    if(!userId){
-      localStorage.setItem(`${environment.localStoragePrefix}user-id`,CommonHelper.getNewGuid());
+    if (!userId) {
+      localStorage.setItem(`${environment.localStoragePrefix}user-id`, CommonHelper.getNewGuid());
     }
   }
 

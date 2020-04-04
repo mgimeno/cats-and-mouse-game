@@ -6,7 +6,10 @@
 
     <div *ngFor="let chatLine of chatLines" class="chat-line" [class.text-right]="chatLine.teamId == teamEnum.Mouse">
       
-      <b [class.black]="chatLine.teamId == teamEnum.Cats" [class.white]="chatLine.teamId == teamEnum.Mouse">
+      <b 
+      [class.black]="chatLine.teamId == teamEnum.Cats" 
+      [class.white]="chatLine.teamId == teamEnum.Mouse"
+      [class.red]="chatLine.isSystemMessage">
         {{chatLine.message}}
       </b>
 

@@ -5,4 +5,6 @@ export interface IChatLine {
   userName: string;
   teamId: TeamEnum;
   message: string;
+
+  isSystemMessage: boolean;
 }

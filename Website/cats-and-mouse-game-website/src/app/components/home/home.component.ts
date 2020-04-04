@@ -54,14 +54,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     console.log("home on init")
 
-    this.signalrService.sendMessage("HasInProgressGame")
-      .then((hasInProgressGame: boolean) => {
-        console.log({hasInProgressGame});
-        if (hasInProgressGame) {
-          this.router.navigate(['/play']);
-        }
-      })
+    this.signalrService.sendMessage("SendWhetherHasInProgressGameToCaller")
       .catch((reason: any) => {
+        this.notificationService.showError("Error when asking for in progress game");
         console.error(reason);
       });
 

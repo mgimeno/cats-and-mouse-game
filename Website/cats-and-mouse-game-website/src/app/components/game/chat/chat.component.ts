@@ -5,6 +5,7 @@ import { SignalrService } from '../../../shared/services/signalr-service';
 import { IChatMessage } from '../../../shared/interfaces/chat-message.interface';
 import { TeamEnum } from '../../../shared/enums/team.enum';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { IPlayerHasLeftGameMessage } from 'src/app/shared/interfaces/player-has-left-game-message';
 
 @Component({
   selector: 'app-chat',
@@ -37,6 +38,23 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.chatLines.push(message.chatLine);
       }
     });
+
+    this.signalrService.subscribeToMethod("PlayerHasLeftGame", (message: IPlayerHasLeftGameMessage) => {
+
+
+      if (message.gameId === this.gameId) {
+
+        const chatLine = <IChatLine>{
+          userName: message.userName,
+          teamId: message.teamId,
+          message: `${message.userName} has left the game.`,
+          isSystemMessage: true
+        };
+
+        this.chatLines.push(chatLine);
+      }
+
+    });
   }
 
   isSubmitButtonDisabled(): boolean {
@@ -59,5 +77,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     console.log("Destroy chat");
     this.signalrService.unsubscribeToMethod("ChatMessage");
+    this.signalrService.unsubscribeToMethod("PlayerHasLeftGame");
+    
   }
 }

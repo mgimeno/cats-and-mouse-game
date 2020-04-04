@@ -7,14 +7,13 @@ namespace CatsAndMouseGame.Controllers
 {
     [EnableCors("CorsPolicy")]
     [Route("api/[action]")]
-
     [ApiController]
 
-    public class GameController : ControllerBase
+    public class StatusController : ControllerBase
     {
         private readonly IWebHostEnvironment _environment;
 
-        public GameController(IWebHostEnvironment environment)
+        public StatusController(IWebHostEnvironment environment)
         {
             _environment = environment;
         }
