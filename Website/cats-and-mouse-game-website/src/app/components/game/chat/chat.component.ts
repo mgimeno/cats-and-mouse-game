@@ -77,7 +77,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log("Destroy chat");
     this.signalrService.unsubscribeToMethod("ChatMessage");
     this.signalrService.unsubscribeToMethod("PlayerHasLeftGame");
     

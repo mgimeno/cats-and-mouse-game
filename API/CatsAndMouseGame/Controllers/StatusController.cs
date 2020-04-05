@@ -11,17 +11,32 @@ namespace CatsAndMouseGame.Controllers
 
     public class StatusController : ControllerBase
     {
-        private readonly IWebHostEnvironment _environment;
+        private readonly IWebHostEnvironment _env;
 
-        public StatusController(IWebHostEnvironment environment)
+        public StatusController(IWebHostEnvironment env)
         {
-            _environment = environment;
+            _env = env;
         }
 
         [HttpGet]
         public IActionResult Status()
         {
-            return Ok($"API IS READY. Environment: {_environment.EnvironmentName}");
+
+            var isDebugMode = false;
+            #if DEBUG
+            isDebugMode = true;
+            #endif
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                Content = $@"
+                CATS & MOUSE API IS READY
+                <br />
+                Build Mode: {(isDebugMode ? "DEBUG (Development)" : "RELEASE (Production)")}
+                <br />
+                Environment: {_env.EnvironmentName.ToUpper()}"
+            };
         }
 
     }

@@ -35,8 +35,6 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    console.log(this.data);
-
     const previousUserName = localStorage.getItem(`${environment.localStoragePrefix}user-name`);
     this.teamId = (this.data.teamId == TeamEnum.Cats ? TeamEnum.Mouse : TeamEnum.Cats);
 
@@ -86,7 +84,6 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log("Destroy join game");
   }
 
 }

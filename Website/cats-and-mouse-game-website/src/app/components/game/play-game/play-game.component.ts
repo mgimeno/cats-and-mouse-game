@@ -39,16 +39,10 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private bottomSheet: MatBottomSheet) {
 
-    console.log("play game constructor");
-    console.log(this.chessBoard);
-    console.log(this.chessBoxCurrentlySelected);
-    console.log(this.gameStatus);
-
     this.chessBoard = CommonHelper.buildChessBoard(COMMON_CONSTANTS.PLAY_CHESS_BOARD_ROWS, COMMON_CONSTANTS.PLAY_CHESS_BOARD_COLUMNS);
   }
 
   ngOnInit() {
-    console.log("play game on init");
 
     this.signalrService.sendMessage("SendInProgressGameStatusToCaller")
       .catch((reason: any) => {
@@ -61,7 +55,6 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     this.signalrService.subscribeToMethod("GameStatus", (message: IGameStatusMessage) => {
 
       this.gameStatus = message.gameStatus;
-      console.log(message.gameStatus);
 
       this.chessBoxCurrentlySelected = null;
 
@@ -350,7 +343,6 @@ export class PlayGameComponent implements OnInit, OnDestroy {
   };
 
   ngOnDestroy(): void {
-    console.log("Destroy play game");
     this.signalrService.unsubscribeToMethod("GameStatus");
   }
 

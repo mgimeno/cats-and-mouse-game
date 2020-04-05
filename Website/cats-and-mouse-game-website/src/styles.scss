@@ -114,6 +114,10 @@ h1, .mat-dialog-title{
     }
 }
 
+.mat-raised-button, .mat-button{
+  color: rgba(0,0,0,.60);
+}
+
 .mat-toolbar.mat-primary,
 .mat-fab.mat-primary, .mat-flat-button.mat-primary, .mat-mini-fab.mat-primary, .mat-raised-button.mat-primary{
   background-color: $primaryColor;

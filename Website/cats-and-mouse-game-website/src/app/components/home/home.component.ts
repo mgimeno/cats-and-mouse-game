@@ -69,8 +69,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.signalrService.subscribeToMethod("GameList", (message: IGameListMessage) => {
 
-      console.log("Games received", message.gameList);
-
       this.games = message.gameList;
 
       this.openJoinGameDialogIfGameInUrl();

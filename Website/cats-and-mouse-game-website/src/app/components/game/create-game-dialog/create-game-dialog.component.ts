@@ -106,6 +106,5 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log("Destroy create game");
   }
 }
