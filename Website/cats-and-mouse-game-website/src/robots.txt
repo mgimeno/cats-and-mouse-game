@@ -1,0 +1,3 @@
+Sitemap: http://catsandmouse.compuglobalhypermeganet.ltd//sitemap.xml
+User-agent: *
+Disallow:

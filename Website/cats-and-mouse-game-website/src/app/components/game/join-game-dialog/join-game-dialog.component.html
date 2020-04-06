@@ -3,9 +3,9 @@
 <form class="max-container-width" [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="off">
 
 
-  <div class="secondary-title" i18n="@@join.name">
+  <h2 class="text-center" i18n="@@join.name">
     Your name
-  </div>
+  </h2>
 
   <mat-form-field [formGroup]=formGroup class="center-placeholder">
     <input type="text" matInput  formControlName="userName" [maxlength]="getMaxUserNameLength()" class="text-center">

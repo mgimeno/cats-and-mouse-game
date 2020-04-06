@@ -37,12 +37,12 @@ if (language == "es") {
 
     loadTranslations({
 
-        'index.title': 'El juego del Gato y el Raton',
-        'index.meta_description': 'Juega gratis y online al juego del Gato y el Raton en un tablero de ajedrez',
-        'index.meta_og_description': 'Juega gratis al Gato y el Raton con amigos',
+        'index.title': 'El juego del Gato y el Ratón',
+        'index.meta_description': 'Juega gratis y online al juego del Gato y el Ratón en un tablero de ajedrez',
+        'index.meta_og_description': 'Juega gratis al Gato y el Ratón con amigos',
 
         'home.title': 'GATO Y RATON',
-        'home.description': 'Juega al Gato y Raton gratis',
+        'home.description': 'Juega al Gato y Ratón gratis',
         'home.create_game': 'Crear partida',
         'home.how_to_play': 'Como jugar',
         'home.language': 'Idioma',
@@ -56,14 +56,14 @@ if (language == "es") {
 
         'select-language.select': 'Selecciona un idioma',
 
-        'page-not-found.not-found': '404 - Pagina no encontrada',
+        'page-not-found.not-found': '404 - Página no encontrada',
         'page-not-found.back': 'Volver',
 
         'play.win': 'Ganaste!',
         'play.lose': 'Perdiste',
         'play.your_turn': 'Tu turno!',
         'play.cat_turn_info': 'Selecciona un gato y muevelo',
-        'play.mouse_turn_info': 'Mueve el raton',
+        'play.mouse_turn_info': 'Mueve el ratón',
         'play.their_turn': 'Turno del oponente',
         'play.is_thinking': 'esta pensando...',
         'play.how_to_play': 'como jugar',
@@ -82,6 +82,15 @@ if (language == "es") {
         'create.copy_link': 'Copiar link',
         'create.copied': 'Copiado!',
 
+        'how_to_play-introduction_title':'Introducción',
+        'how_to_play-introduction_text_1':'Al gato y el ratón se juega en un tablero de ajedrez.',
+        'how_to_play-introduction_text_2':'Se necesitan 5 piezas, 1 blanca para representar al ratón y 4 negras para representar a los gatos.',
+        'how_to_play-moving_title':'Como se mueven las piezas?',
+        'how_to_play-moving_text':'Todas las piezas se mueven diagonalmente sobre las casillas negras. El ratón puede mover hacia atras mientras que los gatos no pueden.',
+        'how_to_play-goal_title':'Cual es el objetivo?',
+        'how_to_play-goal_text':'El ratón debe alcanzar la última fila del tablero, mientras que los gatos deben arrinconar al ratón para que no pueda hacer ningun movimiento.',
+        'how_to_play-accept_button':'Entendido!',
+
         'chat.chat': 'Chat',
         'chat.send': 'Enviar',
         'chat.send_placeholder': 'Enviar mensaje...',
@@ -89,7 +98,7 @@ if (language == "es") {
 
         'select_team.select': 'Elige tu equipo',
         'select_team.cats': 'gatos',
-        'select_team.mouse': 'raton',
+        'select_team.mouse': 'ratón',
         'select_team.opponent': 'oponente',
 
         'button.cancel': 'Cancelar',
