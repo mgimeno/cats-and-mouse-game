@@ -262,6 +262,8 @@ namespace CatsAndMouseGame.Hubs
             SendMessageToClientsAsync("PlayerHasLeftGame", GetAllConnectionsByUsersIds(new List<string>() { opponentPlayer.UserId }), message);
 
             game.PlayerLeft(playerWhoLeft);
+
+            SendGameStatusToPlayer(game, opponentPlayer);
         }
 
 
