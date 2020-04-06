@@ -337,7 +337,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
     this.signalrService.sendMessage("Move", message)
       .catch((reason: any) => {
-        this.notificationService.showError("Error when moving the piece");
+        //this.notificationService.showError("Error when moving the piece");
         console.error(reason);
       });
   };

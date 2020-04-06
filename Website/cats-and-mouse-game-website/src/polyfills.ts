@@ -82,6 +82,7 @@ if (language == "es") {
         'create.copy_link': 'Copiar link',
         'create.copied': 'Copiado!',
 
+        'how_to_play.title': 'Como jugar',
         'how_to_play-introduction_title':'Introducción',
         'how_to_play-introduction_text_1':'Al gato y el ratón se juega en un tablero de ajedrez.',
         'how_to_play-introduction_text_2':'Se necesitan 5 piezas, 1 blanca para representar al ratón y 4 negras para representar a los gatos.',
