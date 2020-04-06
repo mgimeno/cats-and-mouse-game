@@ -37,8 +37,8 @@ if (language == "es") {
 
     loadTranslations({
 
-        'index.title': 'El juego del Gato y el Ratón',
-        'index.meta_description': 'Juega gratis y online al juego del Gato y el Ratón en un tablero de ajedrez',
+        'index.title': 'El Gato y el Ratón. Juego Multijugador.',
+        'index.meta_description': 'Juega gratis al juego del Gato y el Ratón en un tablero de ajedrez. Juega online con amigos.',
         'index.meta_og_description': 'Juega gratis al Gato y el Ratón con amigos',
 
         'home.title': 'GATO Y RATON',
