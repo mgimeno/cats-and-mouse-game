@@ -18,6 +18,7 @@ import { IFigure } from 'src/app/shared/interfaces/figure.interface';
 import { SelectLanguageComponent } from '../select-language/select-language.component';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { environment } from 'src/environments/environment';
+import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
 
 
 @Component({
@@ -35,6 +36,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   createGameDialogRef: MatDialogRef<CreateGameDialogComponent>;
   joinGameDialogRef: MatDialogRef<JoinGameDialogComponent>;
   howToPlayDialogRef: MatDialogRef<HowToPlayDialogComponent>;
+
+  currentLanguageCode: string = localStorage.getItem(`${environment.localStoragePrefix}language`);
 
   private chessBoard: [IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[]] = null;
 
@@ -69,7 +72,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.signalrService.subscribeToMethod("GameList", (message: IGameListMessage) => {
 
-      this.games = message.gameList;
+      const userId = localStorage.getItem(`${environment.localStoragePrefix}user-id`);
+
+      this.games = message.gameList.filter(g => g.userId !== userId);
 
       this.openJoinGameDialogIfGameInUrl();
 
@@ -99,15 +104,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     bottomSheetRef.afterDismissed().subscribe((newLanguageCode: string) => {
 
-      if (newLanguageCode) {
-        
-        const oldLanguageCode = localStorage.getItem(`${environment.localStoragePrefix}language`);
+      if (newLanguageCode) { 
 
-        if(newLanguageCode !== oldLanguageCode){
+        if (newLanguageCode !== this.currentLanguageCode) {
           localStorage.setItem(`${environment.localStoragePrefix}language`, newLanguageCode);
+          this.dialog.open(LoadingDialogComponent, { data: { dialogTitle: $localize`:@@loading_dialog.loading:Loading...` }, height: "100%", width: "100%" });
           window.location.reload();
         }
-        
+
       }
 
     });

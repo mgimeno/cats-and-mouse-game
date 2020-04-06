@@ -26,7 +26,7 @@ if (localStorage.getItem(`${environment.localStoragePrefix}language`)) {
     language = localStorage.getItem(`${environment.localStoragePrefix}language`);
 }
 else {
-    language = navigator.language.substring(0, 1);
+    language = navigator.language.substring(0, 2);
 }
 
 language = language.toLowerCase();
@@ -51,7 +51,8 @@ if (language == "es") {
         'home.table.player': 'Jugador',
         'home.table.join': 'Entrar',
 
-        'reconnecting.connecting': 'Conectando al servidor',
+        'loading_dialog.connecting': 'Conectando al servidor',
+        'loading_dialog.loading': 'Cargando...',
 
         'select-language.select': 'Selecciona un idioma',
 
@@ -86,13 +87,16 @@ if (language == "es") {
         'chat.send_placeholder': 'Enviar mensaje...',
         'chat.player_has_left': 'ha dejado la partida.',
 
-        'select_team.select': 'Selecciona tu equipo',
+        'select_team.select': 'Elige tu equipo',
         'select_team.cats': 'gatos',
         'select_team.mouse': 'raton',
         'select_team.opponent': 'oponente',
 
         'button.cancel': 'Cancelar',
-        'button.yes': 'Si'
+        'button.yes': 'Si',
+
+        'error.missing_name': 'Escribe tu nombre',
+        'error.missing_team': 'Elige tu equipo'
     });
 
 }

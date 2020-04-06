@@ -30,7 +30,6 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<CreateGameDialogComponent>,
     private signalrService: SignalrService,
-    private router: Router,
     private notificationService: NotificationService) { }
 
   ngOnInit() {
@@ -48,11 +47,18 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
     return COMMON_CONSTANTS.MAX_USERNAME_LENGTH;
   }
 
-  isSubmitButtonDisabled(): boolean {
-    return this.formGroup.invalid;
-  }
-
   onSubmit(): void {
+
+    if (this.formGroup.invalid) {
+      if (this.formGroup.controls.userName.invalid) {
+        this.notificationService.showError($localize`:@@error.missing_name:Type your name`);
+      }
+      if (this.formGroup.controls.teamId.invalid) {
+        this.notificationService.showError($localize`:@@error.missing_team:Select a team`);
+      }
+
+      return;
+    }
 
     const userName = this.formGroup.controls.userName.value;
 

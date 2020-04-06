@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SignalrService } from './shared/services/signalr-service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ReconnectingDialogComponent } from './components/reconnecting-dialog/reconnecting-dialog.component';
+import { LoadingDialogComponent } from './components/loading-dialog/loading-dialog.component';
 import { environment } from 'src/environments/environment';
 import { CommonHelper } from './shared/helpers/common-helper';
 import { Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { Meta, Title, MetaDefinition } from '@angular/platform-browser';
 export class AppComponent {
 
   isReconnectingDialogOpen: boolean = false;
-  reconnectingDialogRef: MatDialogRef<ReconnectingDialogComponent> = null;
+  reconnectingDialogRef: MatDialogRef<LoadingDialogComponent> = null;
 
   constructor(
     private signalrService: SignalrService,
@@ -57,7 +57,7 @@ export class AppComponent {
 
   private openReconnectingDialog(): void {
     this.isReconnectingDialogOpen = true;
-    this.reconnectingDialogRef = this.dialog.open(ReconnectingDialogComponent, { height: "100%", width: "100%" });
+    this.reconnectingDialogRef = this.dialog.open(LoadingDialogComponent, { data: {dialogTitle: $localize`:@@loading_dialog.connecting:Connecting to server`}, height: "100%", width: "100%" });
   }
 
   private createBrowserUserId(): void {
@@ -70,18 +70,13 @@ export class AppComponent {
   private addTitleAndMetaTags(): void {
 
     this.title.setTitle($localize`:@@index.title:Cats & Mouse Game`);
-    this.meta.addTags([
-      <MetaDefinition>{ name: "description", content: $localize`:@@index.meta_description:Play for free and online to Cats and mouse game on a chessboard` },
-      <MetaDefinition>{ property: "og:title", content: $localize`:@@index.title:Play for free Cats and mouse with friends` },
-      <MetaDefinition>{ property: "og:description", content: $localize`:@@index.meta_og_description:Play for free Cats and mouse with friends` },
-      //todo <MetaDefinition>{property: "og:url", content:""},
-      //todo <MetaDefinition>{property: "og:image", content: ""},
-      <MetaDefinition>{ property: "og:type", content: "website" },
-      <MetaDefinition>{property: "fb:admins", content: "1114899665"},
-    ], true);
+    this.meta.updateTag(<MetaDefinition>{ name: "description", content: $localize`:@@index.meta_description:Play for free and online to Cats and mouse game on a chessboard` });
+    this.meta.updateTag(<MetaDefinition>{ property: "og:title", content: $localize`:@@index.title:Cats & Mouse Game` });
+    this.meta.updateTag(<MetaDefinition>{ property: "og:description", content: $localize`:@@index.meta_og_description:Play for free Cats and mouse with friends` });
 
     const languageCode = localStorage.getItem(`${environment.localStoragePrefix}language`);
-    this.meta.addTag(<MetaDefinition>{ property: "og:locale", content: (languageCode === "en" ? "en_GB" : "es_ES") }, true);
-    this.meta.addTag(<MetaDefinition>{ property: "og:locale:alternate", content: (languageCode === "en" ? "es_ES" : "en_GB") }, true);
+    this.meta.updateTag(<MetaDefinition>{ property: "og:locale", content: (languageCode === "en" ? "en_GB" : "es_ES") });
+    this.meta.updateTag(<MetaDefinition>{ property: "og:locale:alternate", content: (languageCode === "en" ? "es_ES" : "en_GB") });
+
   }
 }

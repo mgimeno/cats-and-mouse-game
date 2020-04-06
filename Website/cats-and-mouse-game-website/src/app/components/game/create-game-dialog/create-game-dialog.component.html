@@ -8,8 +8,8 @@
       Your name
     </div>
 
-    <mat-form-field [formGroup]=formGroup>
-      <input type="text" matInput formControlName="userName" [maxlength]="getMaxUserNameLength()" class="text-center">
+    <mat-form-field [formGroup]=formGroup class="center-placeholder">
+      <input type="text"   matInput formControlName="userName" [maxlength]="getMaxUserNameLength()" class="text-center">
     </mat-form-field>
 
     <!-- <mat-form-field [formGroup]=formGroup>
@@ -22,7 +22,7 @@
 
     <div class="buttons-container">
 
-      <button class="big-button" type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button color="primary"
+      <button class="big-button" type="submit" mat-raised-button color="primary"
         cdkFocusInitial i18n="@@create.create_game">Create game</button>
 
       <button class="big-button" type="button" mat-button (click)="onCancel()" i18n="@@button.cancel">Cancel</button>

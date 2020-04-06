@@ -34,7 +34,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SignalrService } from './shared/services/signalr-service';
 import { ChessBoxComponent } from './components/game/chess-box/chess-box.component';
 import { ChatComponent } from './components/game/chat/chat.component';
-import { ReconnectingDialogComponent } from './components/reconnecting-dialog/reconnecting-dialog.component';
+import { LoadingDialogComponent } from './components/loading-dialog/loading-dialog.component';
 import { LoaderComponent } from './shared/components/loader/loader.component';
 import { TeamSelectComponent } from './shared/components/team-select/team-select.component';
 import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -45,7 +45,7 @@ import { SelectLanguageComponent } from './components/select-language/select-lan
   declarations: [
     AppComponent,
 
-    ReconnectingDialogComponent,
+    LoadingDialogComponent,
 
     HowToPlayDialogComponent,
     ConfirmationDialogComponent,
@@ -94,7 +94,7 @@ import { SelectLanguageComponent } from './components/select-language/select-lan
   entryComponents: [
     CreateGameDialogComponent,
     JoinGameDialogComponent,
-    ReconnectingDialogComponent,
+    LoadingDialogComponent,
     HowToPlayDialogComponent,
     ConfirmationDialogComponent,
     SelectLanguageComponent

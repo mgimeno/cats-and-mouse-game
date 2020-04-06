@@ -29,7 +29,6 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<JoinGameDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IGameListItem,
     private signalrService: SignalrService,
-    private router: Router,
     private notificationService: NotificationService) {
   }
 
@@ -52,11 +51,15 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
     return COMMON_CONSTANTS.MAX_USERNAME_LENGTH;
   }
 
-  isSubmitButtonDisabled(): boolean {
-    return this.formGroup.invalid;
-  }
-
   onSubmit(): void {
+
+    if (this.formGroup.invalid) {
+      if (this.formGroup.controls.userName.invalid) {
+        this.notificationService.showError($localize`:@@error.missing_name:Type your name`);
+      }
+
+      return;
+    }
 
     const userName = this.formGroup.controls.userName.value;
 

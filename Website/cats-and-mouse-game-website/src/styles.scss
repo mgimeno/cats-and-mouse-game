@@ -141,8 +141,24 @@ input{
   background-color: rgba(100,100,100,0.1);
 }
 
-.mat-form-field.mat-focused .mat-form-field-label{
-  display: none !important;
+
+//Hide placeholder
+.mat-form-field.mat-focused .mat-form-field-label, input.ng-valid+span.mat-form-field-label-wrapper .mat-form-field-label{
+    display: none !important;
+}
+
+.center-placeholder .mat-form-field-label{
+  text-align: center;
+}
+
+.button-with-right-icon{
+  display:flex;
+  align-items: center;
+  justify-content: space-around;
+
+  img{
+    width:24px;
+  }
 }
 
 .figure{

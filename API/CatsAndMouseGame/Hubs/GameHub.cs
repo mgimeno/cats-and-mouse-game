@@ -54,8 +54,14 @@ namespace CatsAndMouseGame.Hubs
 
         public GameListItem CreateGame(CreateGameModel model)
         {
+            var userId = GetUserIdByCurrentConnectionId();
+
+            if (GetGamesAwaitingForSecondPlayer().Any(g => g.UserId == userId)) {
+                throw new Exception("You are already creating another game");
+            }
+
             var newGame = new GameModel(model.GamePassword);
-            newGame.SetFirstPlayer(model.TeamId, model.UserName, GetUserIdByCurrentConnectionId());
+            newGame.SetFirstPlayer(model.TeamId, model.UserName, userId);
 
             _games.Add(newGame);
 
@@ -81,6 +87,10 @@ namespace CatsAndMouseGame.Hubs
             if (!game.IsWaitingForSecondPlayer())
             {
                 throw new Exception("Game is in progress or over");
+            }
+
+            if (game.Players[0].UserId == GetUserIdByCurrentConnectionId()) {
+                throw new Exception("You cannot join your own game");
             }
 
             game.SetSecondPlayer(model.UserName, GetUserIdByCurrentConnectionId());
@@ -240,7 +250,17 @@ namespace CatsAndMouseGame.Hubs
         {
             var game = GetGame(model.GameId);
             var playerWhoLeft = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
-            
+            var opponentPlayer = game.Players.Where(p => p.UserId != playerWhoLeft.UserId).FirstOrDefault();
+
+            var message = new PlayerHasLeftGameMessage
+            {
+                GameId = game.Id,
+                UserName = playerWhoLeft.Name,
+                TeamId = playerWhoLeft.TeamId
+            };
+
+            SendMessageToClientsAsync("PlayerHasLeftGame", GetAllConnectionsByUsersIds(new List<string>() { opponentPlayer.UserId }), message);
+
             game.PlayerLeft(playerWhoLeft);
         }
 
@@ -342,6 +362,7 @@ namespace CatsAndMouseGame.Hubs
             return new GameListItem
             {
                 GameId = game.Id,
+                UserId = game.Players[0].UserId,
                 UserName = game.Players[0].Name,
                 TeamId = game.Players[0].TeamId,
                 IsPasswordProtected = game.IsPasswordProtected()

@@ -7,8 +7,8 @@
     Your name
   </div>
 
-  <mat-form-field [formGroup]=formGroup>
-    <input type="text" matInput formControlName="userName" [maxlength]="getMaxUserNameLength()" class="text-center">
+  <mat-form-field [formGroup]=formGroup class="center-placeholder">
+    <input type="text" matInput  formControlName="userName" [maxlength]="getMaxUserNameLength()" class="text-center">
   </mat-form-field>
 
   <!-- <mat-form-field *ngIf="data.isPasswordProtected" [formGroup]=formGroup>
@@ -22,7 +22,7 @@
   <div class="buttons-container">
 
 
-    <button class="big-button" type="submit" [disabled]="isSubmitButtonDisabled() == true" mat-raised-button
+    <button class="big-button" type="submit" mat-raised-button
       color="primary" cdkFocusInitial i18n="@@join.start_game">
       Start game
     </button>
