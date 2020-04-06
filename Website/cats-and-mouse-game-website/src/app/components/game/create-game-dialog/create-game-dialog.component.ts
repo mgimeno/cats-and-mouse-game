@@ -53,7 +53,7 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
       if (this.formGroup.controls.userName.invalid) {
         this.notificationService.showError($localize`:@@error.missing_name:Type your name`);
       }
-      if (this.formGroup.controls.teamId.invalid) {
+      else if (this.formGroup.controls.teamId.invalid) {
         this.notificationService.showError($localize`:@@error.missing_team:Select a team`);
       }
 
