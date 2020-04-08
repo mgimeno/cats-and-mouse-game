@@ -116,6 +116,7 @@ h1, .mat-dialog-title{
     }
 }
 
+//buttons
 .mat-raised-button, .mat-button{
   color: rgba(0,0,0,.60);
 }
@@ -125,6 +126,11 @@ h1, .mat-dialog-title{
   background-color: $primaryColor;
 }
 
+.success-button{
+  background-color: $successColor;
+  color: white;
+}
+
 .max-container-width{
   max-width: 400px;
   margin: 0 auto;
@@ -132,7 +138,7 @@ h1, .mat-dialog-title{
 
 input{
   font-size: 1.2em !important;
-  color: #803e04  !important;
+  color: $primaryColor  !important;
 
   &.text-center{
     text-align: center !important;
@@ -147,6 +153,22 @@ input{
 //Hide placeholder
 .mat-form-field.mat-focused .mat-form-field-label, input.ng-valid+span.mat-form-field-label-wrapper .mat-form-field-label{
     display: none !important;
+}
+
+.mat-form-field.do-not-use-red-for-invalid{
+
+  .mat-form-field-ripple{
+    background-color: $secondaryColor !important;
+  }
+
+  input{
+    color: $secondaryColor !important;
+    caret-color: $secondaryColor !important;
+  }
+
+  .mat-form-field-label { 
+    color: $secondaryColor !important;
+  }
 }
 
 .center-placeholder .mat-form-field-label{
@@ -221,93 +243,100 @@ input{
 }
 
 //Chess board (needs to be global) //todo! I think I can move this back to the components.
-.game-board {
 
-  width: 480px;
-  height: 480px;
-  margin: 0 auto;
-  border: 25px solid #803e04;
-  border-radius: 10px;
-  box-shadow: inset -1px 1px 7px rgba(0,0,0,.2), 
-              inset 1px -1px 7px rgba(0,0,0,.2), 
-              1px 12px 5px rgba(0,0,0,.4), 
-              4px 3px 8px rgba(0,0,0,.4), 
-              5px 10px 10px rgba(0,0,0,.2), 
-              -5px 10px 10px rgba(0,0,0,.4);
+  .game-board {
 
-  &.logo-game-board{
-    height: 180px;
-    border-top:0;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
+    width: 480px;
+    height: 480px;
+    margin: 0 auto;
+    border: 25px solid #803e04;
+    border-radius: 10px;
+    box-shadow: inset -1px 1px 7px rgba(0,0,0,.2), 
+                inset 1px -1px 7px rgba(0,0,0,.2), 
+                1px 12px 5px rgba(0,0,0,.4), 
+                4px 3px 8px rgba(0,0,0,.4), 
+                5px 10px 10px rgba(0,0,0,.2), 
+                -5px 10px 10px rgba(0,0,0,.4);
 
-  .box {
-    width: 60px;
-    height: 60px;
-    float: left;
-    text-align: center;
-    line-height: 60px;
-    font-size: 40px;
-    color: #632f01;
-    font-weight: bold;
-    cursor: default;
-  
-    &.white {
-      background-color: #ffce9e;
+    &.logo-game-board{
+      height: 180px;
+      border-top:0;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
     }
-  
-    &.black {
-      background-color: #d18b47;
-    }
-  
-    &.box-with-figure-can-be-selected {
-      @extend .box-shadow;
-      background-color: white;
-      cursor: pointer;
-    }
-  
-    &.box-with-figure-is-selected {
-      @extend .box-shadow;
-      background-color: #2e8b57;
-      cursor: pointer;
+
+    .box {
+      width: 60px;
+      height: 60px;
+      float: left;
+      text-align: center;
+      line-height: 60px;
+      font-size: 40px;
+      color: #632f01;
+      font-weight: bold;
+      cursor: default;
+    
+      &.white {
+        background-color: #ffce9e;
+      }
+    
+      &.black {
+        background-color: #d18b47;
+      }
+    
+      &.box-with-figure-can-be-selected {
+        @extend .box-shadow;
+        background-color: white;
+        cursor: pointer;
+      }
+    
+      &.box-with-figure-is-selected {
+        @extend .box-shadow;
+        background-color: #2e8b57;
+        cursor: pointer;
+        
+      }
+    
+      &.box-can-be-new-figure-position {
+        @extend .box-shadow;
+        background-color: orange;
+        cursor: pointer;
+      }
+
+      &.mouse-figure, &.cat-figure{
+        background-size: 80%;
+      }
       
     }
-  
-    &.box-can-be-new-figure-position {
-      @extend .box-shadow;
-      background-color: orange;
-      cursor: pointer;
-    }
 
-    &.mouse-figure, &.cat-figure{
-      background-size: 80%;
-    }
-    
   }
-
-}
 
 
 
 @media only screen and (max-width: 570px) {
     
-  .game-board {
-      width: 320px;
-      height: 320px;
-      border-width: 13px;
 
-      &.logo-game-board{
-      height: 120px;
+    .game-board {
+        width: 320px;
+        height: 320px;
+        border-width: 13px;
+
+        &.logo-game-board{
+        height: 120px;
+      }
+
+        .box {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 29px;
+      }
     }
 
-      .box {
-      width: 40px;
-      height: 40px;
-      line-height: 40px;
-      font-size: 29px;
+    .options-container{
+      width: 346px !important;
     }
-   }
+  
   
 }
 
@@ -324,6 +353,7 @@ input{
     .options-container{
       width: 35%;
       margin-top:0;
+      padding: 0 25px;
     }
 
     .chat{

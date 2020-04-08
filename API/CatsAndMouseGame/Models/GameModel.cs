@@ -17,7 +17,7 @@ namespace CatsAndMouseGame.Models
 
         public GameModel(string gamePassword = null)
         {
-            this.Id = Guid.NewGuid().ToString().Replace("-","").Substring(0,5);
+            this.Id = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 5);
             this.Password = gamePassword;
 
             this.Players = new List<PlayerModel>();
@@ -72,15 +72,17 @@ namespace CatsAndMouseGame.Models
             return player.Figures.Where(c => c.Id == figureId).FirstOrDefault();
         }
 
-        public List<string> GetPlayersUsersIds() {
+        public List<string> GetPlayersUsersIds()
+        {
             return this.Players.Select(p => p.UserId).ToList();
         }
-  
+
 
         public void RecalculateFiguresCanMoveToPositions()
         {
 
-            foreach (var player in this.Players) {
+            foreach (var player in this.Players)
+            {
 
                 foreach (var figure in player.Figures)
                 {
@@ -93,10 +95,12 @@ namespace CatsAndMouseGame.Models
                     var moveLeftwards = figure.Position.ColumnIndex - 1;
                     var moveRightwards = figure.Position.ColumnIndex + 1;
 
-                    if (figure.TypeId == FigureTypeEnum.Mouse) {
+                    if (figure.TypeId == FigureTypeEnum.Mouse)
+                    {
 
                         //up-left
-                        if (this.IsNewPositionValid(moveUpwardsRowIndex, moveLeftwards)) {
+                        if (this.IsNewPositionValid(moveUpwardsRowIndex, moveLeftwards))
+                        {
                             figure.AddCanMoveToPosition(moveUpwardsRowIndex, moveLeftwards);
                         }
 
@@ -128,7 +132,8 @@ namespace CatsAndMouseGame.Models
 
         public bool CanMove(FigureModel figure, int rowIndex, int columnIndex)
         {
-            if (figure.CanMoveToPositions.Any(p => p.RowIndex == rowIndex && p.ColumnIndex == columnIndex)) {
+            if (figure.CanMoveToPositions.Any(p => p.RowIndex == rowIndex && p.ColumnIndex == columnIndex))
+            {
                 return true;
             }
 
@@ -164,7 +169,8 @@ namespace CatsAndMouseGame.Models
             return this.Players.Where(p => p.IsTheirTurn).FirstOrDefault();
         }
 
-        public bool IsWaitingForSecondPlayer() {
+        public bool IsWaitingForSecondPlayer()
+        {
             return this.DateStarted == null && this.Players.Count == 1;
         }
 
@@ -173,11 +179,26 @@ namespace CatsAndMouseGame.Models
             return (this.DateStarted.HasValue && !IsGameOver());
         }
 
-        public bool IsPasswordProtected() {
+        public bool IsPasswordProtected()
+        {
             return !string.IsNullOrWhiteSpace(this.Password);
         }
 
-        public void PlayerLeft(PlayerModel playerWhoLeft) {
+        public bool HasAnyPlayerLeft() {
+            return this.Players.Any(p => p.HasUserLeftTheGame);
+        }
+
+        public bool IsReadyForRematch() {
+            return this.IsGameOver() && !this.HasAnyPlayerLeft() && this.Players.All(p => p.WantsToRematch);
+        }
+
+        public PlayerModel GetOpponentPlayer(PlayerModel player)
+        {
+            return this.Players.Where(p => p.UserId != player.UserId).FirstOrDefault();
+        }
+
+        public void PlayerLeft(PlayerModel playerWhoLeft)
+        {
 
             playerWhoLeft.HasUserLeftTheGame = true;
 

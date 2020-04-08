@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SignalrService } from '../../../shared/services/signalr-service';
-import { IMessageToClient } from '../../../shared/interfaces/message-to-client.interface';
-import { MessageToClientTypeEnum } from '../../../shared/enums/message-to-client-type.enum';
 import { IGameStatus } from '../../../shared/interfaces/game-status.interface';
 import { IGameStatusMessage } from '../../../shared/interfaces/game-status-message.interface';
 import { ChessBoxColorEnum } from '../../../shared/enums/chess-box-color.enum';
@@ -25,12 +23,14 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 })
 export class PlayGameComponent implements OnInit, OnDestroy {
 
-  private chessBoard : [IChessBox[], IChessBox[], IChessBox[], IChessBox[],IChessBox[], IChessBox[], IChessBox[], IChessBox[]] = null;
+  private chessBoard: [IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[]] = null;
   private chessBoxCurrentlySelected: IChessBox = null;
 
   gameStatus: IGameStatus = null;
 
   private beepAudio = new Audio(COMMON_CONSTANTS.BEEP_AUDIO_DATA);
+
+  private hasSentRematchRequest: boolean = false;
 
 
   constructor(private signalrService: SignalrService,
@@ -62,6 +62,8 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
       this.alertUserIfItsTheirTurnOrGameOver();
 
+      this.resetSentRematchRequestIfNeeded();
+
     });
   }
 
@@ -76,6 +78,12 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     }
 
     this.beepAudio.play();
+  }
+
+  private resetSentRematchRequestIfNeeded(): void {
+    if (!this.isGameOver() && this.hasSentRematchRequest) {
+      this.hasSentRematchRequest = false;
+    }
   }
 
   getFigureInPosition = (rowIndex: number, columnIndex: number): IFigure => {
@@ -178,39 +186,45 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     this.dialog.open(HowToPlayDialogComponent, { height: "100%", width: "100%" });
   }
 
-  exitGame(): void {
+  isRematchButtonVisible = (): boolean => {
+    return this.isGameOver() && !this.hasAnyPlayerLeft();
+  };
+
+  isRematchButtonEnabled = (): boolean => {
+    return this.isRematchButtonVisible() && !this.hasSentRematchRequest;
+  };
+
+  sendRematchRequest(): void {
+    if (this.hasSentRematchRequest) {
+      return;
+    }
+    this.hasSentRematchRequest = true;
+    this.signalrService.sendMessage("PlayerWantsToRematch", { gameId: this.gameStatus.gameId })
+      .catch((reason: any) => {
+        console.error(reason);
+        this.notificationService.showError("Error when resquesting rematch");
+      });
+  }
+
+  tryExitGame(): void {
 
     if (this.isGameOver()) {
-      this.signalrService.sendMessage("ExitFinishedGame", { gameId: this.gameStatus.gameId })
-        .then(() => {
-          this.router.navigate(['/']);
-        })
-        .catch((reason: any) => {
-          console.error(reason);
-          this.notificationService.showError("Error when exiting the game");
-        });
+      this.exitGame();
     }
     else {
-      
-        const bottomSheetRef = this.bottomSheet.open(ConfirmationDialogComponent,{
-          data: {
-            dialogTitle: $localize`:@@play.exit-game-question:Exit this game?`,
-            dialogBody: null
-          }
-        });
-      
-        bottomSheetRef.afterDismissed().subscribe((confirmed: boolean) => {
+
+      const bottomSheetRef = this.bottomSheet.open(ConfirmationDialogComponent, {
+        data: {
+          dialogTitle: $localize`:@@play.exit-game-question:Exit this game?`,
+          dialogBody: null
+        }
+      });
+
+      bottomSheetRef.afterDismissed().subscribe((confirmed: boolean) => {
 
         if (confirmed) {
 
-          this.signalrService.sendMessage("ExitInProgressGame")
-            .then(() => {
-              this.router.navigate(['/']);
-            })
-            .catch((reason: any) => {
-              console.error(reason);
-              this.notificationService.showError("Error when exiting the game");
-            });
+          this.exitGame();
 
         }
 
@@ -218,6 +232,17 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     }
 
 
+  }
+
+  private exitGame(): void {
+    this.signalrService.sendMessage("ExitGame", { gameId: this.gameStatus.gameId })
+      .then(() => {
+        this.router.navigate(['/']);
+      })
+      .catch((reason: any) => {
+        console.error(reason);
+        this.notificationService.showError("Error when exiting the game");
+      });
   }
 
   private buildChessBoard = (): void => {

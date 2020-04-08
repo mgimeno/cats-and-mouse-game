@@ -33,7 +33,8 @@ namespace CatsAndMouseGame.Hubs
             {
                 SendInProgressGameStatusToCaller();
             }
-            else {
+            else
+            {
                 SendGamesAwaitingForSecondPlayerToCallerAsync();
             }
 
@@ -56,7 +57,8 @@ namespace CatsAndMouseGame.Hubs
         {
             var userId = GetUserIdByCurrentConnectionId();
 
-            if (GetGamesAwaitingForSecondPlayer().Any(g => g.UserId == userId)) {
+            if (GetGamesAwaitingForSecondPlayer().Any(g => g.UserId == userId))
+            {
                 throw new Exception("You are already creating another game");
             }
 
@@ -89,7 +91,8 @@ namespace CatsAndMouseGame.Hubs
                 throw new Exception("Game is in progress or over");
             }
 
-            if (game.Players[0].UserId == GetUserIdByCurrentConnectionId()) {
+            if (game.Players[0].UserId == GetUserIdByCurrentConnectionId())
+            {
                 throw new Exception("You cannot join your own game");
             }
 
@@ -190,7 +193,8 @@ namespace CatsAndMouseGame.Hubs
             SendGameStatusToPlayer(game, player);
         }
 
-        public void SendWhetherHasInProgressGameToCaller() {
+        public void SendWhetherHasInProgressGameToCaller()
+        {
             var game = GetInProgressGame();
 
             var message = new PlayerHasInProgressGameMessage
@@ -224,33 +228,12 @@ namespace CatsAndMouseGame.Hubs
 
         }
 
-        public void ExitInProgressGame()
-        {
-            var game = GetInProgressGame();
-            var playerWhoLeft = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
-            var opponentPlayer = game.Players.Where(p => p.UserId != playerWhoLeft.UserId).FirstOrDefault();
-
-            var message = new PlayerHasLeftGameMessage
-            {
-                GameId = game.Id,
-                UserName = playerWhoLeft.Name,
-                TeamId = playerWhoLeft.TeamId
-            };
-
-            SendMessageToClientsAsync("PlayerHasLeftGame", GetAllConnectionsByUsersIds(new List<string>() { opponentPlayer.UserId }), message);
-
-           
-            game.PlayerLeft(playerWhoLeft);
-
-            SendGameStatusToPlayer(game, opponentPlayer);
-
-        }
-
-        public void ExitFinishedGame(GameIdModel model)
+        public void ExitGame(GameIdModel model)
         {
             var game = GetGame(model.GameId);
+
             var playerWhoLeft = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
-            var opponentPlayer = game.Players.Where(p => p.UserId != playerWhoLeft.UserId).FirstOrDefault();
+            var opponentPlayer = game.GetOpponentPlayer(playerWhoLeft);
 
             var message = new PlayerHasLeftGameMessage
             {
@@ -263,7 +246,53 @@ namespace CatsAndMouseGame.Hubs
 
             game.PlayerLeft(playerWhoLeft);
 
-            SendGameStatusToPlayer(game, opponentPlayer);
+            if (!opponentPlayer.HasUserLeftTheGame)
+            {
+                SendGameStatusToPlayer(game, opponentPlayer);
+            }
+        }
+
+        public void PlayerWantsToRematch(GameIdModel model)
+        {
+            var game = GetGame(model.GameId);
+            if (!game.IsGameOver())
+            {
+                throw new Exception("Game is not over");
+            }
+            if (game.HasAnyPlayerLeft())
+            {
+                throw new Exception("Opponent has left");
+            }
+
+            var playerWhoWantsToRematch = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
+            var opponentPlayer = game.GetOpponentPlayer(playerWhoWantsToRematch);
+            var allPlayersConnections = GetAllConnectionsByUsersIds(game.GetPlayersUsersIds());
+
+            playerWhoWantsToRematch.WantsToRematch = true;
+
+            var message = new PlayerWantsRematchMessage
+            {
+                GameId = game.Id,
+                UserName = playerWhoWantsToRematch.Name,
+                TeamId = playerWhoWantsToRematch.TeamId
+            };
+
+            SendMessageToClientsAsync("PlayerWantsRematch", allPlayersConnections, message);
+
+            if (game.IsReadyForRematch())
+            {
+
+                var rematchGame = new GameModel();
+                rematchGame.SetFirstPlayer(playerWhoWantsToRematch.TeamId, playerWhoWantsToRematch.Name, playerWhoWantsToRematch.UserId);
+                rematchGame.SetSecondPlayer(opponentPlayer.Name, opponentPlayer.UserId);
+
+                rematchGame.Start();
+
+                _games.Add(rematchGame);
+
+                SendGameStatusToAllPlayers(rematchGame);
+
+            }
         }
 
 

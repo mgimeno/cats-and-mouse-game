@@ -7,6 +7,7 @@ import { CommonHelper } from './shared/helpers/common-helper';
 import { Router } from '@angular/router';
 import { IPlayerHasInProgressGameMessage } from './shared/interfaces/player-has-in-progress-game-message';
 import { Meta, Title, MetaDefinition } from '@angular/platform-browser';
+import { IGameStatusMessage } from './shared/interfaces/game-status-message.interface';
 
 @Component({
   selector: 'app-root',
@@ -52,6 +53,8 @@ export class AppComponent {
       }
 
     });
+
+    
 
   }
 

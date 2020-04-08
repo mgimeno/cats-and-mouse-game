@@ -53,17 +53,21 @@
 
   <div class="options-container">
 
-    <div class="mini-wrapper">
-
       <div class="options-buttons">
         <button mat-button (click)=openHowToPlayDialog()><i class="far fa-question-circle"></i>&nbsp;<span i18n="@@play.how_to_play">how to play</span></button>
 
-        <button *ngIf="!isGameOver()" mat-button color="warn" (click)=exitGame()><i class="fas fa-sign-out-alt"></i>&nbsp;<span i18n="@@play.exit_game">exit game</span></button>
-        <button *ngIf="isGameOver()" mat-raised-button color="warn" (click)=exitGame()><i class="fas fa-sign-out-alt"></i>&nbsp;<span i18n="@@play.exit_game">exit game</span></button>
+        <button *ngIf="isRematchButtonVisible()" [disabled]="!isRematchButtonEnabled()" mat-raised-button class="success-button" (click)=sendRematchRequest()>
+          <i class="fas fa-redo"></i>&nbsp;
+          <span *ngIf="isRematchButtonEnabled()" i18n="@@play.rematch">rematch</span>
+          <span *ngIf="!isRematchButtonEnabled()" i18n="@@play.rematch_awaiting">awaiting</span>
+        </button>
+
+        <button *ngIf="!isGameOver()" mat-button color="warn" (click)=tryExitGame()><i class="fas fa-sign-out-alt"></i>&nbsp;<span i18n="@@play.exit_game">exit game</span></button>
+        <button *ngIf="isGameOver()" mat-raised-button color="warn" (click)=tryExitGame()><i class="fas fa-sign-out-alt"></i>&nbsp;<span i18n="@@play.exit_game">exit game</span></button>
       </div>
 
       <app-chat [gameId]=gameStatus.gameId [canSendMessages]=!hasAnyPlayerLeft()></app-chat>
-    </div>
+    
   </div>
 
 

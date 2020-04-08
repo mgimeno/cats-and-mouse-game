@@ -6,10 +6,15 @@
 
   .options-container{
     
-    margin-top:13px;
+    margin:13px auto 0 auto;
+    width: 530px;
 
     .options-buttons{
       text-align: right;
+
+      button:not(:nth-child(1)){
+        margin-left:3px;
+      }
     }
   }
 

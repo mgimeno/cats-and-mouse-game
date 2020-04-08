@@ -19,6 +19,7 @@ import { SelectLanguageComponent } from '../select-language/select-language.comp
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { environment } from 'src/environments/environment';
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
+import { IGameStatusMessage } from 'src/app/shared/interfaces/game-status-message.interface';
 
 
 @Component({
@@ -97,6 +98,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.router.navigate(['/play']);
 
     });
+
+    this.signalrService.subscribeToMethod("GameStatus", (message: IGameStatusMessage) => {
+      this.router.navigate(['/play']);
+    });
   }
 
   openSelectLanguage(): void {
@@ -104,7 +109,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     bottomSheetRef.afterDismissed().subscribe((newLanguageCode: string) => {
 
-      if (newLanguageCode) { 
+      if (newLanguageCode) {
 
         if (newLanguageCode !== this.currentLanguageCode) {
           localStorage.setItem(`${environment.localStoragePrefix}language`, newLanguageCode);
@@ -187,5 +192,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.signalrService.unsubscribeToMethod("GameList");
     this.signalrService.unsubscribeToMethod("GameStart");
+    this.signalrService.unsubscribeToMethod("GameStatus");
+    
   }
 }
