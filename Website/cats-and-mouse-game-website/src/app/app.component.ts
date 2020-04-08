@@ -72,10 +72,10 @@ export class AppComponent {
 
   private addTitleAndMetaTags(): void {
 
-    this.title.setTitle($localize`:@@index.title:Cats & Mouse Game`);
-    this.meta.updateTag(<MetaDefinition>{ name: "description", content: $localize`:@@index.meta_description:Play for free and online to Cats and mouse game on a chessboard` });
-    this.meta.updateTag(<MetaDefinition>{ property: "og:title", content: $localize`:@@index.title:Cats & Mouse Game` });
-    this.meta.updateTag(<MetaDefinition>{ property: "og:description", content: $localize`:@@index.meta_og_description:Play for free Cats and mouse with friends` });
+    this.title.setTitle($localize`:@@index.title:Cats & Mouse. Multiplayer Game`);
+    this.meta.updateTag(<MetaDefinition>{ name: "description", content: $localize`:@@index.meta_description:Play for free Cats and Mouse game on a chessboard. Play online with friends.` });
+    this.meta.updateTag(<MetaDefinition>{ property: "og:title", content: $localize`:@@index.title:Cats & Mouse. Multiplayer Game` });
+    this.meta.updateTag(<MetaDefinition>{ property: "og:description", content: $localize`:@@index.meta_og_description:Play for free Cats and Mouse with friends` });
 
     const languageCode = localStorage.getItem(`${environment.localStoragePrefix}language`);
     this.meta.updateTag(<MetaDefinition>{ property: "og:locale", content: (languageCode === "en" ? "en_GB" : "es_ES") });
