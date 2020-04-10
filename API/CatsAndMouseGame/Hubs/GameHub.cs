@@ -252,6 +252,32 @@ namespace CatsAndMouseGame.Hubs
             }
         }
 
+        public void Surrender()
+        {
+            var game = GetInProgressGame();
+            if (game == null)
+            {
+                throw new Exception("Game does not exist");
+            }
+
+            var playerWhoSurrenders = game.GetPlayerByUserId(GetUserIdByCurrentConnectionId());
+
+            var message = new PlayerHasSurrenderedMessage
+            {
+                GameId = game.Id,
+                UserName = playerWhoSurrenders.Name,
+                TeamId = playerWhoSurrenders.TeamId
+            };
+
+            var allPlayersConnections = GetAllConnectionsByUsersIds(game.GetPlayersUsersIds());
+
+            SendMessageToClientsAsync("PlayerHasSurrendered", allPlayersConnections, message);
+
+            game.PlayerSurrenders(playerWhoSurrenders);
+
+            SendGameStatusToAllPlayers(game);
+        }
+
         public void PlayerWantsToRematch(GameIdModel model)
         {
             var game = GetGame(model.GameId);

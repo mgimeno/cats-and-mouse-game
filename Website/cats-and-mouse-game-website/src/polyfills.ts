@@ -68,7 +68,8 @@ if (language == "es") {
         'play.is_thinking': 'esta pensando...',
         'play.how_to_play': 'como jugar',
         'play.exit_game': 'salir',
-        'play.exit-game-question': 'Salir de la partida?',
+        'play.surrender': 'rendirse',
+        'play.surrender_question': 'Te rindes?',
         'play.rematch': 'revancha',
         'play.rematch_awaiting': 'Esperando',
 
@@ -99,6 +100,7 @@ if (language == "es") {
         'chat.send_placeholder': 'Envia un mensaje...',
         'chat.player_has_left': 'ha dejado la partida.',
         'chat.player_wants_rematch': 'quiere la revancha.',
+        'chat.player_has_surrendered': 'se ha rendido.',
 
         'select_team.select': 'Elige tu equipo',
         'select_team.cats': 'gatos',

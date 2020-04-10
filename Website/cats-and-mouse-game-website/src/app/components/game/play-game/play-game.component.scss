@@ -23,16 +23,8 @@
     font-weight: bold;
     margin: 15px 0 30px;
 
-    .green{
-      -webkit-text-fill-color: $successColor;
-      -webkit-text-stroke-color: #555;
-      -webkit-text-stroke-width: 1px;
-    }
-
-    .red{
-      -webkit-text-fill-color: $errorColor;
-      -webkit-text-stroke-color: #555;
-      -webkit-text-stroke-width: 1px;
+    .green,.red{
+      text-shadow: -1px 0 #333, 0 1px #333, 1px 0 #333, 0 -1px #333;
     }
 
     .turn-info-details{

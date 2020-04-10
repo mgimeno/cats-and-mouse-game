@@ -204,15 +204,17 @@ namespace CatsAndMouseGame.Models
 
             if (this.IsGameInProgress())
             {
-
-                playerWhoLeft.IsWinner = false;
-                var opponentPlayer = GetPlayerByTeam(playerWhoLeft.TeamId == TeamEnum.Cats ? TeamEnum.Mouse : TeamEnum.Cats);
-                opponentPlayer.IsWinner = true;
-
-                this.Players.ForEach(p => p.IsTheirTurn = false);
-                this.DateFinished = DateTime.UtcNow;
-
+                PlayerSurrenders(playerWhoLeft);
             }
+        }
+
+        public void PlayerSurrenders(PlayerModel playerWhoSurrenders) {
+            playerWhoSurrenders.IsWinner = false;
+            var opponentPlayer = GetPlayerByTeam(playerWhoSurrenders.TeamId == TeamEnum.Cats ? TeamEnum.Mouse : TeamEnum.Cats);
+            opponentPlayer.IsWinner = true;
+
+            this.Players.ForEach(p => p.IsTheirTurn = false);
+            this.DateFinished = DateTime.UtcNow;
         }
 
         private void CheckForGameOver()

@@ -7,6 +7,7 @@ import { TeamEnum } from '../../../shared/enums/team.enum';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { IPlayerHasLeftGameMessage } from 'src/app/shared/interfaces/player-has-left-game-message';
 import { IPlayerWantsRematchMessage } from 'src/app/shared/interfaces/player-wants-rematch-message';
+import { IPlayerHasSurrenderedMessage } from 'src/app/shared/interfaces/player-has-surrendered-message';
 
 @Component({
   selector: 'app-chat',
@@ -68,7 +69,24 @@ export class ChatComponent implements OnInit, OnDestroy {
           userName: message.userName,
           teamId: message.teamId,
           message: `${message.userName} ${$localize`:@@chat.player_wants_rematch: wants a rematch.`}`,
-          class: "green"
+          class: (message.teamId == TeamEnum.Cats ? "black" : "white")
+        };
+
+        this.chatLines.push(chatLine);
+      }
+
+    });
+
+    this.signalrService.subscribeToMethod("PlayerHasSurrendered", (message: IPlayerHasSurrenderedMessage) => {
+
+
+      if (message.gameId === this.gameId) {
+
+        const chatLine = <IChatLine>{
+          userName: message.userName,
+          teamId: message.teamId,
+          message: `${message.userName} ${$localize`:@@chat.player_has_surrendered:has surrendered.`}`,
+          class: (message.teamId == TeamEnum.Cats ? "black" : "white")
         };
 
         this.chatLines.push(chatLine);

@@ -8,6 +8,7 @@
         ChatMessage = 4,
         PlayerHasInProgressGame = 5,
         PlayerHasLeftGame = 6,
-        PlayerWantsToRematch = 7
+        PlayerWantsToRematch = 7,
+        PlayerHasSurrendered = 8
     }
 }

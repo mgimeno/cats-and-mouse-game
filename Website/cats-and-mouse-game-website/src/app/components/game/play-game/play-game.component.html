@@ -18,8 +18,8 @@
           <div class="turn-info-details">&nbsp;</div>
         </div>
         <div *ngIf="!isGameOver()">
-          <div *ngIf="isMyTurn()" class="green">
-            <div i18n="@@play.your_turn">Your turn!</div>
+          <div *ngIf="isMyTurn()" >
+            <div i18n="@@play.your_turn" class="green">Your turn!</div>
             <div class="turn-info-details">
               <ng-container *ngIf="amICatsPlayer()" i18n="@@play.cat_turn_info">
                 select a cat and then move it
@@ -29,8 +29,8 @@
               </ng-container>
             </div>
           </div>
-          <div *ngIf="!isMyTurn()" class="red">
-            <div i18n="@@play.their_turn">Their turn</div>
+          <div *ngIf="!isMyTurn()">
+            <div i18n="@@play.their_turn" class="red">Their turn</div>
             <div class="turn-info-details" >{{getEnemyPlayer().name}} <span i18n="@@play.is_thinking">is thinking...</span></div>
           </div>
         </div>
@@ -62,8 +62,8 @@
           <span *ngIf="!isRematchButtonEnabled()" i18n="@@play.rematch_awaiting">awaiting</span>
         </button>
 
-        <button *ngIf="!isGameOver()" mat-button color="warn" (click)=tryExitGame()><i class="fas fa-sign-out-alt"></i>&nbsp;<span i18n="@@play.exit_game">exit game</span></button>
-        <button *ngIf="isGameOver()" mat-raised-button color="warn" (click)=tryExitGame()><i class="fas fa-sign-out-alt"></i>&nbsp;<span i18n="@@play.exit_game">exit game</span></button>
+        <button *ngIf="!isGameOver()" mat-button color="warn" (click)=surrender()><i class="far fa-flag"></i>&nbsp;<span i18n="@@play.surrender">surrender</span></button>
+        <button *ngIf="isGameOver()" mat-raised-button color="warn" (click)=exitGame()><i class="fas fa-sign-out-alt"></i>&nbsp;<span i18n="@@play.exit_game">exit game</span></button>
       </div>
 
       <app-chat [gameId]=gameStatus.gameId [canSendMessages]=!hasAnyPlayerLeft()></app-chat>

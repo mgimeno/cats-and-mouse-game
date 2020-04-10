@@ -206,35 +206,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
       });
   }
 
-  tryExitGame(): void {
-
-    if (this.isGameOver()) {
-      this.exitGame();
-    }
-    else {
-
-      const bottomSheetRef = this.bottomSheet.open(ConfirmationDialogComponent, {
-        data: {
-          dialogTitle: $localize`:@@play.exit-game-question:Exit this game?`,
-          dialogBody: null
-        }
-      });
-
-      bottomSheetRef.afterDismissed().subscribe((confirmed: boolean) => {
-
-        if (confirmed) {
-
-          this.exitGame();
-
-        }
-
-      });
-    }
-
-
-  }
-
-  private exitGame(): void {
+  exitGame(): void {
     this.signalrService.sendMessage("ExitGame", { gameId: this.gameStatus.gameId })
       .then(() => {
         this.router.navigate(['/']);
@@ -245,36 +217,30 @@ export class PlayGameComponent implements OnInit, OnDestroy {
       });
   }
 
-  private buildChessBoard = (): void => {
+  surrender(): void {
 
-    this.chessBoard = [[], [], [], [], [], [], [], []];
+    const bottomSheetRef = this.bottomSheet.open(ConfirmationDialogComponent, {
+      data: {
+        dialogTitle: $localize`:@@play.surrender_question:Surrender?`,
+        dialogBody: null
+      }
+    });
 
-    let currentChessBoxColorId: ChessBoxColorEnum = ChessBoxColorEnum.White;
+    bottomSheetRef.afterDismissed().subscribe((confirmed: boolean) => {
 
-    for (let rowIndex = 0; rowIndex < COMMON_CONSTANTS.PLAY_CHESS_BOARD_ROWS; rowIndex++) {
+      if (confirmed) {
 
-      for (let columnIndex = 0; columnIndex < COMMON_CONSTANTS.PLAY_CHESS_BOARD_COLUMNS; columnIndex++) {
-
-        if (columnIndex !== 0) {
-          currentChessBoxColorId = (currentChessBoxColorId === ChessBoxColorEnum.White ? ChessBoxColorEnum.Black : ChessBoxColorEnum.White)
-        }
-
-        let chessBox = <IChessBox>{
-          colorId: currentChessBoxColorId,
-          figure: null,
-          //Todo these should be in the figure property ?
-          isFigureSelected: false,
-          canFigureBeSelected: false,
-          canBeNewPositionForSelectedFigure: false
-        };
-
-        this.chessBoard[rowIndex][columnIndex] = chessBox;
+        this.signalrService.sendMessage("Surrender")
+          .catch((reason: any) => {
+            console.error(reason);
+            this.notificationService.showError("Error when surrendering");
+          });
 
       }
 
-    }
+    });
 
-  };
+  }
 
   private updateChessBoard = (): void => {
 
