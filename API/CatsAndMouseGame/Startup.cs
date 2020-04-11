@@ -17,7 +17,7 @@ namespace CatsAndMouseGame
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
         public void ConfigureServices(IServiceCollection services)
         {
 
@@ -42,21 +42,17 @@ namespace CatsAndMouseGame
                );
 
             services.AddControllers();
-            //.AddNewtonsoftJson();
 
             services.AddSignalR(hubOptions =>
             {
-                //hubOptions.SupportedProtocols
             })
                 .AddJsonProtocol(options =>
                 {
                     options.PayloadSerializerOptions.WriteIndented = false;
                 });
-            //.AddNewtonsoftJsonProtocol();
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -66,17 +62,14 @@ namespace CatsAndMouseGame
 
             app.UseForwardedHeaders();
 
-            //app.UseWebSockets();
-
             app.UseRouting();
 
             app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllers();
                 endpoints.MapHub<GameHub>("/gameHub");
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute("default", "{controller=Status}/{action=Status}/{id?}");
             });
 
         }

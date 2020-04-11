@@ -1,5 +1,4 @@
-﻿using CatsAndMouseGame.Enums;
-
+﻿
 namespace CatsAndMouseGame.Models
 {
     public class JoinGameModel
