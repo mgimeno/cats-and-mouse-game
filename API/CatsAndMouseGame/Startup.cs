@@ -38,8 +38,7 @@ namespace CatsAndMouseGame
                               .AllowCredentials();
                    });
 
-            }
-               );
+            });
 
             services.AddControllers();
 
