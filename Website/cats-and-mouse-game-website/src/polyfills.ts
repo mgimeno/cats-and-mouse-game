@@ -42,7 +42,7 @@ if (language == "es") {
         'index.meta_og_description': 'Juega gratis al Gato y el Ratón con amigos',
 
         'home.title': 'GATO Y RATON',
-        'home.description': 'Juega al Gato y Ratón gratis',
+        'home.description': 'Juega al gato y el ratón gratis',
         'home.create_game': 'Crear partida',
         'home.how_to_play': 'Como jugar',
         'home.language': 'Idioma',
