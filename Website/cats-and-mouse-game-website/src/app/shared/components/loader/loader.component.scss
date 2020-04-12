@@ -1,56 +1,69 @@
-
 $grey: #333;
 $l-grey: #333;
-$dark:#1F1F1F;
+$dark: #1f1f1f;
 $white: #ccc;
 $time: 3s;
 
-@mixin animation ($name) {
-    @-webkit-keyframes #{$name} {@content;}
-    @-moz-keyframes #{$name} {@content;}
-    @-o-keyframes #{$name} {@content;}
-    @keyframes #{$name} {@content;}
+@mixin animation($name) {
+    @-webkit-keyframes #{$name} {
+        @content;
+    }
+    @-moz-keyframes #{$name} {
+        @content;
+    }
+    @-o-keyframes #{$name} {
+        @content;
+    }
+    @keyframes #{$name} {
+        @content;
+    }
 }
 
-@mixin animation-use ($name) {
+@mixin animation-use($name) {
     -webkit-animation: $name $time infinite linear;
     -moz-animation: $name $time infinite linear;
     -o-animation: $name $time infinite linear;
     animation: $name $time infinite linear;
 }
 
-@mixin turn () {
+@mixin turn() {
     0% {
-        transform: rotate(-.08turn);
+        transform: rotate(-0.08turn);
     }
     100% {
         transform: rotate(-1.08turn);
     }
 }
 
-@include animation (rotate) {
+@include animation(rotate) {
     @include turn();
 }
 
-@include animation (hideEye) {
-    0%, 10%, 85% {
+@include animation(hideEye) {
+    0%,
+    10%,
+    85% {
         margin-top: 0;
         height: 50px;
     }
-    30%, 65% {
+    30%,
+    65% {
         margin-top: 20px;
         height: 30px;
     }
 }
 
-@include animation (blink) {
-    0%, 10%, 85% {
+@include animation(blink) {
+    0%,
+    10%,
+    85% {
         bottom: 0;
     }
-    30%, 65% {
+    30%,
+    65% {
         bottom: 20px;
     }
-  
+
     @include turn();
 }
 
@@ -60,7 +73,7 @@ $time: 3s;
     height: 290px;
     position: relative;
     text-align: left;
-    
+
     .loader {
         position: absolute;
         left: 50%;
@@ -69,7 +82,7 @@ $time: 3s;
         height: 260px;
         margin-left: -130px;
         margin-top: -130px;
-        
+
         .track {
             width: 100%;
             height: 100%;
@@ -80,7 +93,7 @@ $time: 3s;
             margin-left: -3px;
             margin-top: -3px;
             @include animation-use(rotate);
-            
+
             .mouse {
                 position: absolute;
                 right: 31px;
@@ -90,28 +103,29 @@ $time: 3s;
                 background: $white;
                 border-radius: 80% 0 55% 50% / 55% 0 80% 50%;
                 transform: rotate(-95deg);
-                
-                &:before, &:after {
+
+                &:before,
+                &:after {
                     position: absolute;
-                    content: '';
+                    content: "";
                     width: 9px;
                     height: 9px;
                     border-radius: 50%;
                     background: inherit;
                 }
-                
+
                 &:before {
                     left: 5px;
                     top: -4px;
                 }
-              
+
                 &:after {
                     left: 20px;
                     top: 11px;
                 }
             }
         }
-      
+
         .face {
             position: absolute;
             left: 50%;
@@ -120,52 +134,54 @@ $time: 3s;
             height: 130px;
             margin-left: -65px;
             margin-top: -65px;
-            
-            &:before, &:after {
+
+            &:before,
+            &:after {
                 position: absolute;
-                content: '';
+                content: "";
                 width: 50%;
                 height: 100%;
             }
-            
+
             &:before {
                 background: $grey;
                 border-top-left-radius: 65px;
                 border-bottom-left-radius: 55px;
             }
-            
+
             &:after {
                 left: 50%;
                 background: $l-grey;
                 border-top-right-radius: 65px;
                 border-bottom-right-radius: 55px;
             }
-            
+
             .ears-container {
                 position: absolute;
                 top: -8px;
                 width: 130px;
                 height: 50px;
-                
-                &:before, &:after {
+
+                &:before,
+                &:after {
                     position: absolute;
-                    content: '';
+                    content: "";
                     width: 0;
                     height: 0;
                     border-top: 35px solid transparent;
                     border-bottom: 35px solid transparent;
                 }
-                
+
                 &:before {
                     border-left: 35px solid $grey;
                 }
-                
+
                 &:after {
                     right: 0;
                     border-right: 35px solid $l-grey;
                 }
             }
-          
+
             .eyes-container {
                 position: absolute;
                 overflow: hidden;
@@ -176,7 +192,7 @@ $time: 3s;
                 margin-left: -53px;
                 z-index: 1;
                 @include animation-use(hideEye);
-                
+
                 .eye {
                     position: relative;
                     bottom: 0;
@@ -187,10 +203,10 @@ $time: 3s;
                     color: $grey;
                     background: $white;
                     @include animation-use(blink);
-                             
+
                     &:after {
                         position: absolute;
-                        content: '';
+                        content: "";
                         top: 4px;
                         right: 14px;
                         width: 12px;
@@ -198,14 +214,14 @@ $time: 3s;
                         border-radius: inherit;
                         background: $dark;
                     }
-                    
+
                     &:last-child {
                         float: right;
                         color: $l-grey;
                     }
                 }
             }
-            
+
             .phiz {
                 position: absolute;
                 left: 50%;
@@ -214,7 +230,7 @@ $time: 3s;
                 height: 48px;
                 margin-left: -16px;
                 z-index: 1;
-                
+
                 .nose {
                     width: 100%;
                     height: 15px;
@@ -224,7 +240,7 @@ $time: 3s;
                     border-bottom-right-radius: 25px;
                     background: $dark;
                 }
-                
+
                 .lip {
                     position: relative;
                     left: 50%;
@@ -232,16 +248,16 @@ $time: 3s;
                     height: 12px;
                     margin-left: -2px;
                     background: $dark;
-                    
+
                     &:before {
                         position: absolute;
-                        content: '';
+                        content: "";
                         width: 100%;
                         height: 5px;
                         background: darken($dark, 5%);
                     }
                 }
-                
+
                 .mouth {
                     position: relative;
                     left: 50%;

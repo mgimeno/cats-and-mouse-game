@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SignalrService } from '../../../shared/services/signalr-service';
 import { IGameStatus } from '../../../shared/interfaces/game-status.interface';
 import { IGameStatusMessage } from '../../../shared/interfaces/game-status-message.interface';
-import { ChessBoxColorEnum } from '../../../shared/enums/chess-box-color.enum';
 import { IFigure } from '../../../shared/interfaces/figure.interface';
 import { IChessBox } from '../../../shared/interfaces/chess-box.interface';
 import { COMMON_CONSTANTS } from '../../../shared/constants/common';
@@ -88,7 +87,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
   getFigureInPosition = (rowIndex: number, columnIndex: number): IFigure => {
 
-    //todo very bad solution see if there is a way to find an item in a nested array (lodash?)
+    //todo Find a more elegant/efficient solution for this method. (finding an item in a nested array). Maybe lodash?
 
     if (!this.gameStatus) {
       return null;
@@ -116,8 +115,6 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     return figureInPosition;
 
   }
-
-
 
   onChessBoxClicked = (rowIndex: number, columnIndex: number): void => {
 
@@ -250,7 +247,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
         const figure = this.getFigureInPosition(rowIndex, columnIndex);
         this.chessBoard[rowIndex][columnIndex].figure = figure;
-        //Todo these should be in the figure property
+        
         this.chessBoard[rowIndex][columnIndex].isFigureSelected = false;
         this.chessBoard[rowIndex][columnIndex].canFigureBeSelected = this.isMyTurn() && figure && this.isMyFigure(figure.id) && (figure.canMoveToPositions.length > 0);
         this.chessBoard[rowIndex][columnIndex].canBeNewPositionForSelectedFigure = false;
@@ -328,7 +325,6 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
     this.signalrService.sendMessage("Move", message)
       .catch((reason: any) => {
-        //this.notificationService.showError("Error when moving the piece");
         console.error(reason);
       });
   };

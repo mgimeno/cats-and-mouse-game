@@ -1,27 +1,24 @@
-
-
-.game-description{
+.game-description {
     margin: 75px 0 40px;
 }
 
-h2{
+h2 {
     margin: 60px 0 25px;
 }
 
-table{
-
-    .player-cell{
-        display:flex;
+table {
+    .player-cell {
+        display: flex;
         align-items: center;
-    
-        .cat-figure, .mouse-figure{
+
+        .cat-figure,
+        .mouse-figure {
             width: 25px;
             height: 25px;
         }
-    
-        .player-name{
-            margin-left:15px;
+
+        .player-name {
+            margin-left: 15px;
         }
     }
 }
-

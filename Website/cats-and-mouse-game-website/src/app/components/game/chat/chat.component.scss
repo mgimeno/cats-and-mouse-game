@@ -1,9 +1,9 @@
-@import 'variables';
+@import "variables";
 
 .chat {
   margin-top: 25px;
 
-  .chat-box-title{
+  .chat-box-title {
     color: $primaryColor;
   }
 
@@ -18,16 +18,16 @@
       .black {
         color: #333;
       }
-  
-      .white{
-        color:#888;
+
+      .white {
+        color: #888;
       }
 
-      .red{
+      .red {
         color: $errorColor;
       }
 
-      .green{
+      .green {
         color: $successColor;
       }
     }
@@ -38,8 +38,8 @@
     flex-direction: row;
     align-items: baseline;
 
-    .send-message-button{
-      margin-left:10px;
+    .send-message-button {
+      margin-left: 10px;
       width: 80px;
     }
   }

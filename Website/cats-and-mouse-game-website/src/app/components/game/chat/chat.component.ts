@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { IChatLine } from '../../../shared/interfaces/chat-line.interface';
 import { SignalrService } from '../../../shared/services/signalr-service';
@@ -28,6 +28,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   constructor(
     private signalrService: SignalrService,
+    private cdRef: ChangeDetectorRef,
     private notificationService: NotificationService) {
 
     this.formGroup = new FormGroup({
@@ -41,6 +42,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       if (message.gameId === this.gameId) {
         message.chatLine.class = (message.chatLine.teamId == TeamEnum.Cats ? "black" : "white");
         this.chatLines.push(message.chatLine);
+
+        this.cdRef.detectChanges();
       }
     });
 
@@ -57,6 +60,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         };
 
         this.chatLines.push(chatLine);
+        this.cdRef.detectChanges();
       }
 
     });
@@ -73,6 +77,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         };
 
         this.chatLines.push(chatLine);
+        this.cdRef.detectChanges();
       }
 
     });
@@ -90,6 +95,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         };
 
         this.chatLines.push(chatLine);
+        this.cdRef.detectChanges();
       }
 
     });

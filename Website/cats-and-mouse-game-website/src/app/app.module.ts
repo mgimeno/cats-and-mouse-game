@@ -8,15 +8,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { ClipboardModule } from 'ngx-clipboard';
 
@@ -30,7 +24,6 @@ import { JoinGameDialogComponent } from './components/game/join-game-dialog/join
 import { HomeComponent } from './components/home/home.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { SignalrService } from './shared/services/signalr-service';
 import { ChessBoxComponent } from './components/game/chess-box/chess-box.component';
 import { ChatComponent } from './components/game/chat/chat.component';
@@ -44,51 +37,34 @@ import { SelectLanguageComponent } from './components/select-language/select-lan
 @NgModule({
   declarations: [
     AppComponent,
-
     LoadingDialogComponent,
-
     HowToPlayDialogComponent,
     ConfirmationDialogComponent,
     PageNotFoundComponent,
-
     CreateGameDialogComponent,
     JoinGameDialogComponent,
     PlayGameComponent,
-
     HomeComponent,
-
     ChessBoxComponent,
     ChatComponent,
-
     LoaderComponent,
     TeamSelectComponent,
-
-    
     SelectLanguageComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-
     MatButtonModule,
     MatFormFieldModule,
-    MatOptionModule,
-    MatSelectModule,
     MatInputModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    MatListModule,
     MatBottomSheetModule,
     MatDialogModule,
     MatTableModule,
     MatSnackBarModule,
-    MatTooltipModule,
     ClipboardModule,
   ],
   entryComponents: [

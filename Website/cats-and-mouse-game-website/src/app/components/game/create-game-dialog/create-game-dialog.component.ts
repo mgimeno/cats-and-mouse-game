@@ -24,7 +24,6 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
   isJoinGameLinkCopiedToClipboard: boolean = false;
   createdGame: IGameListItem = null;
 
-  //todo refactor (come from constants)
   teams: ILabelValue[] = [{ label: TeamEnum[TeamEnum.Cats], value: TeamEnum.Cats }, { label: TeamEnum[TeamEnum.Mouse], value: TeamEnum.Mouse }];
 
   constructor(

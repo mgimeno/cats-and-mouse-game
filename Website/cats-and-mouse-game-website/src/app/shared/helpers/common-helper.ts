@@ -26,7 +26,6 @@ export class CommonHelper {
             const chessBox = <IChessBox>{
               colorId: currentChessBoxColorId,
               figure: null,
-              //Todo these should be in the figure property ?
               isFigureSelected: false,
               canFigureBeSelected: false,
               canBeNewPositionForSelectedFigure: false,

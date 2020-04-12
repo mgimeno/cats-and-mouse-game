@@ -20,7 +20,6 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
 
   formGroup: FormGroup = null;
 
-  //todo refactor (come from constants)
   teams: ILabelValue[] = [{ label: TeamEnum[TeamEnum.Cats], value: TeamEnum.Cats }, { label: TeamEnum[TeamEnum.Mouse], value: TeamEnum.Mouse }];
 
   teamId: number = null;
