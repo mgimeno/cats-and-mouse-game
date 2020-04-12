@@ -6,8 +6,6 @@ import { TeamEnum } from 'src/app/shared/enums/team.enum';
 import { environment } from 'src/environments/environment';
 import { SignalrService } from '../../../shared/services/signalr-service';
 import { IGameListItem } from '../../../shared/interfaces/game-list-item.interface';
-import { Router } from '@angular/router';
-import { IGameStartMessage } from '../../../shared/interfaces/game-start-message.interface';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { COMMON_CONSTANTS } from 'src/app/shared/constants/common';
 

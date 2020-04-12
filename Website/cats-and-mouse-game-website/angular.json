@@ -62,7 +62,7 @@
               ]
             },
             "scripts": [
-              "src/scripts/signalr.min.js"
+              
             ]
           },
           "configurations": {
@@ -158,7 +158,7 @@
               ]
             },
             "scripts": [
-              "src/scripts/signalr.min.js"
+              
             ]
           }
         },

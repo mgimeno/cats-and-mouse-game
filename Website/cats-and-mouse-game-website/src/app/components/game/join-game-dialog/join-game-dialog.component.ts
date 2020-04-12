@@ -5,8 +5,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IGameListItem } from 'src/app/shared/interfaces/game-list-item.interface';
 import { TeamEnum } from 'src/app/shared/enums/team.enum';
 import { SignalrService } from '../../../shared/services/signalr-service';
-import { Router } from '@angular/router';
-import { IGameStartMessage } from '../../../shared/interfaces/game-start-message.interface';
 import { environment } from 'src/environments/environment';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { COMMON_CONSTANTS } from 'src/app/shared/constants/common';
