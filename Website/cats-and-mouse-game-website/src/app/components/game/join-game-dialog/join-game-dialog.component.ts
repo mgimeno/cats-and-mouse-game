@@ -73,8 +73,8 @@ export class JoinGameDialogComponent implements OnInit {
 
     this.signalrService.sendMessage("JoinGame", message)
       .catch((reason: any) => {
-        this.notificationService.showError("Error when joining the game");
         console.error(reason);
+        this.notificationService.showCommonError();
       });
 
   }

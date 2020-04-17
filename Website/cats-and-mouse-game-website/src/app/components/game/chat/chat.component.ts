@@ -113,8 +113,8 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.formGroup.controls.message.setValue(null);
       })
       .catch((reason: any) => {
-        this.notificationService.showError("Error when sending message");
         console.error(reason);
+        this.notificationService.showCommonError();
       });
 
   }

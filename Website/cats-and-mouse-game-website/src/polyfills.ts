@@ -111,7 +111,8 @@ if (language == "es") {
         'button.yes': 'Si',
 
         'error.missing_name': 'Escribe tu nombre',
-        'error.missing_team': 'Elige tu equipo'
+        'error.missing_team': 'Elige tu equipo',
+        'error.error_ocurred': 'Ha ocurrido un error'
     });
 
 }

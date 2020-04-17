@@ -78,8 +78,8 @@ export class CreateGameDialogComponent implements OnInit {
 
       })
       .catch((reason: any) => {
-        this.notificationService.showError("Error when creating the game");
         console.error(reason);
+        this.notificationService.showCommonError();
       });
 
   }
@@ -101,8 +101,8 @@ export class CreateGameDialogComponent implements OnInit {
 
     this.signalrService.sendMessage("CancelGameThatHasNotStarted", cancelGameModel)
       .catch((reason: any) => {
-        this.notificationService.showError("Error when canceling the game");
         console.error(reason);
+        this.notificationService.showCommonError();
       });
 
     this.dialogRef.close();

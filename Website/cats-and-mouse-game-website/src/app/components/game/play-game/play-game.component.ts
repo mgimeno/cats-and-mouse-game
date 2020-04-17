@@ -199,7 +199,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     this.signalrService.sendMessage("PlayerWantsToRematch", { gameId: this.gameStatus.gameId })
       .catch((reason: any) => {
         console.error(reason);
-        this.notificationService.showError("Error when resquesting rematch");
+        this.notificationService.showCommonError();
       });
   }
 
@@ -210,7 +210,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
       })
       .catch((reason: any) => {
         console.error(reason);
-        this.notificationService.showError("Error when exiting the game");
+        this.notificationService.showCommonError();
       });
   }
 
@@ -230,7 +230,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
         this.signalrService.sendMessage("Surrender")
           .catch((reason: any) => {
             console.error(reason);
-            this.notificationService.showError("Error when surrendering");
+        this.notificationService.showCommonError();
           });
 
       }

@@ -19,13 +19,17 @@ export class NotificationService {
     this.snackBar.open(text, null,config);
   }
 
-  showError(text:string): void{
+  showCommonError(): void{
+    this.showError();
+  }
+
+  showError(text?:string): void{
     let config: MatSnackBarConfig = <MatSnackBarConfig>{
       duration: COMMON_CONSTANTS.NOTIFICATION_ERROR_DURATION_MILLISECONS,
       panelClass: "error"
     };
 
-    let errorMessage = (text || "An error has ocurred");
+    let errorMessage = (text || $localize`:@@error.error_ocurred:An error has ocurred`);
 
     this.snackBar.open(errorMessage, null ,config);
   }
