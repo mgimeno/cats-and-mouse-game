@@ -14,7 +14,7 @@ import { COMMON_CONSTANTS } from 'src/app/shared/constants/common';
   templateUrl: './join-game-dialog.component.html',
   styleUrls: ['./join-game-dialog.component.scss']
 })
-export class JoinGameDialogComponent implements OnInit, OnDestroy {
+export class JoinGameDialogComponent implements OnInit {
 
   formGroup: FormGroup = null;
 
@@ -81,9 +81,6 @@ export class JoinGameDialogComponent implements OnInit, OnDestroy {
 
   onCancel(): void {
     this.dialogRef.close();
-  }
-
-  ngOnDestroy(): void {
   }
 
 }

@@ -55,7 +55,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   }
 
-
   ngOnInit() {
 
 
@@ -82,26 +81,28 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     this.signalrService.subscribeToMethod("GameStart", (message: IGameStartMessage) => {
-
-      if (this.createGameDialogRef) {
-        this.createGameDialogRef.close();
-      }
-
-      if (this.joinGameDialogRef) {
-        this.joinGameDialogRef.close();
-      }
-
-      if (this.howToPlayDialogRef) {
-        this.howToPlayDialogRef.close();
-      }
-
-      this.router.navigate(['/play']);
-
+      this.goToPlay();
     });
 
     this.signalrService.subscribeToMethod("GameStatus", (message: IGameStatusMessage) => {
-      this.router.navigate(['/play']);
+      this.goToPlay();
     });
+  }
+
+  private goToPlay(): void{
+    if (this.createGameDialogRef) {
+      this.createGameDialogRef.close();
+    }
+
+    if (this.joinGameDialogRef) {
+      this.joinGameDialogRef.close();
+    }
+
+    if (this.howToPlayDialogRef) {
+      this.howToPlayDialogRef.close();
+    }
+
+    this.router.navigate(['/play']);
   }
 
   openSelectLanguage(): void {
@@ -182,10 +183,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   openHowToPlayDialog(): void {
     this.howToPlayDialogRef = this.dialog.open(HowToPlayDialogComponent, { height: "100%", width: "100%" });
-  }
-
-  toggleLanguage(): void {
-    ;
   }
 
   ngOnDestroy(): void {

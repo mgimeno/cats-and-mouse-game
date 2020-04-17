@@ -7,15 +7,11 @@ import { MatBottomSheetRef} from '@angular/material/bottom-sheet';
 })
 export class SelectLanguageComponent {
 
- 
   constructor(private bottomSheetRef: MatBottomSheetRef<SelectLanguageComponent>) {
-
   }
 
   selectLanguage(languageCode: string): void{
     this.bottomSheetRef.dismiss(languageCode);
   }
 
- 
-  
 }

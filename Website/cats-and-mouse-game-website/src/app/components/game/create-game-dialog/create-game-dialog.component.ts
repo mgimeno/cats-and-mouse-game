@@ -14,7 +14,7 @@ import { COMMON_CONSTANTS } from 'src/app/shared/constants/common';
   templateUrl: './create-game-dialog.component.html',
   styleUrls: ['./create-game-dialog.component.scss']
 })
-export class CreateGameDialogComponent implements OnInit, OnDestroy {
+export class CreateGameDialogComponent implements OnInit {
 
   formGroup: FormGroup = null;
   isGameCreated: boolean = false;
@@ -108,6 +108,4 @@ export class CreateGameDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  ngOnDestroy(): void {
-  }
 }

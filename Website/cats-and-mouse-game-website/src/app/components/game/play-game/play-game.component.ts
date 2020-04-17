@@ -87,7 +87,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
   getFigureInPosition = (rowIndex: number, columnIndex: number): IFigure => {
 
-    //todo Find a more elegant/efficient solution for this method. (finding an item in a nested array). Maybe lodash?
+    //todo Find a more elegant solution for this method.
 
     if (!this.gameStatus) {
       return null;

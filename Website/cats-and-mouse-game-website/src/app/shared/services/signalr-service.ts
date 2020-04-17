@@ -16,14 +16,13 @@ export class SignalrService {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(environment.apiGameHubUrl)
       .configureLogging(signalR.LogLevel.Information)
-      //.withHubProtocol()
       .withAutomaticReconnect(this.getRetryDelaysArray())
       .build();
 
     this.hubConnection.serverTimeoutInMilliseconds = 15 * 60 * 1000;
 
     this.hubConnection.onclose((error: Error) => {
-      console.error("on close connection", error);
+      console.error("Error when closing connection", error);
     });
 
     this.hubConnection.onreconnected(() => {

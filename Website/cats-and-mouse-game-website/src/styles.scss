@@ -1,12 +1,12 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import "variables";
 
-html {
-  height: 100%;
+* {
+  font-family: Roboto, sans-serif;
 }
 
-body {
-  margin: 0;
+html {
+  height: 100%;
 }
 
 html,
@@ -15,8 +15,16 @@ html,
   background: #fafafa;
 }
 
-* {
-  font-family: Roboto, sans-serif;
+body {
+  margin: 0;
+}
+
+h1,
+.mat-dialog-title {
+  text-align: center;
+  margin: 40px 0 50px !important;
+  font-size: 1.69em;
+  color: $primaryColor;
 }
 
 h2 {
@@ -48,14 +56,6 @@ a {
 
 .mat-bottom-sheet-container {
   padding: 10px 0 50px !important;
-}
-
-h1,
-.mat-dialog-title {
-  text-align: center;
-  margin: 40px 0 50px !important;
-  font-size: 1.69em;
-  color: $primaryColor;
 }
 
 .mat-dialog-content {

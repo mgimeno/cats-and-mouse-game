@@ -123,5 +123,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.signalrService.unsubscribeToMethod("ChatMessage");
     this.signalrService.unsubscribeToMethod("PlayerHasLeftGame");
     this.signalrService.unsubscribeToMethod("PlayerWantsRematch");
+    this.signalrService.unsubscribeToMethod("PlayerHasSurrendered");
+    
   }
 }

@@ -33,6 +33,7 @@ export class AppComponent {
     this.signalrService.startConnection();
 
     setInterval(() => {
+
       if (!this.isReconnectingDialogOpen && !this.signalrService.isConnected) {
         this.openReconnectingDialog();
       }
@@ -40,7 +41,7 @@ export class AppComponent {
         this.reconnectingDialogRef.close();
         this.isReconnectingDialogOpen = false;
       }
-    }, 100);
+    }, 200);
 
     this.signalrService.subscribeToMethod("HasInProgressGame", (message: IPlayerHasInProgressGameMessage) => {
 
@@ -52,8 +53,6 @@ export class AppComponent {
       }
 
     });
-
-    
 
   }
 
