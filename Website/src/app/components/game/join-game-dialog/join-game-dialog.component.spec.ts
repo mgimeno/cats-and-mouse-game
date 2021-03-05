@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { JoinGameDialogComponent } from './join-game-dialog.component';
 
@@ -6,7 +6,7 @@ describe('JoinGameDialogComponent', () => {
   let component: JoinGameDialogComponent;
   let fixture: ComponentFixture<JoinGameDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ JoinGameDialogComponent ]
     })
