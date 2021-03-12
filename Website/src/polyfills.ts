@@ -101,6 +101,8 @@ if (language == "es") {
         'chat.player_has_left': 'ha dejado la partida.',
         'chat.player_wants_rematch': 'quiere la revancha.',
         'chat.player_has_surrendered': 'se ha rendido.',
+        'chat.player_has_disconnected': 'se ha desconectado.',
+        'chat.player_has_reconnected': 'se ha reconectado.',
 
         'select_team.select': 'Elige tu equipo',
         'select_team.cats': 'gatos',

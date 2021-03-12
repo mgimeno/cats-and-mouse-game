@@ -9,6 +9,7 @@
         PlayerHasInProgressGame = 5,
         PlayerHasLeftGame = 6,
         PlayerWantsToRematch = 7,
-        PlayerHasSurrendered = 8
+        PlayerHasSurrendered = 8,
+        PlayerOnlyConnectionStatusChanged = 9
     }
 }

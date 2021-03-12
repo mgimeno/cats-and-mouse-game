@@ -8,6 +8,7 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 import { IPlayerHasLeftGameMessage } from 'src/app/shared/interfaces/player-has-left-game-message';
 import { IPlayerWantsRematchMessage } from 'src/app/shared/interfaces/player-wants-rematch-message';
 import { IPlayerHasSurrenderedMessage } from 'src/app/shared/interfaces/player-has-surrendered-message';
+import { IPlayerOnlyConnectionStatusChangedMessage } from 'src/app/shared/interfaces/player-only-connection-status-changed-message';
 
 @Component({
   selector: 'app-chat',
@@ -41,14 +42,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.signalrService.subscribeToMethod("ChatMessage", (message: IChatMessage) => {
       if (message.gameId === this.gameId) {
         message.chatLine.class = (message.chatLine.teamId == TeamEnum.Cats ? "black" : "white");
-        this.chatLines.push(message.chatLine);
 
-        this.cdRef.detectChanges();
+        this.addMessage(message.chatLine);
       }
     });
 
     this.signalrService.subscribeToMethod("PlayerHasLeftGame", (message: IPlayerHasLeftGameMessage) => {
-
 
       if (message.gameId === this.gameId) {
 
@@ -59,8 +58,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           class: "red"
         };
 
-        this.chatLines.push(chatLine);
-        this.cdRef.detectChanges();
+        this.addMessage(chatLine);
       }
 
     });
@@ -76,14 +74,12 @@ export class ChatComponent implements OnInit, OnDestroy {
           class: (message.teamId == TeamEnum.Cats ? "black" : "white")
         };
 
-        this.chatLines.push(chatLine);
-        this.cdRef.detectChanges();
+        this.addMessage(chatLine);
       }
 
     });
 
     this.signalrService.subscribeToMethod("PlayerHasSurrendered", (message: IPlayerHasSurrenderedMessage) => {
-
 
       if (message.gameId === this.gameId) {
 
@@ -94,12 +90,32 @@ export class ChatComponent implements OnInit, OnDestroy {
           class: (message.teamId == TeamEnum.Cats ? "black" : "white")
         };
 
-        this.chatLines.push(chatLine);
-        this.cdRef.detectChanges();
+        this.addMessage(chatLine);
       }
 
     });
 
+    this.signalrService.subscribeToMethod("PlayerOnlyConnectionStatusChanged", (message: IPlayerOnlyConnectionStatusChangedMessage) => {
+
+      if (message.gameId === this.gameId) {
+
+        const chatLine = <IChatLine>{
+          userName: message.userName,
+          teamId: message.teamId,
+          message: `${message.userName} ${message.isConnected ? $localize`:@@chat.player_has_reconnected:has reconnected.` : $localize`:@@chat.player_has_disconnected:has disconnected.`}`,
+          class: message.isConnected ? "green" : "red"
+        };
+
+        this.addMessage(chatLine);
+      }
+
+    });
+
+  }
+
+  private addMessage(chatLine: IChatLine): void{
+      this.chatLines.push(chatLine);
+      this.cdRef.detectChanges();
   }
 
   isSubmitButtonDisabled(): boolean {

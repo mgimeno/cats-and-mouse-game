@@ -32,6 +32,11 @@ namespace CatsAndMouseGame.Hubs
             if (playerInProgressGame != null)
             {
                 await SendInProgressGameStatusToCaller();
+
+                if (_connections.GetConnectionsByKey(userId).Count == 1)
+                {
+                    await SendPlayerConnectionStatusChangedMessage(playerInProgressGame, userId, isConnected: true);
+                }
             }
             else
             {
@@ -43,11 +48,18 @@ namespace CatsAndMouseGame.Hubs
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
+            var playerInProgressGame = GetInProgressGame();
+            var userId = GetUserIdByCurrentConnectionId();
             var result = _connections.RemoveConnection(Context.ConnectionId);
+            
 
             if (!result.HasOtherActiveConnections)
             {
                 await CancelGamesThatHaveNotStartedCreatedByUser(result.Key);
+                if (playerInProgressGame != null)
+                {
+                    await SendPlayerConnectionStatusChangedMessage(playerInProgressGame, userId, isConnected: false);
+                }
             }
 
             await base.OnDisconnectedAsync(exception);
@@ -485,6 +497,21 @@ namespace CatsAndMouseGame.Hubs
             }
 
             return result;
+        }
+
+        private async Task SendPlayerConnectionStatusChangedMessage(GameModel game, string userId , bool isConnected) {
+
+            var player = game.GetPlayerByUserId(userId);
+
+            var message = new PlayerOnlyConnectionStatusChangedMessage
+            {
+                GameId = game.Id,
+                UserName = player.Name,
+                TeamId = player.TeamId,
+                IsConnected = isConnected
+            };
+            var allPlayersConnections = GetAllConnectionsByUsersIds(game.GetPlayersUsersIds());
+            await SendMessageToClientsAsync("PlayerOnlyConnectionStatusChanged", allPlayersConnections, message);
         }
 
     }
