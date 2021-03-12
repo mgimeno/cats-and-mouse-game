@@ -14,13 +14,21 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { CommonHelper } from 'src/app/shared/helpers/common-helper';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { DrawAttentionAnimation, DrawAttentionAnimationStateEnum } from './play-game.component.animations';
 
 
 @Component({
   templateUrl: './play-game.component.html',
-  styleUrls: ['./play-game.component.scss']
+  styleUrls: ['./play-game.component.scss'],
+  animations: [DrawAttentionAnimation]
 })
 export class PlayGameComponent implements OnInit, OnDestroy {
+
+  attentionAnimation = DrawAttentionAnimationStateEnum.Initial;
+
+  gameInfoHeader: string;
+  gameInfoSubHeader: string;
+  gameInfoHeaderColourClass: string;
 
   private chessBoard: [IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[], IChessBox[]] = null;
   private chessBoxCurrentlySelected: IChessBox = null;
@@ -63,20 +71,69 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
       this.resetSentRematchRequestIfNeeded();
 
+      this.updateGameInfo();
+
+      this.triggerGameInfoAnimation();
+      
     });
+  }
+
+  private updateGameInfo(): void{
+    if(this.isGameOver()){
+      if(this.amITheWinner()){
+        this.gameInfoHeader = $localize`:@@play.win:You win!`; 
+        this.gameInfoSubHeader = null;
+        this.gameInfoHeaderColourClass = "green";
+      }
+      else{
+        this.gameInfoHeader = $localize`:@@play.lose:You lose`;
+        this.gameInfoSubHeader = null;
+        this.gameInfoHeaderColourClass = "red";
+      }
+    }
+    else{
+      if(this.isMyTurn()){
+        this.gameInfoHeader = $localize`:@@play.your_turn:Your turn!`;
+        this.gameInfoSubHeader = this.amICatsPlayer() ? $localize`:@@play.cat_turn_info:select a cat and then move it` : $localize`:@@play.mouse_turn_info:move the mouse piece`;
+        this.gameInfoHeaderColourClass = "green";
+      }
+      else{
+        this.gameInfoHeader = $localize`:@@play.their_turn:Their turn`;
+        this.gameInfoSubHeader = `${this.getEnemyPlayer().name} ${$localize`:@@play.is_thinking:is thinking...`}`;
+        this.gameInfoHeaderColourClass = "red";
+      }
+    }
+  }
+
+  private triggerGameInfoAnimation(): void{
+    if(this.isGameOver()){
+      if(this.amITheWinner()){
+        this.attentionAnimation = DrawAttentionAnimationStateEnum.IWon;
+      }
+      else{
+        this.attentionAnimation = DrawAttentionAnimationStateEnum.ILost;
+      }
+    }
+    else{
+      if(this.isMyTurn()){
+        this.attentionAnimation = DrawAttentionAnimationStateEnum.MyTurn;
+      }
+      else{
+        this.attentionAnimation = DrawAttentionAnimationStateEnum.TheirTurn;
+      }
+    }
   }
 
   private alertUserIfItsTheirTurnOrGameOver(): void {
     if (this.isGameOver()) {
-
       navigator.vibrate([250, 250, 250]);
+      this.beepAudio.play();
     }
     else if (this.isMyTurn()) {
-
       navigator.vibrate(250);
+      this.beepAudio.play();
     }
 
-    this.beepAudio.play();
   }
 
   private resetSentRematchRequestIfNeeded(): void {

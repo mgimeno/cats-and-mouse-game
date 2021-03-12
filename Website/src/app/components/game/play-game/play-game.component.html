@@ -10,30 +10,15 @@
   <div class="game-container">
     <div class="wrapper">
 
-      <div class="text-center turn-info">
+      <div class="text-center turn-info" >
 
-        <div *ngIf="isGameOver()">
-          <div *ngIf="amITheWinner()" class="green" i18n="@@play.win">You win!</div>
-          <div *ngIf="!amITheWinner()" class="red" i18n="@@play.lose">You lose</div>
-          <div class="turn-info-details">&nbsp;</div>
+        <div class="turn-info-header" [@DrawAttentionAnimation]="attentionAnimation">
+          <span [class]="gameInfoHeaderColourClass">{{gameInfoHeader}}</span>
         </div>
-        <div *ngIf="!isGameOver()">
-          <div *ngIf="isMyTurn()" >
-            <div i18n="@@play.your_turn" class="green">Your turn!</div>
-            <div class="turn-info-details">
-              <ng-container *ngIf="amICatsPlayer()" i18n="@@play.cat_turn_info">
-                select a cat and then move it
-              </ng-container>
-              <ng-container *ngIf="!amICatsPlayer()" i18n="@@play.mouse_turn_info">
-                move the mouse piece
-              </ng-container>
-            </div>
-          </div>
-          <div *ngIf="!isMyTurn()">
-            <div i18n="@@play.their_turn" class="red">Their turn</div>
-            <div class="turn-info-details" >{{getEnemyPlayer().name}} <span i18n="@@play.is_thinking">is thinking...</span></div>
-          </div>
-        </div>
+
+        <div class="turn-info-subheader">
+          {{gameInfoSubHeader}}
+        </div>  
 
       </div>
     </div>
