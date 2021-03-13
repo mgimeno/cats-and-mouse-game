@@ -1,5 +1,6 @@
 ﻿
 using CatsAndMouseGame.Enums;
+using CatsAndMouseGame.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace CatsAndMouseGame.Models
         public string Id { get; set; }
         public string Password { get; set; }
         public List<PlayerModel> Players { get; set; }
+        public List<IMessageToClient> ChatMessages { get; set; } 
         public DateTime DateCreated { get; set; }
         public DateTime? DateStarted { get; set; } = null;
         public DateTime? DateFinished { get; set; } = null;
@@ -21,6 +23,7 @@ namespace CatsAndMouseGame.Models
             this.Password = gamePassword;
 
             this.Players = new List<PlayerModel>();
+            this.ChatMessages = new List<IMessageToClient>();
 
             this.DateCreated = DateTime.UtcNow;
         }

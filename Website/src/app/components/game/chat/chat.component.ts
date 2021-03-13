@@ -35,7 +35,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.formGroup = new FormGroup({
       'message': new FormControl(null, [Validators.required])
     });
-
   }
 
   ngOnInit() {
@@ -140,6 +139,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.signalrService.unsubscribeToMethod("PlayerHasLeftGame");
     this.signalrService.unsubscribeToMethod("PlayerWantsRematch");
     this.signalrService.unsubscribeToMethod("PlayerHasSurrendered");
-    
+    this.signalrService.unsubscribeToMethod("PlayerOnlyConnectionStatusChanged");
   }
 }

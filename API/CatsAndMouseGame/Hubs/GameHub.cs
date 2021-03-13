@@ -1,4 +1,5 @@
-﻿using CatsAndMouseGame.Models;
+﻿using CatsAndMouseGame.Enums;
+using CatsAndMouseGame.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -32,10 +33,12 @@ namespace CatsAndMouseGame.Hubs
             if (playerInProgressGame != null)
             {
                 await SendInProgressGameStatusToCaller();
+                await Task.Delay(2000); // Delay to make sure the UI for the chat is ready to take messages
+                await SendChatHistoryToCaller(playerInProgressGame);
 
                 if (_connections.GetConnectionsByKey(userId).Count == 1)
                 {
-                    await SendPlayerConnectionStatusChangedMessage(playerInProgressGame, userId, isConnected: true);
+                    await SendPlayerConnectionStatusChangedMessageToAllAsync(playerInProgressGame, userId, isConnected: true);
                 }
             }
             else
@@ -58,7 +61,7 @@ namespace CatsAndMouseGame.Hubs
                 await CancelGamesThatHaveNotStartedCreatedByUser(result.Key);
                 if (playerInProgressGame != null)
                 {
-                    await SendPlayerConnectionStatusChangedMessage(playerInProgressGame, userId, isConnected: false);
+                    await SendPlayerConnectionStatusChangedMessageToAllAsync(playerInProgressGame, userId, isConnected: false);
                 }
             }
 
@@ -235,6 +238,8 @@ namespace CatsAndMouseGame.Hubs
                 }
             };
 
+            game.ChatMessages.Add(message);
+
             var allPlayersConnections = GetAllConnectionsByUsersIds(game.GetPlayersUsersIds());
 
             await SendMessageToClientsAsync("ChatMessage", allPlayersConnections, message);
@@ -254,6 +259,8 @@ namespace CatsAndMouseGame.Hubs
                 UserName = playerWhoLeft.Name,
                 TeamId = playerWhoLeft.TeamId
             };
+
+            game.ChatMessages.Add(message);
 
             await SendMessageToClientsAsync("PlayerHasLeftGame", GetAllConnectionsByUsersIds(new List<string>() { opponentPlayer.UserId }), message);
 
@@ -281,6 +288,8 @@ namespace CatsAndMouseGame.Hubs
                 UserName = playerWhoSurrenders.Name,
                 TeamId = playerWhoSurrenders.TeamId
             };
+
+            game.ChatMessages.Add(message);
 
             var allPlayersConnections = GetAllConnectionsByUsersIds(game.GetPlayersUsersIds());
 
@@ -315,6 +324,8 @@ namespace CatsAndMouseGame.Hubs
                 UserName = playerWhoWantsToRematch.Name,
                 TeamId = playerWhoWantsToRematch.TeamId
             };
+
+            game.ChatMessages.Add(message);
 
             await SendMessageToClientsAsync("PlayerWantsRematch", allPlayersConnections, message);
 
@@ -386,8 +397,6 @@ namespace CatsAndMouseGame.Hubs
 
             await SendMessageToClientsAsync("GameStatus", userConnections, message);
         }
-
-
 
         private async Task SendMessageToClientsAsync(string methodName, List<string> connectionsIds, IMessageToClient message)
         {
@@ -499,7 +508,7 @@ namespace CatsAndMouseGame.Hubs
             return result;
         }
 
-        private async Task SendPlayerConnectionStatusChangedMessage(GameModel game, string userId , bool isConnected) {
+        private async Task SendPlayerConnectionStatusChangedMessageToAllAsync(GameModel game, string userId , bool isConnected) {
 
             var player = game.GetPlayerByUserId(userId);
 
@@ -510,8 +519,42 @@ namespace CatsAndMouseGame.Hubs
                 TeamId = player.TeamId,
                 IsConnected = isConnected
             };
+            game.ChatMessages.Add(message);
             var allPlayersConnections = GetAllConnectionsByUsersIds(game.GetPlayersUsersIds());
             await SendMessageToClientsAsync("PlayerOnlyConnectionStatusChanged", allPlayersConnections, message);
+        }
+
+        private async Task SendChatHistoryToCaller(GameModel game) {
+
+            var playerConnectionAsList = new List<string> { Context.ConnectionId };
+
+            var messagesForChat = game.ChatMessages.Where(chatMessage => chatMessage.IsMessageForChat).ToList();
+
+            foreach (var message in messagesForChat) {
+
+                string messageType = string.Empty;
+
+                switch (message.TypeId) {
+                    case MessageToClientTypeEnum.ChatMessage:
+                        messageType = "ChatMessage";
+                        break;
+                    case MessageToClientTypeEnum.PlayerHasLeftGame:
+                        messageType = "PlayerHasLeftGame";
+                        break;
+                    case MessageToClientTypeEnum.PlayerHasSurrendered:
+                        messageType = "PlayerHasSurrendered";
+                        break;
+                    case MessageToClientTypeEnum.PlayerOnlyConnectionStatusChanged:
+                        messageType = "PlayerOnlyConnectionStatusChanged";
+                        break;
+                    case MessageToClientTypeEnum.PlayerWantsToRematch:
+                        messageType = "PlayerWantsRematch";
+                        break;
+                }
+
+                await SendMessageToClientsAsync(messageType, playerConnectionAsList, message);
+            }
+
         }
 
     }
