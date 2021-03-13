@@ -76,8 +76,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       this.games = message.gameList.filter(g => g.userId !== userId);
 
-      this.openJoinGameDialogIfGameInUrl();
+      const gameThisUserHasCreatedInAnotherDeviceOrTab = message.gameList.find(g=> g.userId === userId);
 
+      if(gameThisUserHasCreatedInAnotherDeviceOrTab){
+        if (this.createGameDialogRef) {
+          this.createGameDialogRef.close();
+        }
+        this.openCreateGameDialog(gameThisUserHasCreatedInAnotherDeviceOrTab);
+      }
+      else{
+        this.openJoinGameDialogIfGameInUrl();
+      }
+      
     });
 
     this.signalrService.subscribeToMethod("GameStart", (message: IGameStartMessage) => {
@@ -103,6 +113,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     this.router.navigate(['/play']);
+    
   }
 
   openSelectLanguage(): void {
@@ -165,8 +176,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
 
-  openCreateGameDialog(): void {
-    this.createGameDialogRef = this.dialog.open(CreateGameDialogComponent, { height: "100%", width: "100%" });
+  openCreateGameDialog(gameToLoad?: IGameListItem): void {
+    this.createGameDialogRef = this.dialog.open(CreateGameDialogComponent, { data: gameToLoad, height: "100%", width: "100%" });
   }
 
   openJoinGameDialog(gameId: string): void {

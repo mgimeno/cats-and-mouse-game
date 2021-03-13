@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ILabelValue } from 'src/app/shared/interfaces/label-value.interface';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TeamEnum } from 'src/app/shared/enums/team.enum';
 import { environment } from 'src/environments/environment';
 import { SignalrService } from '../../../shared/services/signalr-service';
@@ -26,18 +26,30 @@ export class CreateGameDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<CreateGameDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: IGameListItem,
     private signalrService: SignalrService,
     private notificationService: NotificationService) { }
 
   ngOnInit() {
 
-    const previousUserName = localStorage.getItem(`${environment.localStoragePrefix}user-name`);
+    if(this.data){
+      this.isGameCreated = true;
 
-    this.formGroup = new FormGroup({
-      'userName': new FormControl(previousUserName || null, [Validators.required, Validators.maxLength(this.getMaxUserNameLength())]),
-      'teamId': new FormControl(null, Validators.required),
-      'gamePassword': new FormControl(null)
-    });
+      this.createdGame = this.data;
+
+      this.joinGameUrl = `${environment.websiteUrl}?joinGame=${this.data.gameId}`;
+    }
+    else{
+      const previousUserName = localStorage.getItem(`${environment.localStoragePrefix}user-name`);
+
+      this.formGroup = new FormGroup({
+        'userName': new FormControl(previousUserName || null, [Validators.required, Validators.maxLength(this.getMaxUserNameLength())]),
+        'teamId': new FormControl(null, Validators.required),
+        'gamePassword': new FormControl(null)
+      });
+    }
+
+    
   }
 
   getMaxUserNameLength(): number {
