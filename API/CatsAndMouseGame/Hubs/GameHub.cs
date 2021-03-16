@@ -33,9 +33,8 @@ namespace CatsAndMouseGame.Hubs
             if (playerInProgressGame != null)
             {
                 await SendInProgressGameStatusToCaller();
-                await Task.Delay(2000); // Delay to make sure the UI for the chat is ready to take messages
+                await Task.Delay(3000); // Delay to make sure the UI for the chat is ready to receive messages
                 await SendChatHistoryToCaller(playerInProgressGame);
-
                 if (_connections.GetConnectionsByKey(userId).Count == 1)
                 {
                     await SendPlayerConnectionStatusChangedMessageToAllAsync(playerInProgressGame, userId, isConnected: true);
@@ -55,7 +54,6 @@ namespace CatsAndMouseGame.Hubs
             var userId = GetUserIdByCurrentConnectionId();
             var result = _connections.RemoveConnection(Context.ConnectionId);
             
-
             if (!result.HasOtherActiveConnections)
             {
                 await CancelGamesThatHaveNotStartedCreatedByUser(result.Key);
