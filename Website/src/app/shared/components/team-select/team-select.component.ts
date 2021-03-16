@@ -20,8 +20,6 @@ export class TeamSelectComponent {
   mouseText:string = $localize`:@@select_team.mouse:mouse`;
   opponentText:string = $localize`:@@select_team.opponent:opponent`;
 
-  constructor() { }
-
   getTeamName(teamEnum: TeamEnum): string {
 
 

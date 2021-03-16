@@ -17,6 +17,7 @@ import { COMMON_CONSTANTS } from 'src/app/shared/constants/common';
 export class JoinGameDialogComponent implements OnInit {
 
   formGroup: FormGroup = null;
+  maxUsernameLength: number = COMMON_CONSTANTS.MAX_USERNAME_LENGTH;
 
   teams: ILabelValue[] = [{ label: TeamEnum[TeamEnum.Cats], value: TeamEnum.Cats }, { label: TeamEnum[TeamEnum.Mouse], value: TeamEnum.Mouse }];
 
@@ -29,23 +30,19 @@ export class JoinGameDialogComponent implements OnInit {
     private notificationService: NotificationService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
 
     const previousUserName = localStorage.getItem(`${environment.localStoragePrefix}user-name`);
     this.teamId = (this.data.teamId == TeamEnum.Cats ? TeamEnum.Mouse : TeamEnum.Cats);
 
     this.formGroup = new FormGroup({
-      'userName': new FormControl(previousUserName || null, [Validators.required, Validators.maxLength(this.getMaxUserNameLength())]),
+      'userName': new FormControl(previousUserName || null, [Validators.required, Validators.maxLength(this.maxUsernameLength)]),
       'teamId': new FormControl({ value: this.teamId, disabled: true }, Validators.required)
     });
 
     if (this.data.isPasswordProtected) {
       this.formGroup.addControl("gamePassword", new FormControl(null, Validators.required));
     }
-  }
-
-  getMaxUserNameLength(): number {
-    return COMMON_CONSTANTS.MAX_USERNAME_LENGTH;
   }
 
   onSubmit(): void {

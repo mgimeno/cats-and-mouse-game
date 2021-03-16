@@ -37,7 +37,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit() : void {
     this.signalrService.subscribeToMethod("ChatMessage", (message: IChatMessage) => {
       if (message.gameId === this.gameId) {
         message.chatLine.class = (message.chatLine.teamId == TeamEnum.Cats ? "black" : "white");

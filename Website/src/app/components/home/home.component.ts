@@ -55,8 +55,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit() {
-
+  ngOnInit() : void {
 
     this.signalrService.sendMessage("SendWhetherHasInProgressGameToCaller")
       .catch((reason: any) => {
@@ -78,10 +77,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       const gameThisUserHasCreatedInAnotherDeviceOrTab = message.gameList.find(g=> g.userId === userId);
 
-      if(gameThisUserHasCreatedInAnotherDeviceOrTab){
-        if (this.createGameDialogRef) {
-          this.createGameDialogRef.close();
-        }
+      if(gameThisUserHasCreatedInAnotherDeviceOrTab && !this.createGameDialogRef){
         this.openCreateGameDialog(gameThisUserHasCreatedInAnotherDeviceOrTab);
       }
       else{

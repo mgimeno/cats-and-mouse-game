@@ -3,7 +3,6 @@ import { FigureTypeEnum } from '../../../shared/enums/figure-type.enum';
 import { ChessBoxColorEnum } from '../../../shared/enums/chess-box-color.enum';
 import { IChessBox } from '../../../shared/interfaces/chess-box.interface';
 
-
 @Component({
   selector: 'app-chess-box',
   templateUrl: './chess-box.component.html',
@@ -16,9 +15,6 @@ export class ChessBoxComponent {
 
   figureTypeEnum = FigureTypeEnum;
   chessBoxColorEnum = ChessBoxColorEnum;
-
-  constructor() {
-  }
 
   hasFigureOfType = (figureType: FigureTypeEnum): boolean => {
     return this.chessBox.figure != null && (this.chessBox.figure.typeId === figureType);

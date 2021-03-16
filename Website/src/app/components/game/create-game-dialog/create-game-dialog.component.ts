@@ -21,7 +21,7 @@ export class CreateGameDialogComponent implements OnInit {
   joinGameUrl: string = null;
   isJoinGameLinkCopiedToClipboard: boolean = false;
   createdGame: IGameListItem = null;
-
+  maxUsernameLength: number = COMMON_CONSTANTS.MAX_USERNAME_LENGTH;
   teams: ILabelValue[] = [{ label: TeamEnum[TeamEnum.Cats], value: TeamEnum.Cats }, { label: TeamEnum[TeamEnum.Mouse], value: TeamEnum.Mouse }];
 
   constructor(
@@ -30,7 +30,7 @@ export class CreateGameDialogComponent implements OnInit {
     private signalrService: SignalrService,
     private notificationService: NotificationService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
 
     if(this.data){
       this.isGameCreated = true;
@@ -43,17 +43,11 @@ export class CreateGameDialogComponent implements OnInit {
       const previousUserName = localStorage.getItem(`${environment.localStoragePrefix}user-name`);
 
       this.formGroup = new FormGroup({
-        'userName': new FormControl(previousUserName || null, [Validators.required, Validators.maxLength(this.getMaxUserNameLength())]),
+        'userName': new FormControl(previousUserName || null, [Validators.required, Validators.maxLength(this.maxUsernameLength)]),
         'teamId': new FormControl(null, Validators.required),
         'gamePassword': new FormControl(null)
       });
-    }
-
-    
-  }
-
-  getMaxUserNameLength(): number {
-    return COMMON_CONSTANTS.MAX_USERNAME_LENGTH;
+    }  
   }
 
   onSubmit(): void {

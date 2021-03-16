@@ -49,7 +49,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     this.chessBoard = CommonHelper.buildChessBoard(COMMON_CONSTANTS.PLAY_CHESS_BOARD_ROWS, COMMON_CONSTANTS.PLAY_CHESS_BOARD_COLUMNS);
   }
 
-  ngOnInit() {
+  ngOnInit() : void {
 
     this.signalrService.sendMessage("SendInProgressGameStatusToCaller")
       .catch((reason: any) => {

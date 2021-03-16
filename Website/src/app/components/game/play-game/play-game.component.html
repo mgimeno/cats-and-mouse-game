@@ -12,11 +12,13 @@
 
       <div class="text-center turn-info" >
 
-        <div class="turn-info-header" [@DrawAttentionAnimation]="attentionAnimation">
+        <div class="turn-info-header" 
+          [class.big-turn-info-header]="!gameInfoSubHeader"
+          [@DrawAttentionAnimation]="attentionAnimation">
           <span [class]="gameInfoHeaderColourClass">{{gameInfoHeader}}</span>
         </div>
 
-        <div class="turn-info-subheader">
+        <div *ngIf="gameInfoSubHeader" class="turn-info-subheader">
           {{gameInfoSubHeader}}
         </div>  
 
