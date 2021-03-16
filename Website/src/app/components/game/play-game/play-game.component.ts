@@ -125,12 +125,7 @@ export class PlayGameComponent implements OnInit, OnDestroy {
   }
 
   private alertUserIfItsTheirTurnOrGameOver(): void {
-    if (this.isGameOver()) {
-      navigator.vibrate([250, 250, 250]);
-      this.beepAudio.play();
-    }
-    else if (this.isMyTurn()) {
-      navigator.vibrate(250);
+    if (this.isMyTurn() || this.isGameOver()) {
       this.beepAudio.play();
     }
 
